@@ -37,7 +37,7 @@ AstraLight/
 └── .github/workflows/ # CI opcional (lint/tests)
 ```
 
-## 👥 Equipo — Mosaic Masters Space
+## 👥 Equipo — AstraLight
 | Nombre | Rol |
 |---|---|
 | Juan Diego | _rol_ |
