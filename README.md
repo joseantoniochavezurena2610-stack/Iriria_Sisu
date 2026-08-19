@@ -5,14 +5,13 @@ Proyecto para el **NASA International Space Apps Challenge 2026** (14–15 de no
 ## 🎯 Reto elegido
 > _[Nombre del challenge oficial — pegar aquí el link de spaceappschallenge.org]_
 
-**Problema:** _[una frase clara del problema a resolver]_
+**Problema:** 
 
 **Categorías objetivo:** Galactic Impact · Best Use of Science
 
-## 💡 La idea (resumen de 30 segundos)
-_[Qué hace la solución, en 2-3 líneas. Esto es lo que se lee en el pitch.]_
+## 💡 La idea de nuestra resolucion (esto es lo que decimos en el pitch)
 
-## 🧪 Uso del método científico
+## 🧪 Uso del método científico (por si elegimos mejor uso de la ciencia o asi)
 - **Hipótesis:** _[qué creemos que pasa / qué queremos demostrar]_
 - **Datos usados:** _[datasets de NASA / partner agencies]_
 - **Análisis:** _[qué método: estadística, ML, comparación con literatura, etc.]_
@@ -40,8 +39,6 @@ AstraLight/
 ## 👥 Equipo — AstraLight
 | Nombre | Rol |
 |---|---|
-| Juan Diego | _rol_ |
-| _..._ | _..._ |
 
 ## 🎬 Demo / Pitch
 - Video (30 seg, requerido para submission global): _[link]_
