@@ -29,7 +29,7 @@ _[A quién ayuda, a qué escala, por qué es potencialmente "galáctico" o de al
 ```
 AstraLight/
 ├── data/           # datasets crudos y procesados (NO subir datasets pesados, usar .gitignore)
-├── docs/           # pitch, guion de demo, capturas para el submission
+├── docs/           # pitch, guion de demo, capturas para el submission, material de apoyo y estudio
 ├── notebooks/       # exploración de datos, prototipos rápidos
 ├── src/             # código fuente de la solución final
 ├── assets/          # imágenes, logo, screenshots para README y submission
