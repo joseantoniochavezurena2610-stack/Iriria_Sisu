@@ -27,7 +27,7 @@ _[A quién ayuda, a qué escala, por qué es potencialmente "galáctico" o de al
 
 ## 📂 Estructura del repo
 ```
-AstraLight/
+Iriria Sìsù/
 ├── data/           # datasets crudos y procesados (NO subir datasets pesados, usar .gitignore)
 ├── docs/           # pitch, guion de demo, capturas para el submission, material de apoyo y estudio
 ├── notebooks/       # exploración de datos, prototipos rápidos
@@ -36,7 +36,7 @@ AstraLight/
 └── .github/workflows/ # CI opcional (lint/tests)
 ```
 
-## 👥 Equipo — AstraLight
+## 👥 Equipo — Iriria Sìsù
 | Nombre | Rol |
 |---|---|
 
