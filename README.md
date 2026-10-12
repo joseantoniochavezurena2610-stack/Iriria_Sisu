@@ -38,7 +38,12 @@ Iriria Sìsù/
 
 ## 👥 Equipo — Iriria Sìsù
 | Nombre | Rol |
-|---|---|
+|Juan Diego Chávez Ureña|---|
+|Jose Antonio Chávez Ureña|---|
+|Britzie García|---|
+|Angeli Abarca Ureña|---|
+|Juan Pablo |---|
+|Nesly Mejía|---|
 
 ## 🎬 Demo / Pitch
 - Video (30 seg, requerido para submission global): _[link]_
