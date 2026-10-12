@@ -1,9 +1,9 @@
-# AstraLight 🚀
+# Iriria Sìsù🌱
 
 Proyecto para el **NASA International Space Apps Challenge 2026** (14–15 de noviembre de 2026).
 
 ## 🎯 Reto elegido
-> _[Nombre del challenge oficial — pegar aquí el link de spaceappschallenge.org]_
+> Cambio de Rumbo: Adaptando las granjas con datos de la NASA
 
 **Problema:** 
 
