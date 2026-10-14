@@ -47,7 +47,7 @@ Iriria Sìsù/
 
 |Angeli Abarca Ureña|---|
 
-|Juan Pablo |---|
+|José Pablo Ramírez Fernández|---|
 
 |Nesly Mejía Jímenez|---|
 
