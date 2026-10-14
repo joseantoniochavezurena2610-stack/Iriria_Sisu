@@ -43,7 +43,7 @@ Iriria Sìsù/
 
 |Jose Antonio Chávez Ureña|---|
 
-|Britzie García|---|
+|Britzie Yarith García Arias|---|
 
 |Angeli Abarca Ureña|---|
 
