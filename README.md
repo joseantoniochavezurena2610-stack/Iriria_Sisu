@@ -49,7 +49,7 @@ Iriria Sìsù/
 
 |José Pablo Ramírez Fernández|---|
 
-|Nesly Mejía Jímenez|---|
+|Nesly Mejía Jiménez|---|
 
 ## 🎬 Demo / Pitch
 - Video (30 seg, requerido para submission global): _[link]_
