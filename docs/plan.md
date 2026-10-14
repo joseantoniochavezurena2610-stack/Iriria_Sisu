@@ -39,7 +39,7 @@
 
 |José Pablo Ramírez Fernández|---|
 
-|Nesly Mejía Jímenez|---|
+|Nesly Mejía Jiménez|---|
 
 
 ## Bloqueos / decisiones pendientes
