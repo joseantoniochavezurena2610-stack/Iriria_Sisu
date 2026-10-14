@@ -38,6 +38,7 @@ Iriria Sìsù/
 
 ## 👥 Equipo — Iriria Sìsù
 | Nombre | Rol |
+
 |Juan Diego Chávez Ureña|---|
 
 |Jose Antonio Chávez Ureña|---|
