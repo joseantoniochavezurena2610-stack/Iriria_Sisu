@@ -28,8 +28,18 @@
 
 ## Roles
 | Persona | Rol principal | Backup |
-|---|---|---|
-| | | |
+|Juan Diego Chávez Ureña|---|
+
+|Jose Antonio Chávez Ureña|---|
+
+|Britzie Yarith García Arias|---|
+
+|Angeli Abarca Ureña|---|
+
+|José Pablo Ramírez Fernández|---|
+
+|Nesly Mejía Jímenez|---|
+
 
 ## Bloqueos / decisiones pendientes
 - 
