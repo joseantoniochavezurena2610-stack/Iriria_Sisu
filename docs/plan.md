@@ -27,7 +27,8 @@
 - [ ] Plan B: video/demo grabado por si algo falla en vivo
 
 ## Roles
-| Persona | Rol principal | Backup |
+| Persona |              Rol principal | Backup |
+
 |Juan Diego Chávez Ureña|---|
 
 |Jose Antonio Chávez Ureña|---|
