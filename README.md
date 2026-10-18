@@ -31,6 +31,7 @@ Costa Rica tiene 10 de los 12 órdenes de suelo del USDA: un promedio nacional n
 - **Hardware:** ESP32 + sensor capacitivo de humedad (calibrado) + DHT22
 
 ## 📚 Investigación
+- [`docs/datos-confirmados.md`](docs/datos-confirmados.md) — **hoja rápida con solo los datos confirmados y su fuente**
 - [`docs/investigacion/resumen-verificado.md`](docs/investigacion/resumen-verificado.md) — resumen de la investigación y verificación de cada dato (✅/⚠️/❓)
 - [`docs/solucion.md`](docs/solucion.md) — solución v2, incluyendo el factor económico
 - [`docs/lider-cientifico.md`](docs/lider-cientifico.md) — hipótesis, validación y tareas de ciencia
