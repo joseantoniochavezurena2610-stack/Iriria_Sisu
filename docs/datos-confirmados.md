@@ -27,14 +27,20 @@ Lo que todavía no tiene fuente está en [`investigacion/resumen-verificado.md`]
 | Erosión global | El equivalente a **una cancha de fútbol cada 5 segundos** | FAO (2022), vía ONU Noticias — https://news.un.org/en/story/2022/07/1123462 |
 | Formación de suelo | ~**1 000 años** para unos pocos centímetros de capa fértil | Misma (citar la publicación original de la FAO en el submission) |
 
-## ☀️ El Niño 2026-27 en Costa Rica
+## ☀️ El Niño en Costa Rica (detalle 2021-2026 en [`investigacion/el-nino-2021-2026.md`](investigacion/el-nino-2021-2026.md))
 | Dato | Valor | Fuente |
 |---|---|---|
-| Déficit de lluvia en Pacífico Norte (Guanacaste) | **−37 %** entre enero y agosto de 2026 | Infobae, 18-sep-2026 (boletín IMN / CNE) |
-| Alerta | **Naranja** en Pacífico Norte (Liberia, Nicoya, Cañas, Tilarán, entre otros) | Misma |
-| Intensidad | "Fuerte" (anomalía > 1,8 °C); podría llegar a "muy fuerte" nov-2026 a ene-2027 | Misma |
-| Duración esperada | Efectos **al menos hasta julio de 2027** | IMN, vía Monumental, 18-oct-2026 |
-| Patrón | Lluvias extremas concentradas en pocos días alternadas con periodos secos largos | CNE, vía Infobae |
+| Fuerza actual | Niño-3.4 en **+2,1 °C** (8-oct-2026); **> 83 %** de prob. de fuerte a muy fuerte; **83 %** de prob. de superar a cualquier El Niño desde 1950 en oct-dic | NOAA CPC, 8-oct-2026 |
+| Déficit de lluvia en Pacífico Norte | **-37 %** ene-ago 2026 (ene-jul: -28 %; julio: hasta -58 %) | IMN / CNE |
+| Caribe | Excesos de hasta **+42 %** (sept.) y **+70 %** (julio) | IMN vía La Nación / Infobae |
+| Alertas CNE | **Naranja en 23 cantones** (los 11 del Pacífico Norte) + amarilla en 51 = **74 cantones** (19-sep-2026) | CNE vía Delfino |
+| Canícula 2026 | Empezó a finales de junio y duró todo agosto | IMN vía Infobae |
+| Duración esperada | Efectos **al menos hasta julio de 2027** | IMN vía Monumental, 18-oct-2026 |
+| Arroz 2026 | Arroceros de Nandayure y Jicaral **no sembraron**; sin segunda siembra en la península de Nicoya | La Nación, 18-jul-2026 |
+| Precios 2026 | Tomate **+174 %** (ene-jul), chile dulce **+49 %** (CNP); cebolla **+60,6 %** interanual (INEC) | La Nación, 18-jul-2026 |
+| Fondo de respuesta 2026 | **₡6 000 millones** para crédito preventivo | Gobierno vía Semanario Universidad |
+| El Niño 2023-24 | Pico RONI +1,5 °C; temperatura nacional ~+1 °C; **Pacífico Norte solo -9 %** pero **Caribe Norte -43 %**; racionamiento eléctrico en mayo 2024 | IMN; NOAA; Bloomberg Línea |
+| El Niño 2014-16 | Guanacaste ~**-55 %**; CNE ~₡5 000 millones para > 12 500 productores | UNA Comunica |
 
 ## 🚜 Agricultura en Costa Rica (INEC — Encuesta Nacional Agropecuaria 2024, datos de 2023)
 | Cultivo | Área 2022 (ha) | Área 2023 (ha) |
@@ -69,4 +75,5 @@ Fuente: Semanario Universidad sobre la ENA 2024 — https://semanariouniversidad
 - Café **no son 74 ha**: son ~**74 000 ha**.
 - Arroz-leguminosa: **15,7 %** y **65,8 %**, no 15 % y 65,5 %.
 - "La API de GIBS está en pausa" es falso: lo que cerró fue **NEO**.
-- El Niño ya no es una proyección: está ocurriendo y es **más fuerte** (−37 %) de lo que decía el documento (~−30 %).
+- El Niño ya no es una proyección: está ocurriendo y es **más fuerte** (-37 %) de lo que decía el documento (~-30 %).
+- El "+300 % de precios en 2014-15" no tiene fuente: usar los datos verificados de 2026 (tomate +174 %, cebolla +60,6 %).

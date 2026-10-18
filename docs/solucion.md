@@ -10,7 +10,7 @@ En Guanacaste, El Niño 2026-27 ya recortó más de un tercio de la lluvia y se 
 | Antes | Ahora | Por qué |
 |---|---|---|
 | El Niño como hipótesis de pitch | El Niño como **realidad actual** (−37 % lluvia en Pacífico Norte ene-ago 2026) | Hace el pitch urgente y verificable |
-| Escenario "−30 % de lluvia" fijo | Escenarios con **años análogos reales** (2015, 2023 vs. un año neutro) desde IMERG/POWER | Defendible ante jueces de ciencia |
+| Escenario "−30 % de lluvia" fijo | Escenarios con **años análogos reales** (2015, 2023 y 2026 vs. un año neutro) desde IMERG/POWER | Defendible ante jueces de ciencia |
 | 2 temporadas (primera/postrera) | **Seca · Primera · Canícula · Postrera** | La canícula es donde El Niño mata la cosecha |
 | SMAP "verificado" con sensor | Sensor = **capa fina** que ajusta el balance hídrico; satélite = tendencia | Honestidad de escala |
 | NDVI de MODIS | **HLS (30 m)** o VIIRS | MODIS se apaga a fines de 2026 / inicios de 2027 |

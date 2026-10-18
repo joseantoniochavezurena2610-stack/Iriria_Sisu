@@ -18,7 +18,7 @@ Detalle completo: [`docs/solucion.md`](docs/solucion.md)
 - **Hipótesis:** en años El Niño, las rotaciones con leguminosas y cultivos de menor demanda hídrica tienen menor riesgo que el arroz continuo sin riego, sin sacrificar demasiado margen; y el mejor plan de un año normal no siempre es el mejor en un año El Niño.
 - **Datos usados:** ver [`docs/fuentes-datos.md`](docs/fuentes-datos.md).
 - **Análisis:** motor de decisión multicriterio con reglas transparentes (filtros de pH/agua/familia, balance hídrico tipo FAO-56, crédito de N de leguminosas, margen económico), comparado en escenarios con años análogos reales.
-- **Validación:** backtest con El Niño 2015 y 2023, contraste con NDVI satelital, análisis de sensibilidad y revisión de un extensionista. Ver [`docs/roles/lider-cientifico.md`](docs/roles/lider-cientifico.md).
+- **Validación:** backtest con El Niño 2015, 2023 y 2026, contraste con NDVI satelital, análisis de sensibilidad y revisión de un extensionista. Ver [`docs/roles/lider-cientifico.md`](docs/roles/lider-cientifico.md).
 
 ## 🌍 Impacto (por qué importa)
 Costa Rica tiene 10 de los 12 órdenes de suelo del USDA: un promedio nacional no sirve, cada finca necesita su propia respuesta. La herramienta cuesta $0 de operar (datos abiertos + hosting gratuito) y puede usarse en las visitas de las agencias de extensión. El mismo motor sirve para cualquier región tropical con estación seca y ENSO (Centroamérica, Corredor Seco).
@@ -31,6 +31,7 @@ Costa Rica tiene 10 de los 12 órdenes de suelo del USDA: un promedio nacional n
 - **Hardware:** ESP32 + sensor capacitivo de humedad (calibrado) + DHT22
 
 ## 📚 Investigación
+- [`docs/investigacion/el-nino-2021-2026.md`](docs/investigacion/el-nino-2021-2026.md) — El Niño en Costa Rica 2021-2026: datos, impactos y fuentes
 - [`docs/datos-confirmados.md`](docs/datos-confirmados.md) — **hoja rápida con solo los datos confirmados y su fuente**
 - [`docs/investigacion/resumen-verificado.md`](docs/investigacion/resumen-verificado.md) — resumen de la investigación y verificación de cada dato (✅/⚠️/❓)
 - [`docs/solucion.md`](docs/solucion.md) — solución v2, incluyendo el factor económico
@@ -51,12 +52,12 @@ Iriria Sìsù/
 ## 👥 Equipo — Iriria Sìsù
 | Nombre | Rol |
 |---|---|
-| Juan Diego Chávez Ureña | _por definir_  |
-| Jose Antonio Chávez Ureña |Lider Cientifico |
-| Britzie Yarith García Arias | _por definir_ |
-| Angeli Abarca Ureña | _por definir_ |
-| José Pablo Ramírez Fernández | _por definir_ |
-| Nesly Mejía Jiménez | _por definir_ |
+| Juan Diego Chávez Ureña | Integración, despliegue y seguridad |
+| Jose Antonio Chávez Ureña | [Líder científico](docs/roles/lider-cientifico.md) |
+| Britzie Yarith García Arias | Sensores y hardware |
+| Angeli Abarca Ureña | Economía, impacto y operaciones |
+| José Pablo Ramírez Fernández | Datos y motor |
+| Nesly Mejía Jiménez | Diseño, UX y pitch |
 
 ## 🧭 Planes por rol
 Cada rol tiene su plan (antes del evento, durante las 48 h y entregables): [`docs/roles/`](docs/roles/README.md)
