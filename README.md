@@ -51,7 +51,7 @@ Iriria Sìsù/
 ## 👥 Equipo — Iriria Sìsù
 | Nombre | Rol |
 |---|---|
-| Juan Diego Chávez Ureña |  |
+| Juan Diego Chávez Ureña | _por definir_  |
 | Jose Antonio Chávez Ureña |Lider Cientifico |
 | Britzie Yarith García Arias | _por definir_ |
 | Angeli Abarca Ureña | _por definir_ |
