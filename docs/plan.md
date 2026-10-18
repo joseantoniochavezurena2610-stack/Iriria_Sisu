@@ -49,4 +49,3 @@
 ## Bloqueos / decisiones pendientes
 - Región piloto final (Guanacaste vs. Cartago)
 - ¿LLM para las explicaciones o solo plantillas? (plantillas = $0 y sin riesgo de inventar datos)
-- Nombre único: el repo y la licencia aún dicen "AstraLight"; unificar a "Iriria Sìsù"
