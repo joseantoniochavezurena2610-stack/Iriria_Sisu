@@ -7,7 +7,7 @@ Cada rol tiene su plan con tareas **antes del evento** (hasta el 13-nov), **dura
 | Líder científico | Estudiante científico | Jose Antonio Chavez Ureña | [lider-cientifico.md](lider-cientifico.md) |
 | Datos y motor | Ing. en sistemas | Jose Pablo Ramírez | [datos-y-motor.md](datos-y-motor.md) |
 | Sensores y hardware | Ing. mecatrónica | Britzie García | [sensores-hardware.md](sensores-hardware.md) |
-| Economía, impacto y operaciones | Ing. industrial | Angeli Abarca | [economia-operaciones.md](economia-operaciones.md) |
+| Economía, impacto y operaciones | Ing. industrial | Angelli Abarca | [economia-operaciones.md](economia-operaciones.md) |
 | Diseño, UX y pitch | Diseñadora gráfica | Nesly Mejía | [diseno-pitch.md](diseno-pitch.md) |
 | Integración, despliegue y seguridad | Ing. en seguridad informática | Juan Diego Chávez Ureña | [integracion-seguridad.md](integracion-seguridad.md) |
 
