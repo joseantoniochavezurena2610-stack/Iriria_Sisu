@@ -15,7 +15,7 @@
 Marcar la finca → elegir prioridades → ver 3 planes lado a lado (suelo, agua, riesgo, ingreso) → cambiar a "año El Niño" y ver cómo el arroz sin riego sale y entran maíz y leguminosas → mostrar el sensor en vivo ajustando la humedad.
 
 ## Ciencia detrás (20 seg) — líder científico
-30 años de clima NASA por finca, suelo de SoilGrids, rangos de FAO. Probamos el motor contra El Niño 2015 y 2023 y lo contrastamos con NDVI satelital. Cada recomendación dice de dónde sale y qué tan precisa es.
+30 años de clima NASA por finca, suelo de SoilGrids, rangos de FAO. Probamos el motor contra El Niño 2015, 2023 y 2026 y lo contrastamos con NDVI satelital. Cada recomendación dice de dónde sale y qué tan precisa es.
 
 ## Impacto (15 seg)
 Cuesta $0 operar; puede usarse en las visitas de las agencias de extensión. Leguminosas en rotación suben ~20 % el rendimiento del cultivo principal (metaanálisis de 462 experimentos) y ahorran fertilizante. El motor sirve para todo el trópico con estación seca y El Niño.

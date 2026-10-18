@@ -12,7 +12,7 @@ El trabajo del líder científico es que **cada número que sale de la app sea d
 |---|---|---|
 | 🔴 | Elegir **una** región piloto (recomendado: Pacífico Norte — Liberia/Nicoya/Cañas) y 6-8 cultivos | Decisión escrita en `docs/plan.md` |
 | 🔴 | Llenar el **catálogo de cultivos** con fuente por cada número | `data/catalogo/cultivos_plantilla.csv` |
-| 🔴 | Definir años análogos: neutro vs. El Niño (2015, 2023) y comprobar con IMERG/POWER que la lluvia del Pacífico Norte realmente cayó | Notebook con gráfico lluvia por época |
+| 🔴 | Definir años análogos: neutro vs. El Niño (2015, 2023 y el 2026 en curso) y comprobar con IMERG/POWER que la lluvia del Pacífico Norte realmente cayó | Notebook con gráfico lluvia por época |
 | 🟠 | Corregir los datos marcados ⚠️ y ❓ en `docs/investigacion/resumen-verificado.md` | Tabla sin ❓ en lo que vaya al pitch |
 | 🟠 | Escribir las fórmulas de cada eje (Suelo, Agua, Riesgo, Ingreso) en una página | `docs/motor-reglas.md` |
 | 🟠 | Conseguir precios (PIMA/CENADA) y costos de producción (MAG/INTA) de los cultivos | Columnas económicas del catálogo |
@@ -34,7 +34,7 @@ El trabajo del líder científico es que **cada número que sale de la app sea d
 - Freeze de la ciencia a la hora ~30: desde ahí solo se explica, no se cambian fórmulas.
 
 ## 5. Tu parte del pitch (≈20 s, "Ciencia detrás")
-Guion base: *"Usamos 30 años de lluvia NASA para la finca, el suelo de SoilGrids y rangos de cultivo de la FAO. Probamos el motor contra El Niño de 2015 y 2023: los planes que marcó como riesgosos son los mismos que fallaron en la realidad. Y cada recomendación dice de dónde sale y qué tan precisa es."*
+Guion base: *"Usamos 30 años de lluvia NASA para la finca, el suelo de SoilGrids y rangos de cultivo de la FAO. Probamos el motor contra El Niño de 2015, 2023 y el actual de 2026: los planes que marcó como riesgosos son los mismos que fallaron en la realidad. Y cada recomendación dice de dónde sale y qué tan precisa es."*
 
 ## 6. Coordinación con el equipo
 - **Datos/sistemas:** vos definís qué variable y período; ellos la bajan y la guardan en Parquet.

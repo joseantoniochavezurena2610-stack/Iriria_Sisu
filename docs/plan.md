@@ -39,12 +39,12 @@
 ## Roles
 | Persona | Rol principal | Backup |
 |---|---|---|
-| Juan Diego Chávez Ureña | Líder científico | |
-| Jose Antonio Chávez Ureña | | |
-| Britzie Yarith García Arias | | |
-| Angeli Abarca Ureña | | |
-| José Pablo Ramírez Fernández | | |
-| Nesly Mejía Jiménez | | |
+| Juan Diego Chávez Ureña | Integración, despliegue y seguridad | |
+| Jose Antonio Chávez Ureña | Líder científico | |
+| Britzie Yarith García Arias | Sensores y hardware | |
+| Angeli Abarca Ureña | Economía, impacto y operaciones | |
+| José Pablo Ramírez Fernández | Datos y motor | |
+| Nesly Mejía Jiménez | Diseño, UX y pitch | |
 
 ## Bloqueos / decisiones pendientes
 - Región piloto final (Guanacaste vs. Cartago)
