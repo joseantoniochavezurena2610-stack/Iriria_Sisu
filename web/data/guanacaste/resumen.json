@@ -1,0 +1,153 @@
+{
+ "region": "Guanacaste",
+ "ventana_inicio": "2021-01-01",
+ "generado": "2026-10-19T00:31:14+00:00",
+ "fuente": "NASA POWER, API diaria, comunidad AG (https://power.larc.nasa.gov)",
+ "puntos": [
+  {
+   "id": "la-cruz",
+   "nombre": "La Cruz",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -85.63,
+    "lat": 11.072
+   }
+  },
+  {
+   "id": "liberia",
+   "nombre": "Liberia",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -85.437,
+    "lat": 10.635
+   }
+  },
+  {
+   "id": "bagaces",
+   "nombre": "Bagaces",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -85.254,
+    "lat": 10.531
+   }
+  },
+  {
+   "id": "tilaran",
+   "nombre": "Tilarán",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -84.968,
+    "lat": 10.469
+   }
+  },
+  {
+   "id": "carrillo",
+   "nombre": "Carrillo (Filadelfia)",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -85.555,
+    "lat": 10.448
+   }
+  },
+  {
+   "id": "canas",
+   "nombre": "Cañas",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -85.093,
+    "lat": 10.429
+   }
+  },
+  {
+   "id": "abangares",
+   "nombre": "Abangares (Las Juntas)",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -84.957,
+    "lat": 10.276
+   }
+  },
+  {
+   "id": "santa-cruz",
+   "nombre": "Santa Cruz",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -85.585,
+    "lat": 10.261
+   }
+  },
+  {
+   "id": "nicoya",
+   "nombre": "Nicoya",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -85.452,
+    "lat": 10.148
+   }
+  },
+  {
+   "id": "hojancha",
+   "nombre": "Hojancha",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -85.418,
+    "lat": 10.059
+   }
+  },
+  {
+   "id": "nandayure",
+   "nombre": "Nandayure (Carmona)",
+   "meses": 69,
+   "ultimo_dia": "2026-10-15",
+   "celda_power": {
+    "lon": -85.258,
+    "lat": 10.009
+   }
+  }
+ ],
+ "cantones_por_celda": [
+  [
+   "La Cruz"
+  ],
+  [
+   "Liberia"
+  ],
+  [
+   "Bagaces"
+  ],
+  [
+   "Tilarán"
+  ],
+  [
+   "Carrillo (Filadelfia)"
+  ],
+  [
+   "Cañas"
+  ],
+  [
+   "Abangares (Las Juntas)"
+  ],
+  [
+   "Santa Cruz"
+  ],
+  [
+   "Nicoya"
+  ],
+  [
+   "Hojancha"
+  ],
+  [
+   "Nandayure (Carmona)"
+  ]
+ ]
+}
