@@ -1,0 +1,15 @@
+{
+  "fuente": "Tabla de respaldo escrita a mano a partir de docs/investigacion/el-nino-2021-2026.md (NOAA CPC, RONI). El workflow 'datos' la reemplaza con el ONI oficial de NOAA cuando corre.",
+  "umbral": 0.5,
+  "generado": "2026-10-18",
+  "automatico": false,
+  "periodos": [
+    {"desde": "2021-01", "hasta": "2023-02", "fase": "la_nina"},
+    {"desde": "2023-03", "hasta": "2023-05", "fase": "neutral"},
+    {"desde": "2023-06", "hasta": "2024-03", "fase": "el_nino"},
+    {"desde": "2024-04", "hasta": "2024-06", "fase": "neutral"},
+    {"desde": "2024-07", "hasta": "2026-02", "fase": "la_nina"},
+    {"desde": "2026-03", "hasta": "2026-05", "fase": "neutral"},
+    {"desde": "2026-06", "hasta": "2027-12", "fase": "el_nino"}
+  ]
+}

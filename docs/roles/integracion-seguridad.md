@@ -1,26 +1,24 @@
-# Plan — Integración, despliegue y seguridad (Ing. en seguridad informática)
+# Plan — Integración, despliegue y seguridad (Juan Diego, Ing. en seguridad informática)
 
-**Misión:** que todo junte, que esté en línea con URL pública, que la demo funcione aunque falle el internet y que no se filtren credenciales.
+**Misión:** que la web esté en línea con HTTPS, que `main` siempre funcione, que la demo no falle y que no se filtren credenciales.
 
 ## Antes del evento
 | Prioridad | Tarea | Entregable |
 |---|---|---|
-| 🔴 | Repo listo: estructura, `requirements.txt`, ramas según `CONTRIBUTING.md`, protección de `main` | Repo configurado |
-| 🔴 | Despliegue de prueba en Streamlit Community Cloud desde GitHub | URL pública con una app "hola mundo" |
-| 🔴 | Manejo de secretos: credenciales Earthdata y cualquier llave en `.env` / secrets de Streamlit, nunca en el código | Guía en el README |
-| 🟠 | Endpoint para el sensor (acordar formato con Hardware); validar el payload y usar un token simple | Endpoint probado |
-| 🟠 | **Modo offline:** la app corre local con Parquet precalculado, sin internet | Comando de arranque probado |
-| 🟡 | CI básico en `.github/workflows/`: correr pytest en cada PR | Workflow funcionando |
+| 🔴 | Activar GitHub Pages: *Settings → Pages → Source: GitHub Actions* y variable `PUBLICAR_PAGES=true` | URL pública funcionando |
+| 🔴 | Proteger `main` (PR obligatorio + workflow `pruebas` en verde) | Regla de rama |
+| 🔴 | Apoyar a José Pablo con el dominio (`web/CNAME`, *Enforce HTTPS*) | Dominio con candado |
+| 🟠 | Revisar que el workflow `datos` haga commit sin romper `main` | Corrida exitosa |
+| 🟠 | Content-Security-Policy básica en `index.html` (solo cdnjs, Google Fonts, OSM tiles, power.larc.nasa.gov) | Meta CSP probada |
+| 🟡 | Modo sin internet: probar la app servida en local con los JSON del repo | Comando documentado |
 
 ## Durante las 48 h
-- **Dueño de `main`:** en cada checkpoint hace merge de lo que funciona.
-- **H20:** primera versión desplegada.
-- **H30:** freeze; desde aquí solo se arreglan bugs.
-- **H36:** prueba completa de la demo en modo offline y con el sensor.
-- **H42:** etiqueta `v1.0` en el commit de entrega y verifica que el submission tenga el link correcto.
+- Dueño de `main`: merge en cada checkpoint.
+- Hora 30: freeze. Hora 46: etiqueta `v1.0` y verificación del enlace público (sin login, incógnito, celular con datos móviles).
 
-## Checklist de seguridad (sirve como punto extra en el pitch)
-- [ ] Sin llaves ni contraseñas en el historial de git
-- [ ] Payload del sensor validado (tipos y rangos)
-- [ ] La app no guarda datos personales del agricultor
-- [ ] Dependencias fijadas a versión
+## Checklist de seguridad
+- [ ] Sin llaves en el historial de git
+- [ ] Secrets de Earthdata solo en GitHub
+- [ ] La app no guarda ni envía datos del agricultor (todo corre en el navegador)
+- [ ] HTTPS obligatorio en el dominio
+- [ ] Dependencias externas fijadas a versión (Leaflet 1.9.4)
