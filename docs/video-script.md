@@ -1,0 +1,30 @@
+# Video script — Iriria Sìsù
+
+One of the **two only deliverables** (the other is the web prototype).
+
+## Space Apps rules (confirm in the official 2026 guide before recording)
+- **At most 30 seconds.**
+- **English subtitles** (if narrated in Spanish) or English narration.
+- Upload to YouTube/Drive with a **public link**; it is not uploaded to the Space Apps site.
+- Do not use or modify the NASA logo/branding. Anything made with AI carries a watermark and is declared in the form.
+- Guide: https://www.spaceappschallenge.org/resources/project-submission-guide/
+
+## Script (30 s) — everything on screen is the real app
+| Time | Image | Narration | Subtitle (EN) |
+|---|---|---|---|
+| 0–5 s | Dry field in Guanacaste → map with the 11 cantons on alert | "Guanacaste perdió más de un tercio de su lluvia este año." | "Guanacaste lost over a third of its rain this year." |
+| 5–10 s | Phone: farmer picks canton, crop and texture | "Iriria Sìsù une datos de la NASA con lo que el agricultor sabe de su finca." | "Iriria Sìsù combines NASA data with what farmers know about their land." |
+| 10–20 s | "Normal year" button → "El Niño year": rice drops out, cowpea and sorghum come in; "Robust plan" label | "Compara rotaciones a 3 años en un año normal y en uno El Niño, con la lluvia real desde 2021." | "It compares 3-year rotations in normal and El Niño years, using real rainfall since 2021." |
+| 20–26 s | Soil / Water / Safety / Income axes and the reasons | "Muestra qué le pasa al suelo, al agua y al ingreso. La decisión es del agricultor." | "It shows the effect on soil, water and income. The farmer decides." |
+| 26–30 s | Logo + website domain | "Iriria Sìsù. Datos del espacio para sembrar mejor." | "Iriria Sìsù. Space data for better planting." |
+
+> The narration column is in Spanish because the farmers are Spanish-speaking; the subtitles are the English version the judges read. If the team narrates in English, use the subtitle column as the narration.
+
+## Checklist
+- [ ] Real data loaded (not synthetic) for the canton shown
+- [ ] Timed at ≤ 30 s
+- [ ] English subtitles reviewed
+- [ ] Royalty-free music (record the source)
+- [ ] No number without a source in `docs/confirmed-data.md`
+- [ ] Public link tested from another account / incognito
+- [ ] Backup: the video file saved in the team Drive

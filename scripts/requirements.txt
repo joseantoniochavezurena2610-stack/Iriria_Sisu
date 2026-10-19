@@ -1,5 +1,5 @@
-# Solo para los scripts de datos opcionales. descargar_datos.py y
-# catalogo_a_json.py no necesitan nada fuera de la biblioteca estándar.
+# Only for the optional data scripts. fetch_data.py and catalog_to_json.py
+# need nothing beyond the Python standard library.
 rasterio>=1.3
 numpy>=1.26
 earthaccess>=0.11

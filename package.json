@@ -1,7 +1,7 @@
 {
   "name": "iriria-sisu",
   "private": true,
-  "description": "Iriria Sìsù — herramienta web de rotación de cultivos para Guanacaste con datos NASA (Space Apps 2026)",
+  "description": "Iriria Sìsù — web crop-rotation tool for Guanacaste using NASA data (Space Apps 2026)",
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
