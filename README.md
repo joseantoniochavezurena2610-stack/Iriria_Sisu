@@ -23,6 +23,7 @@ Detalle: [`docs/solucion.md`](docs/solucion.md) · Decisiones: [`docs/decisiones
 | Documento | Para qué |
 |---|---|
 | [`docs/Guia_repositorio_Iriria_Sisu.pdf`](docs/Guia_repositorio_Iriria_Sisu.pdf) | **Empiecen aquí:** guía en PDF de cómo está organizado el repo y qué leer |
+| [`docs/Como_correr_la_app_Iriria_Sisu.pdf`](docs/Como_correr_la_app_Iriria_Sisu.pdf) | Paso a paso para abrir la app en su compu (Windows y Mac) |
 | [`docs/glosario.md`](docs/glosario.md) | **Diccionario de términos técnicos** — léanlo todos |
 | [`docs/decisiones.md`](docs/decisiones.md) | Qué decidimos y por qué |
 | [`docs/plan.md`](docs/plan.md) | Plan semana a semana hasta el evento y las 48 h |
