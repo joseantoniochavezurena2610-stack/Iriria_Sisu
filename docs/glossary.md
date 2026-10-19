@@ -1,8 +1,10 @@
-# Iriria Sìsù glossary
+# Iriria Sìsù glossary (English)
+
+🌐 English version · **[Versión en español](glossary.es.md)**
 
 A dictionary of the technical and lesser-known terms in the project, so the whole team speaks the same language. Each term gives its **Spanish equivalent**, **what it is** and **how we use it**.
 
-If you find a word that is not here, add it to the right section (alphabetical order) with a PR.
+If you find a word that is not here, add it to the right section in **both versions** (`glossary.md` and `glossary.es.md`) with a PR.
 
 **Sections:** [1. Soil](#1-soil) · [2. Crops and rotation](#2-crops-and-rotation) · [3. Water and water balance](#3-water-and-water-balance) · [4. Climate and El Niño](#4-climate-and-el-niño) · [5. Satellites and NASA data](#5-satellites-and-nasa-data) · [6. Data formats and tools](#6-data-formats-and-tools) · [7. Decision engine and scientific method](#7-decision-engine-and-scientific-method) · [8. Web, domain and deployment](#8-web-domain-and-deployment) · [9. Economics](#9-economics) · [10. Costa Rican institutions and acronyms](#10-costa-rican-institutions-and-acronyms) · [11. Space Apps](#11-space-apps)
 

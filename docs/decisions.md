@@ -32,3 +32,4 @@ Every team decision with its date and its reason. If something changes, add a ne
 | # | Decision | What it implies |
 |---|---|---|
 | D10 | **Everything is in English** for greater impact: repository, code, data, documentation, the app and the v1 prototype. | The only exception is the **team guides in Spanish** (PDFs in [`team-guides-es/`](team-guides-es/)). The glossary lists the Spanish term next to each English one so the team stays on the same page. Local terms with no good English equivalent (*Primera*, *Postrera*, *canícula*, canton names) are kept and explained. |
+| D11 | **Bilingual glossary.** | The glossary exists in full in English ([`glossary.md`](glossary.md)) and Spanish ([`glossary.es.md`](glossary.es.md)), each listing the term in the other language. Both are updated together. |

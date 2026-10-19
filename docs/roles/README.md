@@ -26,7 +26,7 @@ Field work ──tests with farmers / extension agents────────�
 4. **Freeze** of formulas and catalog → **13 Nov**.
 
 ## Common rules
-- Every new term goes into the [glossary](../glossary.md).
+- Every new term goes into the glossary, in both versions: [English](../glossary.md) and [Spanish](../glossary.es.md).
 - No number in the app or the video without a source.
 - Branches + PRs (see `CONTRIBUTING.md`). The tests (`npm test`) must pass.
 - Everything in the repo is in English; the Spanish team guides live in [`../team-guides-es/`](../team-guides-es/).
