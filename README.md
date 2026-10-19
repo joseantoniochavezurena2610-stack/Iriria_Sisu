@@ -23,7 +23,7 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 | Document | What for |
 |---|---|
 | [`docs/team-guides-es/`](docs/team-guides-es/) | **Team guides (Spanish PDFs):** how the repo is organised, what to read, and how to run the app |
-| [`docs/glossary.md`](docs/glossary.md) | **Glossary of technical terms** (with the Spanish term for each) — everyone should read it |
+| [`docs/glossary.md`](docs/glossary.md) · [`docs/glossary.es.md`](docs/glossary.es.md) | **Glossary of technical terms**, in English and in Spanish — everyone should read it |
 | [`docs/decisions.md`](docs/decisions.md) | What we decided and why |
 | [`docs/plan.md`](docs/plan.md) | Week-by-week plan until the event and the 48 hours |
 | [`docs/architecture.md`](docs/architecture.md) | How the web app is built, how to publish it, and the **domain** |
