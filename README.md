@@ -22,6 +22,7 @@ Detalle: [`docs/solucion.md`](docs/solucion.md) · Decisiones: [`docs/decisiones
 ## 📚 Documentación
 | Documento | Para qué |
 |---|---|
+| [`docs/Guia_repositorio_Iriria_Sisu.pdf`](docs/Guia_repositorio_Iriria_Sisu.pdf) | **Empiecen aquí:** guía en PDF de cómo está organizado el repo y qué leer |
 | [`docs/glosario.md`](docs/glosario.md) | **Diccionario de términos técnicos** — léanlo todos |
 | [`docs/decisiones.md`](docs/decisiones.md) | Qué decidimos y por qué |
 | [`docs/plan.md`](docs/plan.md) | Plan semana a semana hasta el evento y las 48 h |
