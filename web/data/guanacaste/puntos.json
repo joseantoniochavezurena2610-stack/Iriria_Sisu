@@ -1,0 +1,17 @@
+{
+  "region": "Guanacaste, Costa Rica",
+  "nota": "Un punto por cabecera de cantón (coordenadas aproximadas). NASA POWER trabaja en una malla de decenas de km, así que varios cantones pueden caer en la misma celda y compartir los mismos datos.",
+  "puntos": [
+    {"id": "la-cruz",   "nombre": "La Cruz",                 "lat": 11.072, "lon": -85.630},
+    {"id": "liberia",   "nombre": "Liberia",                 "lat": 10.635, "lon": -85.437},
+    {"id": "bagaces",   "nombre": "Bagaces",                 "lat": 10.531, "lon": -85.254},
+    {"id": "tilaran",   "nombre": "Tilarán",                 "lat": 10.469, "lon": -84.968},
+    {"id": "carrillo",  "nombre": "Carrillo (Filadelfia)",   "lat": 10.448, "lon": -85.555},
+    {"id": "canas",     "nombre": "Cañas",                   "lat": 10.429, "lon": -85.093},
+    {"id": "abangares", "nombre": "Abangares (Las Juntas)",  "lat": 10.276, "lon": -84.957},
+    {"id": "santa-cruz","nombre": "Santa Cruz",              "lat": 10.261, "lon": -85.585},
+    {"id": "nicoya",    "nombre": "Nicoya",                  "lat": 10.148, "lon": -85.452},
+    {"id": "hojancha",  "nombre": "Hojancha",                "lat": 10.059, "lon": -85.418},
+    {"id": "nandayure", "nombre": "Nandayure (Carmona)",     "lat": 10.009, "lon": -85.258}
+  ]
+}
