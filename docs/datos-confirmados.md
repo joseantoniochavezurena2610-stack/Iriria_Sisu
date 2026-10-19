@@ -1,5 +1,7 @@
 # Datos confirmados — hoja rápida
 
+> **Nota (18-oct-2026):** región piloto final = Guanacaste; app 100 % web; el modelo solo usa datos de 2021 en adelante. Los datos anteriores (p. ej. El Niño 2014-16) son contexto histórico. Ver [`decisiones.md`](decisiones.md).
+
 Solo datos verificados con fuente (revisado 18-oct-2026). Se pueden usar en el pitch, el submission y la app.
 Lo que todavía no tiene fuente está en [`investigacion/resumen-verificado.md`](investigacion/resumen-verificado.md) marcado con ❓. **Esos datos no se usan.**
 
