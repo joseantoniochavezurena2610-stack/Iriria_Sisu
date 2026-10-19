@@ -28,10 +28,10 @@ npm test                                      # engine tests
 python3 scripts/catalog_to_json.py            # if you changed the catalog CSV (also commit web/data/crops.json)
 python3 -m http.server 8000 --directory web   # check the website at http://localhost:8000
 ```
-- New technical terms → `docs/glossary.md`.
+- New technical terms → `docs/glossary.md` **and** `docs/glossary.es.md` (keep both versions in sync).
 - New decisions → `docs/decisions.md`.
 - Never commit passwords or keys (Earthdata goes in GitHub *Secrets*).
-- Everything in the repository is written in **English**. The only exception is the Spanish team guides in `docs/team-guides-es/`.
+- Everything in the repository is written in **English**. The only exceptions are the Spanish team guides in `docs/team-guides-es/` and the Spanish glossary `docs/glossary.es.md`.
 
 ## Commit message convention
 - `feat:` new functionality
