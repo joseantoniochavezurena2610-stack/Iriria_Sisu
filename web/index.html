@@ -1,174 +1,174 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iriria Sìsù — Rotaciones para Guanacaste</title>
-<meta name="description" content="Compare planes de rotación de cultivos a 3 años para su finca en Guanacaste, con datos de la NASA y lo que usted sabe de su suelo.">
+<title>Iriria Sìsù — Crop rotations for Guanacaste</title>
+<meta name="description" content="Compare 3-year crop-rotation plans for your farm in Guanacaste, Costa Rica, using NASA data and what you know about your soil.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%231d7044'/%3E%3Cpath d='M16 25V12M16 16c-4 0-7-3-7-7 4 0 7 3 7 7zm0 2c4 0 7-3 7-7-4 0-7 3-7 7z' stroke='%23fff' stroke-width='2' fill='none'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin>
-<link rel="stylesheet" href="css/estilos.css">
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<a class="saltar" href="#contenido">Saltar al contenido</a>
+<a class="skip" href="#content">Skip to content</a>
 <div class="wrap">
   <header class="head">
-    <span class="eyebrow">NASA Space Apps 2026 · Cambio de rumbo</span>
+    <span class="eyebrow">NASA Space Apps 2026 · Change of Course</span>
     <h1>Iriria Sìsù</h1>
-    <p class="lede">Compare planes de rotación a 3 años para su finca en Guanacaste. Usamos lluvia, temperatura y humedad de suelo de la NASA desde 2021, y lo que usted sabe de su terreno. La decisión siempre es suya.</p>
+    <p class="lede">Compare 3-year crop-rotation plans for your farm in Guanacaste, Costa Rica. We use NASA rainfall, temperature and soil-moisture data since 2021, plus what you know about your land. The decision is always yours.</p>
   </header>
 
-  <nav class="tabs" role="tablist" aria-label="Secciones">
-    <button role="tab" data-tab="herramienta" aria-selected="true">Herramienta</button>
-    <button role="tab" data-tab="como" aria-selected="false">Cómo funciona</button>
-    <button role="tab" data-tab="datos" aria-selected="false">Datos y fuentes</button>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" data-tab="tool" aria-selected="true">Tool</button>
+    <button role="tab" data-tab="how" aria-selected="false">How it works</button>
+    <button role="tab" data-tab="data" aria-selected="false">Data and sources</button>
   </nav>
 
-  <main id="contenido">
-  <!-- ===================== HERRAMIENTA ===================== -->
-  <section id="p-herramienta" role="tabpanel" class="tool">
+  <main id="content">
+  <!-- ===================== TOOL ===================== -->
+  <section id="p-tool" role="tabpanel" class="tool">
     <form id="form" class="panel" autocomplete="off" onsubmit="return false">
       <fieldset>
-        <legend>1 · ¿Dónde está su finca?</legend>
-        <label>Cantón
+        <legend>1 · Where is your farm?</legend>
+        <label>Canton
           <select id="canton"></select>
         </label>
-        <div id="mapa" class="mapa" aria-label="Mapa de Guanacaste: toque su cantón"></div>
-        <button type="button" class="btn sec" id="ubicacion">Usar mi ubicación</button>
-        <p class="note" id="ubicmsg" aria-live="polite"></p>
+        <div id="map" class="map" aria-label="Map of Guanacaste: tap your canton"></div>
+        <button type="button" class="btn sec" id="locate">Use my location</button>
+        <p class="note" id="locmsg" aria-live="polite"></p>
       </fieldset>
 
       <fieldset>
-        <legend>2 · ¿Qué siembra hoy?</legend>
-        <label>Cultivo principal
-          <select id="actual"></select>
+        <legend>2 · What do you plant today?</legend>
+        <label>Main crop
+          <select id="current"></select>
         </label>
-        <label>¿Tiene riego?
-          <select id="riego">
-            <option value="no">No, solo lluvia</option>
-            <option value="limitado">Un poco (pozo, reservorio pequeño)</option>
-            <option value="completo">Sí, riego suficiente</option>
+        <label>Do you have irrigation?
+          <select id="irrigation">
+            <option value="none">No, rain only</option>
+            <option value="limited">A little (well, small reservoir)</option>
+            <option value="full">Yes, enough irrigation</option>
           </select>
         </label>
       </fieldset>
 
       <fieldset>
-        <legend>3 · Su suelo</legend>
-        <label>Textura
-          <select id="textura">
-            <option value="franco">Franco (ni muy suelto ni muy pegajoso)</option>
-            <option value="arenoso">Arenoso (suelto, no hace bola)</option>
-            <option value="arcilloso">Arcilloso (pegajoso, hace cinta larga)</option>
+        <legend>3 · Your soil</legend>
+        <label>Texture
+          <select id="texture">
+            <option value="loam">Loam (neither loose nor sticky)</option>
+            <option value="sandy">Sandy (loose, does not form a ball)</option>
+            <option value="clay">Clay (sticky, forms a long ribbon)</option>
           </select>
         </label>
-        <details class="ayuda"><summary>¿Cómo sé la textura?</summary>
-          <div><p>Prueba de la cinta: moje un puño de tierra y apriételo entre el pulgar y el índice. Si no forma cinta, es <b>arenoso</b>. Si forma una cinta corta que se quiebra (menos de 2,5 cm), es <b>franco</b>. Si forma una cinta larga y brillante, es <b>arcilloso</b>.</p></div>
+        <details class="help"><summary>How do I know my texture?</summary>
+          <div><p>Ribbon test: wet a handful of soil and squeeze it between your thumb and index finger. If it does not form a ribbon, it is <b>sandy</b>. If it forms a short ribbon that breaks (less than 2.5 cm), it is <b>loam</b>. If it forms a long, shiny ribbon, it is <b>clay</b>.</p></div>
         </details>
         <div class="row2">
-          <label>pH del suelo
+          <label>Soil pH
             <input type="number" id="ph" min="3.5" max="9.5" step="0.1" value="6.0" inputmode="decimal">
           </label>
-          <label class="check"><input type="checkbox" id="phno"> No sé mi pH</label>
+          <label class="check"><input type="checkbox" id="phunknown"> I don't know my pH</label>
         </div>
         <p class="note" id="phnote"></p>
         <div class="row2">
-          <label>Terreno
-            <select id="pendiente">
-              <option value="plana">Plano</option>
-              <option value="media">Algo inclinado</option>
-              <option value="fuerte">Muy inclinado</option>
+          <label>Land
+            <select id="slope">
+              <option value="flat">Flat</option>
+              <option value="moderate">Somewhat sloped</option>
+              <option value="steep">Very steep</option>
             </select>
           </label>
-          <label>Materia orgánica
-            <select id="mo">
-              <option value="">No sé</option>
-              <option value="baja">Baja (tierra clara)</option>
-              <option value="media">Media</option>
-              <option value="alta">Alta (tierra oscura)</option>
+          <label>Organic matter
+            <select id="om">
+              <option value="">I don't know</option>
+              <option value="low">Low (light-coloured soil)</option>
+              <option value="medium">Medium</option>
+              <option value="high">High (dark soil)</option>
             </select>
           </label>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>4 · ¿Qué le importa más?</legend>
-        <label class="slider">Cuidar el suelo <output id="o-suelo">3</output><input type="range" id="suelo" min="0" max="5" value="3"></label>
-        <label class="slider">Ahorrar agua <output id="o-agua">3</output><input type="range" id="agua" min="0" max="5" value="3"></label>
-        <label class="slider">Bajar el riesgo de perder la cosecha <output id="o-riesgo">4</output><input type="range" id="riesgo" min="0" max="5" value="4"></label>
-        <label class="slider">Ganar más <output id="o-ingreso">3</output><input type="range" id="ingreso" min="0" max="5" value="3"></label>
-        <label>¿Cuánto ingreso podría dejar de ganar como máximo, comparado con lo de hoy?
-          <select id="perdida">
-            <option value="">No quiero poner límite</option>
-            <option value="10">Hasta 10 %</option>
-            <option value="25">Hasta 25 %</option>
-            <option value="50">Hasta 50 %</option>
+        <legend>4 · What matters most to you?</legend>
+        <label class="slider">Take care of the soil <output id="o-soil">3</output><input type="range" id="soil" min="0" max="5" value="3"></label>
+        <label class="slider">Save water <output id="o-water">3</output><input type="range" id="water" min="0" max="5" value="3"></label>
+        <label class="slider">Lower the risk of losing the harvest <output id="o-risk">4</output><input type="range" id="risk" min="0" max="5" value="4"></label>
+        <label class="slider">Earn more <output id="o-income">3</output><input type="range" id="income" min="0" max="5" value="3"></label>
+        <label>At most, how much income could you give up compared with today?
+          <select id="maxloss">
+            <option value="">No limit</option>
+            <option value="10">Up to 10 %</option>
+            <option value="25">Up to 25 %</option>
+            <option value="50">Up to 50 %</option>
           </select>
         </label>
       </fieldset>
     </form>
 
     <div class="results" aria-live="polite">
-      <div class="escenario" role="radiogroup" aria-label="Escenario de clima">
-        <span class="eyebrow">¿Con qué clima comparamos?</span>
-        <div class="seg" id="escenario">
-          <button type="button" data-esc="pronostico" aria-pressed="true">Pronóstico actual</button>
-          <button type="button" data-esc="normal" aria-pressed="false">Año normal</button>
-          <button type="button" data-esc="el_nino" aria-pressed="false">Año El Niño</button>
-          <button type="button" data-esc="peor" aria-pressed="false">Peor año visto</button>
+      <div class="scenario" role="radiogroup" aria-label="Climate scenario">
+        <span class="eyebrow">Which climate do we compare against?</span>
+        <div class="seg" id="scenario">
+          <button type="button" data-sc="forecast" aria-pressed="true">Current forecast</button>
+          <button type="button" data-sc="normal" aria-pressed="false">Normal year</button>
+          <button type="button" data-sc="el_nino" aria-pressed="false">El Niño year</button>
+          <button type="button" data-sc="worst" aria-pressed="false">Worst year seen</button>
         </div>
-        <p class="note" id="escnote"></p>
+        <p class="note" id="scnote"></p>
       </div>
-      <p id="estado" class="flag">Cargando datos…</p>
+      <p id="status" class="flag">Loading data…</p>
       <div>
-        <h2 id="climtitle">Clima de su cantón</h2>
+        <h2 id="climtitle">Climate of your canton</h2>
         <div class="chartbox" id="chart"></div>
-        <div class="legend"><span><i style="background:var(--rain)"></i>Lluvia, años sin El Niño</span><span><i style="background:var(--rain-nino)"></i>Lluvia, años El Niño</span><span><i style="background:var(--et)"></i>Agua que pide la atmósfera (ET0)</span></div>
+        <div class="legend"><span><i style="background:var(--rain)"></i>Rainfall, years without El Niño</span><span><i style="background:var(--rain-nino)"></i>Rainfall, El Niño years</span><span><i style="background:var(--et)"></i>Water demanded by the air (ET0)</span></div>
       </div>
       <div class="legend" id="famlegend"></div>
-      <ul class="avisos" id="avisos"></ul>
-      <div id="planes"></div>
-      <div class="acciones">
-        <button type="button" class="btn" id="imprimir">Imprimir o guardar en PDF</button>
-        <button type="button" class="btn sec" id="compartir">Copiar enlace de este plan</button>
-        <span class="note" id="compmsg" aria-live="polite"></span>
+      <ul class="notices" id="notices"></ul>
+      <div id="plans"></div>
+      <div class="actions">
+        <button type="button" class="btn" id="print">Print or save as PDF</button>
+        <button type="button" class="btn sec" id="share">Copy link to this plan</button>
+        <span class="note" id="sharemsg" aria-live="polite"></span>
       </div>
     </div>
   </section>
 
-  <!-- ===================== CÓMO FUNCIONA ===================== -->
-  <section id="p-como" role="tabpanel" hidden class="prosa">
-    <h2>Cómo funciona</h2>
-    <ol class="pasos">
-      <li><b>Clima real de su cantón.</b> Descargamos de NASA POWER la lluvia, la temperatura y la humedad del suelo de cada día desde enero de 2021, y calculamos cuánta agua pide la atmósfera (ET0, método de Hargreaves de la FAO).</li>
-      <li><b>Separamos los años.</b> Con el índice oficial de NOAA marcamos qué meses fueron El Niño, La Niña o neutros. Así comparamos un año normal con uno El Niño usando lo que realmente llovió, no un porcentaje inventado.</li>
-      <li><b>Probamos cada cultivo en cada época.</b> Seca (ene–abr), primera (may–ago, incluye la canícula) y postrera (sep–dic). Revisamos si alcanza el agua (balance tipo FAO-56), si la temperatura le sirve y si su pH lo permite.</li>
-      <li><b>Armamos miles de rotaciones</b> de 3 años y descartamos las que no tienen sentido (pH fuera de rango, cultivo fuera de época, repetir la misma familia).</li>
-      <li><b>Puntuamos de 0 a 100</b> en cuatro cosas: <b>Suelo</b> (nitrógeno, cobertura, cambiar de familia), <b>Agua</b> (cuánto riego o déficit queda), <b>Riesgo</b> (en cuántos años observados el agua no alcanzó) e <b>Ingreso</b>.</li>
-      <li><b>Usted decide el peso</b> de cada cosa. Le mostramos los 3 mejores planes y cómo le iría a cada uno en un año normal y en uno El Niño. Si aguanta los dos, lo marcamos como <b>plan robusto</b>.</li>
+  <!-- ===================== HOW IT WORKS ===================== -->
+  <section id="p-how" role="tabpanel" hidden class="prose">
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li><b>Real climate for your canton.</b> We download daily rainfall, temperature and soil moisture from NASA POWER since January 2021, and compute how much water the air demands (ET0, FAO's Hargreaves method).</li>
+      <li><b>We separate the years.</b> Using NOAA's official index we label each month as El Niño, La Niña or neutral. That lets us compare a normal year with an El Niño year using the rain that actually fell, not an invented percentage.</li>
+      <li><b>We test every crop in every season.</b> Dry (Jan–Apr), Primera (May–Aug, includes the mid-summer drought or <i>canícula</i>) and Postrera (Sep–Dec). We check whether there is enough water (FAO-56-style balance), whether the temperature suits the crop and whether your pH allows it.</li>
+      <li><b>We build thousands of 3-year rotations</b> and discard those that make no sense (pH out of range, crop out of season, same family repeated).</li>
+      <li><b>We score from 0 to 100</b> on four things: <b>Soil</b> (nitrogen, ground cover, changing families), <b>Water</b> (how much irrigation or deficit remains), <b>Risk</b> (in how many observed years water fell short) and <b>Income</b>.</li>
+      <li><b>You decide the weight</b> of each one. We show the 3 best plans and how each would do in a normal year and in an El Niño year. If it holds up in both, we label it a <b>robust plan</b>.</li>
     </ol>
-    <h3>Lo que no prometemos</h3>
+    <h3>What we do not promise</h3>
     <ul>
-      <li>No predecimos su cosecha exacta: comparamos planes entre sí.</li>
-      <li>Los datos de satélite y de modelo son <b>regionales</b> (celdas de decenas de km). Lo que usted sabe de su finca (pH, textura, riego) es lo que ajusta el resultado a su parcela.</li>
-      <li>Los rangos de cada cultivo vienen de la FAO y de la literatura; el equipo los está verificando con fuentes de Costa Rica.</li>
-      <li>El ingreso todavía es <b>relativo</b> (1 a 5) hasta tener precios y costos verificados.</li>
+      <li>We do not predict your exact harvest: we compare plans against each other.</li>
+      <li>Satellite and model data are <b>regional</b> (grid cells tens of km wide). What you know about your farm (pH, texture, irrigation) is what tailors the result to your plot.</li>
+      <li>Crop ranges come from FAO and the literature; the team is checking them against Costa Rican sources.</li>
+      <li>Income is still <b>relative</b> (1 to 5) until prices and costs are verified.</li>
     </ul>
   </section>
 
-  <!-- ===================== DATOS ===================== -->
-  <section id="p-datos" role="tabpanel" hidden class="prosa">
-    <h2>Datos y fuentes</h2>
-    <div id="datosinfo"></div>
-    <h3>Catálogo de cultivos</h3>
-    <p class="note">Valores iniciales. La columna "Verificado" muestra cuáles ya revisó el líder científico.</p>
-    <div class="tabla"><table id="tablacultivos"></table></div>
+  <!-- ===================== DATA ===================== -->
+  <section id="p-data" role="tabpanel" hidden class="prose">
+    <h2>Data and sources</h2>
+    <div id="datainfo"></div>
+    <h3>Crop catalog</h3>
+    <p class="note">Initial values. The "Verified" column shows which ones the science lead has already reviewed.</p>
+    <div class="table"><table id="croptable"></table></div>
   </section>
   </main>
 
-  <footer class="pie">
-    <p>Iriria Sìsù · equipo costarricense en NASA International Space Apps Challenge 2026. Datos: NASA POWER (NASA Langley), índice ENSO de NOAA CPC, FAO. Código abierto (MIT) en <a href="https://github.com/joseantoniochavezurena2610-stack/iriria_sisu">GitHub</a>. Esta herramienta no reemplaza la asesoría de un agrónomo.</p>
+  <footer class="foot">
+    <p>Iriria Sìsù · Costa Rican team at the NASA International Space Apps Challenge 2026. Data: NASA POWER (NASA Langley), NOAA CPC ENSO index, FAO. Open source (MIT) on <a href="https://github.com/joseantoniochavezurena2610-stack/iriria_sisu">GitHub</a>. This tool does not replace advice from an agronomist.</p>
   </footer>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin defer></script>

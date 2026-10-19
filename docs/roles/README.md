@@ -1,31 +1,32 @@
-# Planes por rol — Iriria Sìsù
+# Plans per role — Iriria Sìsù
 
-Entregables del equipo: **video (≤ 30 s)** y **prototipo web**. Cada rol tiene tareas antes del evento (hasta el 13-nov), durante las 48 h y su entregable.
+Team deliverables: **video (≤ 30 s)** and **web prototype**. Each role has tasks before the event (until 13 Nov), during the 48 hours, and its deliverable.
 
-| Rol | Persona | Plan |
+| Role | Person | Plan |
 |---|---|---|
-| Líder científico | Jose Antonio Chávez Ureña | [lider-cientifico.md](lider-cientifico.md) |
-| Datos, motor y dominio | José Pablo Ramírez Fernández | [datos-y-motor.md](datos-y-motor.md) |
-| Integración, despliegue y seguridad | Juan Diego Chávez Ureña | [integracion-seguridad.md](integracion-seguridad.md) |
-| Economía, impacto y operaciones | Angeli Abarca Ureña | [economia-operaciones.md](economia-operaciones.md) |
-| Diseño, UX y video | Nesly Mejía Jiménez | [diseno-video.md](diseno-video.md) |
-| Campo, validación y sensor opcional | Britzie Yarith García Arias | [campo-y-sensores.md](campo-y-sensores.md) |
+| Science lead | Jose Antonio Chávez Ureña | [science-lead.md](science-lead.md) |
+| Data, engine and domain | José Pablo Ramírez Fernández | [data-and-engine.md](data-and-engine.md) |
+| Integration, deployment and security | Juan Diego Chávez Ureña | [integration-security.md](integration-security.md) |
+| Economics, impact and operations | Angeli Abarca Ureña | [economics-operations.md](economics-operations.md) |
+| Design, UX and video | Nesly Mejía Jiménez | [design-video.md](design-video.md) |
+| Field work, validation and optional sensor | Britzie Yarith García Arias | [field-and-sensors.md](field-and-sensors.md) |
 
-## Cómo se conectan
+## How they connect
 ```
-Ciencia ──catálogo y reglas──▶ Datos y motor ──JSON + motor.js──▶ Web (Diseño + Integración)
-   ▲                                ▲                                   │
-Economía ──precios y costos─────────┘                                   ▼
-Campo ──pruebas con agricultores / extensionistas──────────────▶  Video + dominio público
+Science ──catalog and rules──▶ Data & engine ──JSON + engine.js──▶ Website (Design + Integration)
+   ▲                                 ▲                                     │
+Economics ──prices and costs─────────┘                                     ▼
+Field work ──tests with farmers / extension agents────────────▶  Video + public domain
 ```
 
-## Dependencias críticas
-1. **Catálogo verificado** (Ciencia + Economía) → fecha límite **8-nov**.
-2. **Datos reales en `web/data/`** (workflow `datos`) → antes del **25-oct**.
-3. **Dominio + HTTPS** (José Pablo) → antes del **1-nov**.
-4. **Freeze** de fórmulas y catálogo → **13-nov**.
+## Critical dependencies
+1. **Verified catalog** (Science + Economics) → deadline **8 Nov**.
+2. **Real data in `web/data/`** (`data` workflow) → ✅ done; refreshed every Monday.
+3. **Domain + HTTPS** (José Pablo) → before **1 Nov**.
+4. **Freeze** of formulas and catalog → **13 Nov**.
 
-## Reglas comunes
-- Todo término nuevo va al [glosario](../glosario.md).
-- Ningún número en la app o el video sin fuente.
-- Ramas + PR (ver `CONTRIBUTING.md`). Las pruebas (`npm test`) deben pasar.
+## Common rules
+- Every new term goes into the [glossary](../glossary.md).
+- No number in the app or the video without a source.
+- Branches + PRs (see `CONTRIBUTING.md`). The tests (`npm test`) must pass.
+- Everything in the repo is in English; the Spanish team guides live in [`../team-guides-es/`](../team-guides-es/).

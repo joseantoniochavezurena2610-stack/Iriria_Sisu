@@ -1,0 +1,95 @@
+{
+ "source": "SoilGrids 2.0 (ISRIC), WCS service, 0-30 cm mean — MODELLED values, not measured",
+ "license": "CC BY 4.0",
+ "generated": "2026-10-19",
+ "points": {
+  "la-cruz": {
+   "phh2o": 6.18,
+   "clay": 38.45,
+   "sand": 29.63,
+   "silt": 32.18,
+   "soc": 31.08,
+   "texture_class": "clay"
+  },
+  "liberia": {
+   "phh2o": null,
+   "clay": null,
+   "sand": null,
+   "silt": null,
+   "soc": null,
+   "texture_class": null
+  },
+  "bagaces": {
+   "phh2o": 6.18,
+   "clay": 36.15,
+   "sand": 32.27,
+   "silt": 31.45,
+   "soc": 17.12,
+   "texture_class": "clay"
+  },
+  "tilaran": {
+   "phh2o": 6.13,
+   "clay": 39.32,
+   "sand": 33.32,
+   "silt": 27.05,
+   "soc": 25.5,
+   "texture_class": "clay"
+  },
+  "carrillo": {
+   "phh2o": 6.2,
+   "clay": 32.07,
+   "sand": 29.15,
+   "silt": 38.55,
+   "soc": 19.62,
+   "texture_class": "loam"
+  },
+  "canas": {
+   "phh2o": null,
+   "clay": null,
+   "sand": null,
+   "silt": null,
+   "soc": null,
+   "texture_class": null
+  },
+  "abangares": {
+   "phh2o": 5.72,
+   "clay": 39.4,
+   "sand": 32.35,
+   "silt": 28.37,
+   "soc": 24.53,
+   "texture_class": "clay"
+  },
+  "santa-cruz": {
+   "phh2o": 6.1,
+   "clay": 32.2,
+   "sand": 32.5,
+   "silt": 35.37,
+   "soc": 23.5,
+   "texture_class": "loam"
+  },
+  "nicoya": {
+   "phh2o": 6.0,
+   "clay": 37.27,
+   "sand": 32.35,
+   "silt": 30.4,
+   "soc": 24.1,
+   "texture_class": "clay"
+  },
+  "hojancha": {
+   "phh2o": 6.03,
+   "clay": 37.87,
+   "sand": 31.5,
+   "silt": 30.77,
+   "soc": 25.28,
+   "texture_class": "clay"
+  },
+  "nandayure": {
+   "phh2o": 5.73,
+   "clay": 37.38,
+   "sand": 32.1,
+   "silt": 30.68,
+   "soc": 21.57,
+   "texture_class": "clay"
+  }
+ }
+}

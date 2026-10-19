@@ -1,0 +1,71 @@
+# Downloads the NASA data for Guanacaste and stores it in web/data/ (the small JSON files are versioned).
+# Runs automatically: on pushes to main that touch scripts/ or the catalog, every Monday, or by hand from the Actions tab.
+name: data
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/**"
+      - "data/catalog/**"
+      - "web/data/guanacaste/points.json"
+      - ".github/workflows/data.yml"
+  schedule:
+    - cron: "17 12 * * 1"   # Mondays 6:17 a.m. Costa Rica time
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Crop catalog → JSON
+        run: python scripts/catalog_to_json.py
+
+      - name: NASA POWER (2021 → today) + NOAA ENSO index
+        run: python scripts/fetch_data.py
+
+      - name: SoilGrids (reference soil, experimental)
+        continue-on-error: true
+        run: |
+          pip install --quiet rasterio numpy
+          python scripts/fetch_soilgrids.py
+
+      - name: GPM IMERG (only if Earthdata credentials exist)
+        continue-on-error: true
+        env:
+          EARTHDATA_USERNAME: ${{ secrets.EARTHDATA_USERNAME }}
+          EARTHDATA_PASSWORD: ${{ secrets.EARTHDATA_PASSWORD }}
+        run: |
+          if [ -n "$EARTHDATA_USERNAME" ]; then
+            pip install --quiet earthaccess xarray h5netcdf numpy
+            python scripts/fetch_imerg.py
+          else
+            echo "No EARTHDATA_USERNAME / EARTHDATA_PASSWORD secrets: skipping IMERG."
+          fi
+
+      - name: Commit the data to the repo
+        run: |
+          git config user.name "iriria-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/data
+          if git diff --cached --quiet; then
+            echo "No data changes."
+          else
+            git commit -m "data: automatic NASA data update ($(date -u +%Y-%m-%d))"
+            git pull --rebase origin main
+            git push
+          fi
