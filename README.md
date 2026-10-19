@@ -64,7 +64,7 @@ archivo/           prototipo anterior (referencia)
 | Jose Antonio Chávez Ureña | Líder científico |
 | José Pablo Ramírez Fernández | Datos, motor y dominio |
 | Juan Diego Chávez Ureña | Integración, despliegue y seguridad |
-| Angeli Abarca Ureña | Economía, impacto y operaciones |
+| Angelli Abarca Ureña | Economía, impacto y operaciones |
 | Nesly Mejía Jiménez | Diseño, UX y video |
 | Britzie Yarith García Arias | Campo, validación y sensor opcional |
 
