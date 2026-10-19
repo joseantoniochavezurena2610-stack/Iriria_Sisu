@@ -3,7 +3,7 @@
  "umbral": 0.5,
  "automatico": true,
  "generado": "2026-10-19",
- "regla": "≥ 5 temporadas trimestrales seguidas sobre +0,5 °C (El Niño) o bajo −0,5 °C (La Niña)",
+ "regla": "≥ 5 temporadas trimestrales seguidas sobre +0,5 °C (El Niño) o bajo −0,5 °C (La Niña); un episodio en curso con ≥ 3 temporadas se marca igual (en_curso) y los meses aún no publicados heredan su fase (estimado)",
  "meses": [
   {
    "anio": 2021,
@@ -399,19 +399,36 @@
    "anio": 2026,
    "mes": 6,
    "anom": 0.97,
-   "fase": "neutral"
+   "fase": "el_nino",
+   "en_curso": true
   },
   {
    "anio": 2026,
    "mes": 7,
    "anom": 1.36,
-   "fase": "neutral"
+   "fase": "el_nino",
+   "en_curso": true
   },
   {
    "anio": 2026,
    "mes": 8,
    "anom": 1.69,
-   "fase": "neutral"
+   "fase": "el_nino",
+   "en_curso": true
+  },
+  {
+   "anio": 2026,
+   "mes": 9,
+   "anom": null,
+   "fase": "el_nino",
+   "estimado": true
+  },
+  {
+   "anio": 2026,
+   "mes": 10,
+   "anom": null,
+   "fase": "el_nino",
+   "estimado": true
   }
  ]
 }

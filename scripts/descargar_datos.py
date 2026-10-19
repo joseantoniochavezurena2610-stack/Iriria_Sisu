@@ -189,22 +189,42 @@ def parsear_indice(texto: str) -> list[dict]:
     return filas
 
 
-def clasificar_enso(filas: list[dict], umbral: float = 0.5) -> list[dict]:
-    """Regla NOAA: El Niño/La Niña si el índice supera el umbral en ≥ 5 temporadas seguidas."""
+def clasificar_enso(filas: list[dict], umbral: float = 0.5, hoy: date | None = None) -> list[dict]:
+    """Regla NOAA: El Niño/La Niña si el índice supera el umbral en ≥ 5 temporadas seguidas.
+
+    Un episodio EN CURSO al final de la serie todavía no puede llegar a 5 temporadas;
+    si ya lleva ≥ 3 y sigue sobre el umbral, se marca igual (con en_curso=True), como
+    hace NOAA al declarar "condiciones de El Niño". Los meses recientes que el índice
+    aún no publica (latencia de ~1-2 meses) heredan la fase del episodio en curso,
+    marcados como estimado=True.
+    """
     filas = sorted(filas, key=lambda f: (f["anio"], f["mes"]))
     signo = [1 if f["anom"] >= umbral else -1 if f["anom"] <= -umbral else 0 for f in filas]
     fase = ["neutral"] * len(filas)
+    en_curso = [False] * len(filas)
     i = 0
     while i < len(filas):
         j = i
         while j < len(filas) and signo[j] == signo[i] and signo[i] != 0:
             j += 1
-        if j - i >= 5:
+        largo, al_final = j - i, j == len(filas)
+        if largo >= 5 or (al_final and largo >= 3):
             for k in range(i, j):
                 fase[k] = "el_nino" if signo[i] > 0 else "la_nina"
+                en_curso[k] = al_final and largo < 5
         i = max(j, i + 1)
-    return [{"anio": f["anio"], "mes": f["mes"], "anom": f["anom"], "fase": ph}
-            for f, ph in zip(filas, fase)]
+    salida = [{"anio": f["anio"], "mes": f["mes"], "anom": f["anom"], "fase": ph, **({"en_curso": True} if ec else {})}
+              for f, ph, ec in zip(filas, fase, en_curso)]
+    # Meses recientes sin índice publicado: heredan la fase vigente (máx. 3 meses).
+    if salida and salida[-1]["fase"] != "neutral":
+        hoy = hoy or datetime.now(timezone.utc).date()
+        a, m = salida[-1]["anio"], salida[-1]["mes"]
+        for _ in range(3):
+            a, m = (a + 1, 1) if m == 12 else (a, m + 1)
+            if (a, m) > (hoy.year, hoy.month):
+                break
+            salida.append({"anio": a, "mes": m, "anom": None, "fase": salida[-1]["fase"], "estimado": True})
+    return salida
 
 
 def actualizar_enso() -> None:
@@ -218,7 +238,7 @@ def actualizar_enso() -> None:
                 "fuente": f"NOAA CPC — {nombre} ({url})",
                 "umbral": 0.5, "automatico": True,
                 "generado": datetime.now(timezone.utc).date().isoformat(),
-                "regla": "≥ 5 temporadas trimestrales seguidas sobre +0,5 °C (El Niño) o bajo −0,5 °C (La Niña)",
+                "regla": "≥ 5 temporadas trimestrales seguidas sobre +0,5 °C (El Niño) o bajo −0,5 °C (La Niña); un episodio en curso con ≥ 3 temporadas se marca igual (en_curso) y los meses aún no publicados heredan su fase (estimado)",
                 "meses": meses,
             })
             print(f"ENSO actualizado con {nombre}: {len(meses)} meses")
@@ -265,10 +285,14 @@ def main() -> int:
         print(f"  {len(proc['meses'])} meses completos, último día {proc['ultimo_dia']}")
         time.sleep(2)  # ser amables con la API
 
-    # cantones que comparten celda de POWER
+    # Cantones que comparten celda meteorológica de POWER (MERRA-2: 0,5° lat × 0,625° lon).
+    # La API devuelve las coordenadas pedidas, no el centro de la celda, así que se calcula aquí.
     celdas: dict[str, list[str]] = {}
     for p in resumen["puntos"]:
-        celdas.setdefault(json.dumps(p["celda_power"]), []).append(p["nombre"])
+        pt = next(x for x in puntos if x["id"] == p["id"])
+        clave = f"{round(pt['lat'] / 0.5) * 0.5:.2f},{round(pt['lon'] / 0.625) * 0.625:.3f}"
+        p["celda_merra2"] = clave
+        celdas.setdefault(clave, []).append(p["nombre"])
     resumen["cantones_por_celda"] = [v for v in celdas.values()]
     escribir_json(DIR_REGION / "resumen.json", resumen)
 
