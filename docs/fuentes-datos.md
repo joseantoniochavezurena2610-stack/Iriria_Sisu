@@ -24,8 +24,10 @@
 - **Límite POWER:** máx. 20 parámetros por consulta de punto; datos diarios desde 1981.
 
 ## Limitaciones declaradas
-- **Escala:** POWER es una malla de decenas de km; varios cantones comparten celda (ver `web/data/guanacaste/resumen.json`, campo `cantones_por_celda`). Por eso los datos del agricultor (pH, textura, riego) son los que ajustan a la parcela.
+- **Escala:** POWER es una malla de decenas de km. Comprobado con los datos: los 11 cantones caen en **solo 5 celdas** (Liberia = Carrillo = Santa Cruz; Bagaces = Tilarán = Cañas = Abangares; Nicoya = Hojancha; La Cruz; Nandayure) y tienen series idénticas (`resumen.json`, `cantones_por_celda`). Por eso los datos del agricultor (pH, textura, riego) son los que ajustan a la parcela.
 - **Ventana corta (≈ 5,8 años):** solo 2 episodios El Niño (2023-24, débil en Guanacaste; 2026, fuerte). Los meses ene–may casi no tienen muestra El Niño → se rellenan con el promedio y se marca en el gráfico.
+- **ENSO en curso:** la regla oficial de NOAA necesita 5 temporadas; El Niño 2026 se marca desde junio como *en curso* y los meses que el índice aún no publica heredan la fase (*estimado*).
+- **Hallazgo a revisar (ciencia):** según POWER, el peor año (may–nov) de 2021-2025 es 2023, y en Nandayure la primera El Niño casi no se seca. Contrastar con IMERG y con estaciones del IMN.
 - **Latencia:** el último mes puede estar incompleto; los meses con menos de 25 días válidos no se usan.
 - **SoilGrids es modelado**, con pocas muestras de CR: solo referencia.
 - **MODIS** termina a fines de 2026 / inicios de 2027: no se usa.
