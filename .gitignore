@@ -1,4 +1,4 @@
-# --- Datos pesados (nunca subir datasets grandes al repo) ---
+# --- Heavy data (never commit large datasets) ---
 data/raw/
 data/*.csv
 data/*.nc
@@ -21,7 +21,7 @@ build/
 .env
 .env.local
 
-# --- Sistema / editor ---
+# --- System / editor ---
 .DS_Store
 .vscode/
 .idea/

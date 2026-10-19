@@ -1,64 +1,65 @@
 # Plan — Iriria Sìsù
 
-**Evento:** 14–15 de noviembre de 2026. **Entregables:** video (≤ 30 s, subtítulos en inglés) + prototipo web público.
-Decisiones vigentes: [`decisiones.md`](decisiones.md).
+**Event:** 14–15 November 2026. **Deliverables:** video (≤ 30 s, English subtitles) + public web prototype.
+Current decisions: [`decisions.md`](decisions.md).
 
-## Estado al 18-oct-2026
-- [x] Región piloto: Guanacaste (11 cantones)
-- [x] App web funcionando en `web/` (formulario, escenarios, 3 planes + lo de hoy, robustez, imprimir, compartir enlace)
-- [x] Motor de reglas en JavaScript con 12 pruebas automáticas
-- [x] Scripts y workflow para bajar NASA POWER (2021 → hoy) y el índice ENSO de NOAA
-- [x] Catálogo de 11 cultivos con valores iniciales (sin verificar)
-- [x] Glosario, arquitectura, reglas del motor y guion del video
-- [ ] Datos reales descargados (se generan solos al hacer merge a `main`; revisar la pestaña *Actions*)
+## Status on 18 Oct 2026
+- [x] Pilot region: Guanacaste (11 cantons)
+- [x] Web app working in `web/` (form, scenarios, 3 plans + today's, robustness, print, share link)
+- [x] Rule-based engine in JavaScript with 14 automated tests
+- [x] Scripts and workflow that download NASA POWER (2021 → today) and NOAA's ENSO index
+- [x] **Real data downloaded** for the 11 cantons (69 months each) + SoilGrids reference
+- [x] Crop catalog of 11 crops with initial values (not yet verified)
+- [x] Glossary, architecture, engine rules and video script
+- [x] Whole repository, app and v1 prototype in English; team guides in Spanish
 
-## Antes del evento
-### Semana 1 · 19–25 oct — datos y dominio
-- [ ] Revisar que el workflow `datos` corrió y que `web/data/guanacaste/clima_*.json` existen — **Juan Diego**
-- [ ] Comprar dominio y configurar DNS — **José Pablo** ([checklist](arquitectura.md#dominio))
-- [ ] Activar GitHub Pages (`PUBLICAR_PAGES=true`) — **Juan Diego**
-- [ ] Todos con cuenta Earthdata; guardar usuario/contraseña de una cuenta del equipo como *secrets* del repo — **José Pablo**
-- [ ] Leer el [glosario](glosario.md) completo — **todos**
-- [ ] Preguntar a los organizadores si se puede llegar con código previo — **Angeli**
+## Before the event
+### Week 1 · 19–25 Oct — data and domain
+- [ ] Check the weekly runs of the `data` workflow (Actions tab) — **Juan Diego**
+- [ ] Buy the domain and configure DNS — **José Pablo** ([checklist](architecture.md#domain))
+- [ ] Turn on GitHub Pages (`PUBLISH_PAGES=true`) — **Juan Diego**
+- [ ] Everyone with an Earthdata account; store a team account's username/password as repo *secrets* — **José Pablo**
+- [ ] Read the whole [glossary](glossary.md) — **everyone**
+- [ ] Ask the organisers whether we may arrive with pre-existing code — **Angeli**
 
-### Semana 2 · 26 oct – 1 nov — ciencia y economía
-- [ ] Verificar el catálogo cultivo por cultivo con fuente (`verificado_por`) — **Jose Antonio**
-- [ ] Precios (PIMA/CENADA) y costos de producción (MAG/INTA) para cada cultivo — **Angeli**
-- [ ] Comparar la lluvia de POWER con datos del IMN para Liberia y Nicoya (¿se parecen?) — **Jose Antonio + José Pablo**
-- [ ] Mockups finales y paleta; probar la app en 3 celulares distintos — **Nesly**
+### Week 2 · 26 Oct – 1 Nov — science and economics
+- [ ] Verify the catalog crop by crop with sources (`verified_by`) — **Jose Antonio**
+- [ ] Prices (PIMA/CENADA) and production costs (MAG/INTA) for every crop — **Angeli**
+- [ ] Compare POWER rainfall with IMN station data for Liberia and Nicoya — **Jose Antonio + José Pablo**
+- [ ] Final mockups and palette; test the app on 3 different phones — **Nesly**
 
-### Semana 3 · 2–8 nov — validación
-- [ ] Backtest 2026: ¿el motor desaconseja arroz sin riego en Nandayure para la primera 2026? — **Jose Antonio**
-- [ ] Análisis de sensibilidad ±20 % en Kc, umbrales y márgenes — **Jose Antonio + José Pablo**
-- [ ] Llevar la app a un extensionista del MAG/INTA o a un productor de Guanacaste — **Angeli + Britzie**
-- [ ] Eje Ingreso en colones (motor) — **José Pablo**
+### Week 3 · 2–8 Nov — validation
+- [ ] 2026 backtest: does the engine advise against rainfed rice in Nandayure for Primera 2026? — **Jose Antonio**
+- [ ] ±20 % sensitivity analysis on Kc, thresholds and margins — **Jose Antonio + José Pablo**
+- [ ] Take the app to a MAG/INTA extension agent or a Guanacaste grower — **Angeli + Britzie**
+- [ ] Income axis in colones (engine) — **José Pablo**
 
-### Semana 4 · 9–13 nov — congelar
-- [ ] Freeze del catálogo y las fórmulas (13-nov)
-- [ ] Storyboard del video aprobado — **Nesly**
-- [ ] Ensayo general: un compañero que no programó usa la app desde cero en el celular
+### Week 4 · 9–13 Nov — freeze
+- [ ] Freeze the catalog and the formulas (13 Nov)
+- [ ] Video storyboard approved — **Nesly**
+- [ ] Dress rehearsal: a teammate who did not code uses the app from scratch on a phone
 
-## Durante las 48 h
-| Hora | Hito |
+## During the 48 hours
+| Hour | Milestone |
 |---|---|
-| 0–3 | Confirmar reto, revisar reglas de código previo, ajustar lo que pidan los organizadores |
-| 3–20 | Mejoras pendientes (lista priorizada en Issues), datos frescos con el workflow |
-| 20–30 | Pulido de interfaz y textos; pruebas en celular |
-| 30 | **Freeze**: solo arreglos |
-| 30–40 | Grabar y editar el video con subtítulos en inglés |
-| 40–46 | Formulario de envío en inglés (resumen, datos NASA usados, uso de IA) |
-| 46–48 | Revisión final: enlace público sin contraseña, video público, *Submit for Judging* |
+| 0–3 | Confirm the challenge, review the pre-existing-code rules, adjust to what the organisers ask |
+| 3–20 | Pending improvements (prioritised list in Issues), fresh data from the workflow |
+| 20–30 | Interface and copy polish; phone testing |
+| 30 | **Freeze**: fixes only |
+| 30–40 | Record and edit the video with English subtitles |
+| 40–46 | Submission form in English (summary, NASA data used, AI use) |
+| 46–48 | Final check: public link with no password, public video, *Submit for Judging* |
 
 ## Roles
-| Persona | Rol principal | Plan |
+| Person | Main role | Plan |
 |---|---|---|
-| Juan Diego Chávez Ureña | Integración, despliegue y seguridad | [integracion-seguridad.md](roles/integracion-seguridad.md) |
-| Jose Antonio Chávez Ureña | Líder científico | [lider-cientifico.md](roles/lider-cientifico.md) |
-| José Pablo Ramírez Fernández | Datos, motor y dominio | [datos-y-motor.md](roles/datos-y-motor.md) |
-| Britzie Yarith García Arias | Campo, validación y sensor opcional | [campo-y-sensores.md](roles/campo-y-sensores.md) |
-| Angeli Abarca Ureña | Economía, impacto y operaciones | [economia-operaciones.md](roles/economia-operaciones.md) |
-| Nesly Mejía Jiménez | Diseño, UX y video | [diseno-video.md](roles/diseno-video.md) |
+| Juan Diego Chávez Ureña | Integration, deployment and security | [integration-security.md](roles/integration-security.md) |
+| Jose Antonio Chávez Ureña | Science lead | [science-lead.md](roles/science-lead.md) |
+| José Pablo Ramírez Fernández | Data, engine and domain | [data-and-engine.md](roles/data-and-engine.md) |
+| Britzie Yarith García Arias | Field work, validation and optional sensor | [field-and-sensors.md](roles/field-and-sensors.md) |
+| Angeli Abarca Ureña | Economics, impact and operations | [economics-operations.md](roles/economics-operations.md) |
+| Nesly Mejía Jiménez | Design, UX and video | [design-video.md](roles/design-video.md) |
 
-## Bloqueos / decisiones pendientes
-- ¿Se permite llegar con código previo? (preguntar a organizadores)
-- Nombre de dominio final
+## Blockers / pending decisions
+- May we arrive with pre-existing code? (ask the organisers)
+- Final domain name

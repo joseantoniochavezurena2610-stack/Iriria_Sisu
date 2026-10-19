@@ -1,77 +1,76 @@
 # Iriria Sìsù 🌱
 
-Proyecto para el **NASA International Space Apps Challenge 2026** (14–15 de noviembre de 2026).
-Reto: **Cambio de rumbo — Adaptando las granjas con datos de la NASA.** Región piloto: **Guanacaste, Costa Rica.**
+Project for the **NASA International Space Apps Challenge 2026** (14–15 November 2026).
+Challenge: **Change of Course — Adapting Farms with NASA Data.** Pilot region: **Guanacaste, Costa Rica.**
 
-> **Entregables:** 🎬 video de máx. 30 s (subtítulos en inglés) · 🌐 prototipo web público.
+> **Deliverables:** 🎬 a video of at most 30 s (English subtitles) · 🌐 a public web prototype.
 
-## El problema
-En el Pacífico Norte de Costa Rica, El Niño 2026-27 ya recortó cerca de un 37 % la lluvia (ene-ago 2026), los 11 cantones de Guanacaste están en alerta naranja y el IMN prevé efectos al menos hasta julio de 2027. Los productores de granos deciden qué sembrar sin una herramienta que una el clima que viene, el suelo de su finca y su economía.
+## The problem
+In Costa Rica's North Pacific, the 2026-27 El Niño has already cut rainfall by about 37 % (Jan–Aug 2026), all 11 cantons of Guanacaste are under an orange alert, and the national weather service (IMN) expects effects at least until July 2027. Grain growers decide what to plant without a tool that brings together the coming climate, the soil of their farm and their finances.
 
-## La solución
-Una **página web** donde el agricultor (o el extensionista que lo visita) indica su cantón, qué siembra, si tiene riego, cómo es su suelo y qué le importa más. La app usa la **lluvia y temperatura reales de NASA POWER desde 2021** y el índice ENSO de NOAA para comparar **3 planes de rotación a 3 años** contra "seguir sembrando lo de hoy", mostrando el efecto en **suelo, agua, riesgo e ingreso** en un año normal y en un año El Niño. **No necesita sensores**: todo sale de lo que el agricultor sabe. La decisión siempre es suya.
+## The solution
+A **web page** where the farmer (or the extension agent visiting them) enters their canton, what they plant, whether they have irrigation, what their soil is like and what matters most to them. The app uses **real NASA POWER rainfall and temperature since 2021** and NOAA's ENSO index to compare **3 three-year crop-rotation plans** against "keep planting what you plant today", showing the effect on **soil, water, risk and income** in a normal year and in an El Niño year. **No sensors needed**: everything comes from what the farmer knows. The decision is always theirs.
 
-Detalle: [`docs/solucion.md`](docs/solucion.md) · Decisiones: [`docs/decisiones.md`](docs/decisiones.md)
+Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.md`](docs/decisions.md)
 
-## Uso del método científico
-- **Hipótesis:** en años El Niño, las rotaciones con leguminosas y cultivos tolerantes a sequía tienen menor riesgo que el arroz sin riego; y el mejor plan de un año normal no siempre es el mejor en un año El Niño.
-- **Datos:** NASA POWER diario 2021 → hoy (11 cantones), índice ENSO de NOAA, FAO-56 y ECOCROP. Ver [`docs/fuentes-datos.md`](docs/fuentes-datos.md).
-- **Análisis:** motor multicriterio con reglas transparentes: balance hídrico tipo FAO-56 con ET0 de Hargreaves, filtros de pH y calendario, efectos de rotación, riesgo calculado año por año. Ver [`docs/motor-reglas.md`](docs/motor-reglas.md).
-- **Validación:** backtest con El Niño 2023 y 2026, sensibilidad ±20 %, contraste POWER vs IMERG, revisión de un extensionista y pruebas automáticas.
+## Use of the scientific method
+- **Hypothesis:** in El Niño years, rotations with legumes and drought-tolerant crops carry less risk than rainfed rice; and the best plan for a normal year is not always the best plan for an El Niño year.
+- **Data:** NASA POWER daily data 2021 → today (11 cantons), NOAA's ENSO index, FAO-56 and ECOCROP. See [`docs/data-sources.md`](docs/data-sources.md).
+- **Analysis:** a multi-criteria engine with transparent rules: FAO-56-style water balance with Hargreaves ET0, pH and calendar filters, rotation effects, and risk computed year by year. See [`docs/engine-rules.md`](docs/engine-rules.md).
+- **Validation:** backtests with El Niño 2023 and 2026, ±20 % sensitivity analysis, POWER vs IMERG cross-check, review by an extension agent, and automated tests.
 
-## 📚 Documentación
-| Documento | Para qué |
+## 📚 Documentation
+| Document | What for |
 |---|---|
-| [`docs/Guia_repositorio_Iriria_Sisu.pdf`](docs/Guia_repositorio_Iriria_Sisu.pdf) | **Empiecen aquí:** guía en PDF de cómo está organizado el repo y qué leer |
-| [`docs/Como_correr_la_app_Iriria_Sisu.pdf`](docs/Como_correr_la_app_Iriria_Sisu.pdf) | Paso a paso para abrir la app en su compu (Windows y Mac) |
-| [`docs/glosario.md`](docs/glosario.md) | **Diccionario de términos técnicos** — léanlo todos |
-| [`docs/decisiones.md`](docs/decisiones.md) | Qué decidimos y por qué |
-| [`docs/plan.md`](docs/plan.md) | Plan semana a semana hasta el evento y las 48 h |
-| [`docs/arquitectura.md`](docs/arquitectura.md) | Cómo está hecha la web, cómo publicarla y **dominio** |
-| [`docs/motor-reglas.md`](docs/motor-reglas.md) | Fórmulas del motor |
-| [`docs/guion-video.md`](docs/guion-video.md) | Guion del video de 30 s |
-| [`docs/fuentes-datos.md`](docs/fuentes-datos.md) | Datasets, licencias y limitaciones |
-| [`docs/datos-confirmados.md`](docs/datos-confirmados.md) | Solo datos verificados con fuente |
-| [`docs/investigacion/`](docs/investigacion/) | El Niño 2021-2026 y verificación de la investigación |
-| [`docs/roles/`](docs/roles/README.md) | Plan de cada persona |
+| [`docs/team-guides-es/`](docs/team-guides-es/) | **Team guides (Spanish PDFs):** how the repo is organised, what to read, and how to run the app |
+| [`docs/glossary.md`](docs/glossary.md) | **Glossary of technical terms** (with the Spanish term for each) — everyone should read it |
+| [`docs/decisions.md`](docs/decisions.md) | What we decided and why |
+| [`docs/plan.md`](docs/plan.md) | Week-by-week plan until the event and the 48 hours |
+| [`docs/architecture.md`](docs/architecture.md) | How the web app is built, how to publish it, and the **domain** |
+| [`docs/engine-rules.md`](docs/engine-rules.md) | Engine formulas |
+| [`docs/video-script.md`](docs/video-script.md) | Script for the 30-second video |
+| [`docs/data-sources.md`](docs/data-sources.md) | Datasets, licences and limitations |
+| [`docs/confirmed-data.md`](docs/confirmed-data.md) | Only verified facts, each with its source |
+| [`docs/research/`](docs/research/) | El Niño 2021-2026 and fact-checking of the research |
+| [`docs/roles/`](docs/roles/README.md) | Each person's plan |
 
 ## 🛠️ Stack
-- **Web estática:** HTML + CSS + JavaScript (sin servidor, sin compilación). Mapa con Leaflet.
-- **Motor:** `web/js/motor.js` (funciones puras, corre en el navegador) + pruebas con `node --test`.
-- **Datos:** scripts en Python (biblioteca estándar) que corre **GitHub Actions** cada semana y guardan JSON en `web/data/`.
-- **Publicación:** GitHub Pages + dominio propio (a cargo de José Pablo).
+- **Static website:** HTML + CSS + JavaScript (no server, no build step). Map with Leaflet.
+- **Engine:** `web/js/engine.js` (pure functions, runs in the browser) + tests with `node --test`.
+- **Data:** Python scripts (standard library) run weekly by **GitHub Actions**, saving JSON to `web/data/`.
+- **Hosting:** GitHub Pages + custom domain (handled by José Pablo).
 
-## 🚀 Cómo correrlo
+## 🚀 How to run it
 ```bash
-python3 -m http.server 8000 --directory web    # abrir http://localhost:8000
-npm test                                        # pruebas del motor (Node 20+)
+python3 -m http.server 8000 --directory web    # open http://localhost:8000
+npm test                                        # engine tests (Node 20+)
 ```
-Datos: se descargan solos con el workflow **datos** (pestaña *Actions*). A mano: `python3 scripts/descargar_datos.py`.
+Data is downloaded automatically by the **data** workflow (Actions tab). By hand: `python3 scripts/fetch_data.py`.
 
-## 📂 Estructura
+## 📂 Structure
 ```
-web/               app pública (index.html, css/, js/, data/)
-scripts/           descarga y procesamiento de datos NASA/NOAA/SoilGrids/IMERG
-data/catalogo/     catálogo de cultivos (CSV que llena el equipo)
-tests/             pruebas del motor
-docs/              decisiones, plan, glosario, arquitectura, investigación, roles
-archivo/           prototipo anterior (referencia)
-.github/workflows/ datos · pruebas · publicar
+web/               public app (index.html, css/, js/, data/)
+scripts/           download and processing of NASA/NOAA/SoilGrids/IMERG data
+data/catalog/      crop catalog (CSV the team edits)
+tests/             engine tests
+docs/              decisions, plan, glossary, architecture, research, roles, team guides
+archive/           earlier prototype (reference)
+.github/workflows/ data · tests · publish
 ```
 
-## 👥 Equipo
-| Nombre | Rol |
+## 👥 Team
+| Name | Role |
 |---|---|
-| Jose Antonio Chávez Ureña | Líder científico |
-| José Pablo Ramírez Fernández | Datos, motor y dominio |
-| Juan Diego Chávez Ureña | Integración, despliegue y seguridad |
-| Angelli Abarca Ureña | Economía, impacto y operaciones |
-| Nesly Mejía Jiménez | Diseño, UX y video |
-| Britzie Yarith García Arias | Campo, validación y sensor opcional |
+| Jose Antonio Chávez Ureña | Science lead |
+| José Pablo Ramírez Fernández | Data, engine and domain |
+| Juan Diego Chávez Ureña | Integration, deployment and security |
+| Angeli Abarca Ureña | Economics, impact and operations |
+| Nesly Mejía Jiménez | Design, UX and video |
+| Britzie Yarith García Arias | Field work, validation and optional sensor |
 
-## 🎬 Entrega
-- Video (≤ 30 s, subtítulos en inglés): _[link]_
-- Prototipo: _[dominio pendiente]_
+## 🎬 Submission
+- Video (≤ 30 s, English subtitles): _[link]_
+- Prototype: _[domain pending]_
 
-## 📜 Datos y licencias
-Código bajo licencia MIT. Datos abiertos de NASA (POWER, GPM), NOAA CPC, FAO e ISRIC (SoilGrids, CC BY 4.0). Detalle en [`docs/fuentes-datos.md`](docs/fuentes-datos.md). Esta herramienta no reemplaza la asesoría de un agrónomo.
+## 📜 Data and licences
+Code under the MIT licence. Open data from NASA (POWER, GPM), NOAA CPC, FAO and ISRIC (SoilGrids, CC BY 4.0). Details in [`docs/data-sources.md`](docs/data-sources.md). This tool does not replace advice from an agronomist.

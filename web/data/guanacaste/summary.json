@@ -1,0 +1,152 @@
+{
+ "region": "Guanacaste",
+ "window_start": "2021-01-01",
+ "generated": "2026-10-19T00:34:51+00:00",
+ "source": "NASA POWER, daily API, AG community (https://power.larc.nasa.gov)",
+ "points": [
+  {
+   "id": "la-cruz",
+   "name": "La Cruz",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -85.63,
+    "lat": 11.072
+   },
+   "merra2_cell": "11.00,-85.625"
+  },
+  {
+   "id": "liberia",
+   "name": "Liberia",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -85.437,
+    "lat": 10.635
+   },
+   "merra2_cell": "10.50,-85.625"
+  },
+  {
+   "id": "bagaces",
+   "name": "Bagaces",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -85.254,
+    "lat": 10.531
+   },
+   "merra2_cell": "10.50,-85.000"
+  },
+  {
+   "id": "tilaran",
+   "name": "Tilarán",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -84.968,
+    "lat": 10.469
+   },
+   "merra2_cell": "10.50,-85.000"
+  },
+  {
+   "id": "carrillo",
+   "name": "Carrillo (Filadelfia)",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -85.555,
+    "lat": 10.448
+   },
+   "merra2_cell": "10.50,-85.625"
+  },
+  {
+   "id": "canas",
+   "name": "Cañas",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -85.093,
+    "lat": 10.429
+   },
+   "merra2_cell": "10.50,-85.000"
+  },
+  {
+   "id": "abangares",
+   "name": "Abangares (Las Juntas)",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -84.957,
+    "lat": 10.276
+   },
+   "merra2_cell": "10.50,-85.000"
+  },
+  {
+   "id": "santa-cruz",
+   "name": "Santa Cruz",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -85.585,
+    "lat": 10.261
+   },
+   "merra2_cell": "10.50,-85.625"
+  },
+  {
+   "id": "nicoya",
+   "name": "Nicoya",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -85.452,
+    "lat": 10.148
+   },
+   "merra2_cell": "10.00,-85.625"
+  },
+  {
+   "id": "hojancha",
+   "name": "Hojancha",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -85.418,
+    "lat": 10.059
+   },
+   "merra2_cell": "10.00,-85.625"
+  },
+  {
+   "id": "nandayure",
+   "name": "Nandayure (Carmona)",
+   "months": 69,
+   "last_day": "2026-10-15",
+   "power_cell": {
+    "lon": -85.258,
+    "lat": 10.009
+   },
+   "merra2_cell": "10.00,-85.000"
+  }
+ ],
+ "cantons_per_cell": [
+  [
+   "La Cruz"
+  ],
+  [
+   "Liberia",
+   "Carrillo (Filadelfia)",
+   "Santa Cruz"
+  ],
+  [
+   "Bagaces",
+   "Tilarán",
+   "Cañas",
+   "Abangares (Las Juntas)"
+  ],
+  [
+   "Nicoya",
+   "Hojancha"
+  ],
+  [
+   "Nandayure (Carmona)"
+  ]
+ ]
+}
