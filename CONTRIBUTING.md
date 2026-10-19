@@ -9,7 +9,7 @@ Para no perder tiempo peleando con git durante el hackatón:
 2. **Commits pequeños y frecuentes**, mensajes claros:
    ```bash
    git add .
-   git commit -m "feat: pipeline de limpieza de datos GES DISC"
+   git commit -m "feat: eje ingreso en colones"
    ```
 3. **Subir la rama y abrir Pull Request** (aunque sea el mismo equipo, ayuda a revisar rápido):
    ```bash
@@ -21,6 +21,16 @@ Para no perder tiempo peleando con git durante el hackatón:
    git log --oneline
    git checkout <hash-del-commit-bueno>
    ```
+
+## Antes de abrir un PR
+```bash
+npm test                              # pruebas del motor
+python3 scripts/catalogo_a_json.py    # si cambiaron el CSV del catálogo (suban también web/data/cultivos.json)
+python3 -m http.server 8000 --directory web   # revisar la web en http://localhost:8000
+```
+- Términos técnicos nuevos → `docs/glosario.md`.
+- Decisiones nuevas → `docs/decisiones.md`.
+- Nunca subir contraseñas ni llaves (Earthdata va en *Secrets* de GitHub).
 
 ## Convención de mensajes de commit
 - `feat:` nueva funcionalidad

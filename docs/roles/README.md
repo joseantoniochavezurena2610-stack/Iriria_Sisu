@@ -1,41 +1,31 @@
 # Planes por rol — Iriria Sìsù
 
-Cada rol tiene su plan con tareas **antes del evento** (hasta el 13-nov), **durante las 48 h** y su **entregable**. Pongan su nombre en la tabla.
+Entregables del equipo: **video (≤ 30 s)** y **prototipo web**. Cada rol tiene tareas antes del evento (hasta el 13-nov), durante las 48 h y su entregable.
 
-| Rol | Perfil sugerido | Persona | Plan |
-|---|---|---|---|
-| Líder científico | Estudiante científico | Jose Antonio Chavez Ureña | [lider-cientifico.md](lider-cientifico.md) |
-| Datos y motor | Ing. en sistemas | Jose Pablo Ramírez | [datos-y-motor.md](datos-y-motor.md) |
-| Sensores y hardware | Ing. mecatrónica | Britzie García | [sensores-hardware.md](sensores-hardware.md) |
-| Economía, impacto y operaciones | Ing. industrial | Angelli Abarca | [economia-operaciones.md](economia-operaciones.md) |
-| Diseño, UX y pitch | Diseñadora gráfica | Nesly Mejía | [diseno-pitch.md](diseno-pitch.md) |
-| Integración, despliegue y seguridad | Ing. en seguridad informática | Juan Diego Chávez Ureña | [integracion-seguridad.md](integracion-seguridad.md) |
+| Rol | Persona | Plan |
+|---|---|---|
+| Líder científico | Jose Antonio Chávez Ureña | [lider-cientifico.md](lider-cientifico.md) |
+| Datos, motor y dominio | José Pablo Ramírez Fernández | [datos-y-motor.md](datos-y-motor.md) |
+| Integración, despliegue y seguridad | Juan Diego Chávez Ureña | [integracion-seguridad.md](integracion-seguridad.md) |
+| Economía, impacto y operaciones | Angeli Abarca Ureña | [economia-operaciones.md](economia-operaciones.md) |
+| Diseño, UX y video | Nesly Mejía Jiménez | [diseno-video.md](diseno-video.md) |
+| Campo, validación y sensor opcional | Britzie Yarith García Arias | [campo-y-sensores.md](campo-y-sensores.md) |
 
 ## Cómo se conectan
 ```
-Ciencia ──define variables, reglas y validación──▶ Datos y motor ──puntajes──▶ App (Diseño)
-   ▲                                                   ▲                       │
-   │                                     lectura en vivo│                       ▼
-Economía ──precios, costos, pérdida máx.──┘      Sensores           Integración: deploy + demo offline
+Ciencia ──catálogo y reglas──▶ Datos y motor ──JSON + motor.js──▶ Web (Diseño + Integración)
+   ▲                                ▲                                   │
+Economía ──precios y costos─────────┘                                   ▼
+Campo ──pruebas con agricultores / extensionistas──────────────▶  Video + dominio público
 ```
 
-## Dependencias críticas (quién espera a quién)
-1. **Catálogo de cultivos** (Ciencia + Economía) → sin él no hay motor. Fecha límite: **8-nov**.
-2. **Formato del contexto** `contexto.json` (Datos) → lo usan Diseño y Sensores. Fecha límite: **9-nov**.
-3. **Formato del mensaje del sensor** (Sensores + Integración) → acordar antes del evento.
-4. **Datos precalculados en Parquet** (Datos) → la demo no depende de internet.
+## Dependencias críticas
+1. **Catálogo verificado** (Ciencia + Economía) → fecha límite **8-nov**.
+2. **Datos reales en `web/data/`** (workflow `datos`) → antes del **25-oct**.
+3. **Dominio + HTTPS** (José Pablo) → antes del **1-nov**.
+4. **Freeze** de fórmulas y catálogo → **13-nov**.
 
-## Checkpoints durante el hackatón (cada ~3 h, 10 min máx.)
-Cada quien responde: ¿qué terminé?, ¿qué sigue?, ¿qué me bloquea? El líder científico revisa que los números sigan teniendo sentido; Integración hace merge a `main` de lo que funciona.
-
-## Hitos del hackatón
-| Hora | Hito |
-|---|---|
-| 0-3 | Problema en una frase, MVP cerrado, repo corriendo en todas las compus |
-| 12 | Motor corriendo con datos reales en consola |
-| 20 | App end-to-end (fea pero completa) |
-| 30 | **Freeze de ciencia y de features** |
-| 36 | Sensor integrado + demo offline probada |
-| 42 | Video de 30 s y submission en borrador |
-| 46 | Pitch ensayado 2 veces cronometrado |
-| 48 | Entrega |
+## Reglas comunes
+- Todo término nuevo va al [glosario](../glosario.md).
+- Ningún número en la app o el video sin fuente.
+- Ramas + PR (ver `CONTRIBUTING.md`). Las pruebas (`npm test`) deben pasar.

@@ -1,32 +1,28 @@
-# Plan — Datos y motor (Ing. en sistemas)
+# Plan — Datos, motor y dominio (José Pablo, Ing. en sistemas)
 
-**Misión:** que los datos NASA lleguen limpios al motor y que el motor devuelva 3 planes con puntajes reproducibles.
+**Misión:** que los datos NASA lleguen solos y limpios a la web, que el motor sea correcto y rápido, y que la app tenga su **dominio propio**.
+
+## Ya hecho (18-oct)
+- `scripts/descargar_datos.py`: POWER diario 2021 → hoy por cantón, ET0 Hargreaves, ENSO de NOAA. Solo biblioteca estándar.
+- `web/js/clima.js` y `web/js/motor.js` + 12 pruebas (`npm test`).
+- Workflow `datos.yml` (semanal y al cambiar scripts).
 
 ## Antes del evento
 | Prioridad | Tarea | Entregable |
 |---|---|---|
-| 🔴 | Cuenta Earthdata + probar `earthaccess` | Login funcionando |
-| 🔴 | Script POWER: lluvia, T2M, RH2M, radiación, `GWETROOT` diarios 1995-2025 para 3-5 puntos del Pacífico Norte | `notebooks/01_power.ipynb` + `data/processed/power_*.parquet` |
-| 🔴 | Definir `contexto.json` (finca, suelo, clima por época, escenario) junto con Ciencia | `src/motor/esquema.py` |
-| 🟠 | IMERG mensual para los mismos puntos (años 2015, 2023 y un año neutro) | Parquet |
-| 🟠 | SoilGrids pH, textura y carbono por punto | Parquet |
-| 🟠 | Esqueleto del motor: generar → filtrar → puntuar → combinar | `src/motor/` con `recomendar(contexto, prioridades)` |
-| 🟡 | Pruebas pytest con casos conocidos que dé Ciencia | `tests/` |
-
-## Diseño del motor (acordado con Ciencia)
-- **Función pura:** `recomendar(contexto, prioridades) -> list[Plan]`. No sabe de Streamlit ni de la NASA.
-- **Generación:** 3 años × 4 épocas (Seca, Primera, Canícula, Postrera) → limitar combinaciones (podar en cuanto una regla dura falla) para que corra en < 2 s.
-- **Ejes 0-100:** Suelo, Agua, Riesgo, Ingreso; fórmulas en `docs/motor-reglas.md` (las escribe Ciencia).
-- **Escenarios:** correr el mismo motor con clima neutro y El Niño; marcar planes robustos.
-- **Salida:** cada plan trae puntajes por eje + lista de razones con los números que las sostienen (Diseño las convierte en texto).
+| 🔴 | **Dominio**: proponer 2-3 nombres al equipo, comprar, configurar DNS y HTTPS | Checklist de [`arquitectura.md#dominio`](../arquitectura.md#dominio) completo |
+| 🔴 | Revisar la primera corrida del workflow `datos` (pestaña Actions) y los JSON generados | Issue con hallazgos |
+| 🔴 | Cuenta Earthdata del equipo como *secrets*; probar `descargar_imerg.py` | `imerg_mensual.json` |
+| 🟠 | Comparar POWER vs IMERG por cantón (correlación mensual) | Gráfico + 2 frases para Ciencia |
+| 🟠 | Eje Ingreso en colones cuando Economía llene precios/costos | `motor.js` + prueba |
+| 🟠 | Usar `GWETROOT` como reserva inicial de agua | `motor.js` + prueba |
+| 🟡 | Revisar que `descargar_soilgrids.py` funcione (WCS) | `suelo_referencia.json` |
 
 ## Durante las 48 h
-- **H0-12:** pipeline cerrado y motor en consola con datos reales.
-- **H12-20:** integrarlo a Streamlit con Diseño.
-- **H20-30:** backtest 2015/2023 con Ciencia; arreglar bugs.
-- **H30+:** solo correcciones; nada nuevo.
+- Correr el workflow `datos` al inicio (datos frescos).
+- Arreglos del motor según la revisión de Ciencia. Nada nuevo después de la hora 30.
 
 ## Reglas
-- Todo dato pesado fuera del repo (`.gitignore`); solo Parquet pequeño procesado.
-- Ningún valor inventado: si falta un dato, el motor devuelve "sin dato".
-- Cada función del motor con al menos una prueba.
+- Ningún valor inventado: si falta dato, la app lo dice.
+- Toda función del motor con prueba.
+- Credenciales solo como *secrets*.

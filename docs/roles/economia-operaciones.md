@@ -1,25 +1,22 @@
-# Plan — Economía, impacto y operaciones (Ing. industrial)
+# Plan — Economía, impacto y operaciones (Angeli, Ing. industrial)
 
-**Misión:** que la solución sea **real y sostenible**: el eje Ingreso con números de verdad, el costo de la herramienta claro y un camino creíble para llegar a los agricultores. También llevar el control del tiempo del equipo.
+**Misión:** que el eje Ingreso use números reales, que el costo de la herramienta sea claro y que haya un camino creíble hasta el agricultor. También el reloj del equipo.
 
 ## Antes del evento
 | Prioridad | Tarea | Entregable |
 |---|---|---|
-| 🔴 | Precios de referencia de cada cultivo del catálogo (PIMA/CENADA) | Columnas `precio_crc_kg` y `fuente_economica` en `data/catalogo/cultivos_plantilla.csv` |
-| 🔴 | Costos de producción por hectárea (fichas MAG/INTA; si no existen para un cultivo, documentarlo) | Columna `costo_produccion_crc_ha` |
-| 🔴 | Definir con Ciencia la fórmula del eje Ingreso: margen = rendimiento × precio − costo − costo de transición | Sección en `docs/motor-reglas.md` |
-| 🟠 | Costo de transición (cambiar de arroz a maíz/frijol: semilla, maquinaria, mercado) — al menos una estimación razonable con fuente | Tabla corta |
-| 🟠 | Ahorro de fertilizante por leguminosas: kg de N → kg de urea → colones | Fórmula + precio de urea con fuente |
-| 🟠 | Costo de operar la herramienta (datos $0, hosting $0, nodo sensor cotizado) | Tabla en `docs/solucion.md` |
-| 🟡 | Camino de piloto: contactos de agencias de extensión MAG/INTA o cooperativas de Guanacaste | 1 página de "cómo llega al agricultor" |
+| 🔴 | Precio de referencia de cada cultivo del catálogo (PIMA/CENADA) | Columnas `precio_crc_kg` y `fuente_economica` en `data/catalogo/cultivos_guanacaste.csv` |
+| 🔴 | Costo de producción por hectárea (fichas MAG/INTA) y rendimiento típico en Guanacaste | `costo_produccion_crc_ha`, `rendimiento_t_ha` |
+| 🔴 | Preguntar a los organizadores la regla de código previo | Respuesta en `docs/decisiones.md` |
+| 🟠 | Precio de la urea para traducir el nitrógeno de leguminosas a colones | Dato con fuente |
+| 🟠 | Contactos de agencias de extensión MAG / INTA o cooperativas en Guanacaste | Lista |
+| 🟡 | Costo anual del dominio y quién lo paga después del concurso | Nota en `docs/solucion.md` |
 
 ## Durante las 48 h
-- **Dueña del reloj:** controla los hitos de `docs/roles/README.md` y avisa cuando algo se atrasa.
-- Llena el **formulario de submission** (descripción, impacto, uso de datos) a partir de H36.
-- Prepara y dice la parte de **Impacto** del pitch.
+- Dueña del reloj (hitos de `docs/plan.md`).
+- Formulario de envío **en inglés** desde la hora 36 (resumen, impacto, datos NASA, uso de IA).
 
-## Preguntas que debe poder responder ante los jueces
-- ¿Cuánto cuesta mantener esto? → casi $0.
+## Preguntas que debe poder responder
+- ¿Cuánto cuesta mantener esto? → hosting $0 + dominio anual.
 - ¿Quién lo usaría mañana? → extensionistas y cooperativas.
-- ¿Por qué un agricultor confiaría? → muestra consecuencias y fuentes; la decisión es suya.
 - ¿Cómo escala? → mismo motor, otro catálogo y otra región del trópico seco.

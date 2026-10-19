@@ -1,5 +1,7 @@
 # Resumen y verificación de la investigación
 
+> **Nota (18-oct-2026):** región piloto final = Guanacaste; app 100 % web; el modelo solo usa datos de 2021 en adelante. Los datos anteriores (p. ej. El Niño 2014-16) son contexto histórico. Ver [`decisiones.md`](../decisiones.md).
+
 Fuentes resumidas:
 1. **Investigación de suelos** — *Principales condiciones y características del suelo para la agricultura* (Iriria Sìsù, oct. 2026).
 2. **Investigación + Stack sugerido (Pepe)** — contexto del reto, Costa Rica, competencia, stack y motor de rotación.
