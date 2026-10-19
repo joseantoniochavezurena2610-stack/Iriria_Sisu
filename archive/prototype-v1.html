@@ -1,0 +1,495 @@
+<!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Iriria Sìsù — prototype v1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: control band on the left, plot calendar (3 years x 3 seasons) as the central piece on the right; three tabs. */
+:root{
+  --bg:#f1f5f1; --surface:#ffffff; --sunk:#e6ece7; --ink:#12261f; --muted:#56695f; --line:#cfd9d2;
+  --accent:#1c4fb8; --accent-ink:#ffffff; --warn:#a4560a; --good:#1d7044;
+  --f-gram:#f2d98a; --f-leg:#a9dbb0; --f-sol:#f0b3b8; --f-cuc:#f6c492; --f-raiz:#cdbdea; --f-cover:#8fd3cf; --f-conv:#e3d0b4; --f-none:#dfe5e0;
+  --rain:#3f78d6; --temp:#c2410c;
+  --display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0e1814; --surface:#16231d; --sunk:#1d2d26; --ink:#e7efe9; --muted:#9db0a5; --line:#2c4036;
+  --accent:#8fb2ff; --accent-ink:#0b1730; --warn:#f0b062; --good:#7fd6a2;
+  --f-gram:#6b5a17; --f-leg:#215c33; --f-sol:#7a2f38; --f-cuc:#7c4a17; --f-raiz:#4c3a80; --f-cover:#1b5f5c; --f-conv:#5d4b2f; --f-none:#2a3a32;
+  --rain:#7da7f0; --temp:#fb923c; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0e1814; --surface:#16231d; --sunk:#1d2d26; --ink:#e7efe9; --muted:#9db0a5; --line:#2c4036;
+  --accent:#8fb2ff; --accent-ink:#0b1730; --warn:#f0b062; --good:#7fd6a2;
+  --f-gram:#6b5a17; --f-leg:#215c33; --f-sol:#7a2f38; --f-cuc:#7c4a17; --f-raiz:#4c3a80; --f-cover:#1b5f5c; --f-conv:#5d4b2f; --f-none:#2a3a32;
+  --rain:#7da7f0; --temp:#fb923c; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);padding-inline:clamp(16px,4vw,40px);padding-block:24px 64px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:-.02em}
+h2{font-size:24px;font-weight:700}
+h3{font-size:17px;font-weight:700}
+p{margin:0;max-width:68ch}
+a{color:var(--accent)}
+.head{display:flex;flex-direction:column;gap:8px}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{font-size:17px;color:var(--muted)}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:2px solid var(--line)}
+.tabs button{font:600 15px var(--body);background:none;border:0;color:var(--muted);padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tool{display:grid;grid-template-columns:minmax(260px,320px) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:860px){.tool{grid-template-columns:minmax(0,1fr)}}
+.panel{display:flex;flex-direction:column;gap:18px;min-width:0}
+fieldset{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+legend{font:700 15px var(--display);padding:0;margin-bottom:6px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+select,input[type=number],textarea{font:14px var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:7px 8px;width:100%}
+textarea{font:12px var(--mono);min-height:90px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.slider{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center;font-size:13px;color:var(--ink)}
+.slider input{grid-column:1/-1;width:100%;accent-color:var(--accent)}
+.slider output{font:500 13px var(--mono);color:var(--muted)}
+.btn{font:600 14px var(--body);background:var(--accent);color:var(--accent-ink);border:0;border-radius:4px;padding:8px 14px;cursor:pointer;align-self:flex-start}
+details{border-top:1px solid var(--line);padding-top:10px}
+summary{cursor:pointer;font-weight:600;font-size:14px}
+details>div{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.note{font-size:13px;color:var(--muted)}
+.flag{font-size:13px;border-left:3px solid var(--warn);padding:6px 10px;background:var(--sunk)}
+.flag.ok{border-left-color:var(--good)}
+.results{display:flex;flex-direction:column;gap:22px;min-width:0}
+.chartbox{overflow-x:auto}
+svg text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px}
+.plan.base{background:transparent;border-style:dashed}
+@media (max-width:700px){.plan{grid-template-columns:minmax(0,1fr)}}
+.plan header{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px}
+.total{font:500 13px var(--mono);color:var(--muted)}
+.total b{font:700 22px var(--display);color:var(--ink)}
+.cal{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:4px;font-size:12px;min-width:0}
+.cal .h{font:500 11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:2px 4px}
+.cell{border-radius:3px;padding:7px 6px;min-height:52px;display:flex;flex-direction:column;justify-content:space-between;gap:2px;min-width:0;color:var(--ink)}
+.cell b{font-weight:600;font-size:13px;overflow-wrap:anywhere;line-height:1.2}
+.cell span{font:11px var(--mono);opacity:.85}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.meters{display:grid;grid-template-columns:auto 1fr auto;gap:6px 8px;align-items:center;font-size:13px}
+.meter{height:8px;background:var(--sunk);border-radius:4px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent)}
+.meters .v{font:500 13px var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+ul.why{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.prose{display:flex;flex-direction:column;gap:28px}
+.prose section{display:flex;flex-direction:column;gap:12px}
+.prose ul,.prose ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:72ch}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:640px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.two>div{display:flex;flex-direction:column;gap:10px;min-width:0}
+code{font:13px var(--mono);background:var(--sunk);padding:1px 4px;border-radius:3px;overflow-wrap:anywhere}
+</style>
+
+<div class="wrap">
+  <div class="head">
+    <span class="eyebrow">NASA Space Apps 2026 · Field Shift: Adapting Farms with NASA Data</span>
+    <h1>Iriria Sisu</h1>
+    <p class="lede">A tool that proposes three crop rotations for the next three years to a farmer, computed from the climate of their farm, their soil and what matters most to them.</p>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-herramienta" data-tab="herramienta" aria-selected="true">Prototype</button>
+    <button role="tab" id="t-investigar" data-tab="investigar" aria-selected="false">What to research and how</button>
+    <button role="tab" id="t-competir" data-tab="competir" aria-selected="false">Competition plan</button>
+  </div>
+
+  <!-- ================= PROTOTIPO ================= -->
+  <div id="p-herramienta" role="tabpanel" class="tool">
+    <form class="panel" id="form" onsubmit="return false">
+      <fieldset>
+        <legend>1 · The farm</legend>
+        <label>Example area
+          <select id="site"></select>
+        </label>
+        <div id="srcflag" class="flag"></div>
+        <details id="powerbox">
+          <summary>Use real NASA POWER data</summary>
+          <div>
+            <div class="row2">
+              <label>Latitud <input type="number" id="lat" step="0.01" value="10.63"></label>
+              <label>Longitud <input type="number" id="lon" step="0.01" value="-85.44"></label>
+            </div>
+            <p class="note">1. Open <a id="powerlink" href="#" target="_blank" rel="noopener">this POWER query</a> (monthly climatology for the point). 2. Copy the whole JSON. 3. Paste it here.</p>
+            <textarea id="paste" placeholder='{"type":"Feature","geometry":{...},"properties":{"parameter":{"T2M":{...},"PRECTOTCORR":{...}}}}'></textarea>
+            <button class="btn" type="button" id="load">Load data</button>
+            <p class="note" id="pastemsg"></p>
+          </div>
+        </details>
+        <label>Climate scenario
+          <select id="scen">
+            <option value="normal">Normal year (climatology)</option>
+            <option value="seco">Dry, El Niño-type year (−25 % rain)</option>
+            <option value="calor">Hotter (+1.5 °C, −10 % rain)</option>
+          </select>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>2 · Soil and water</legend>
+        <div class="row2">
+          <label>Texture
+            <select id="tex"><option value="arenoso">Sandy</option><option value="franco" selected>Loam</option><option value="arcilloso">Clay</option></select>
+          </label>
+          <label>Slope
+            <select id="slope"><option value="plana">Flat</option><option value="media" selected>Moderate</option><option value="fuerte">Steep</option></select>
+          </label>
+          <label>pH <input type="number" id="ph" min="4" max="9" step="0.1" value="6.0"></label>
+          <label>Organic matter % <input type="number" id="om" min="0" max="15" step="0.1" value="2.5"></label>
+        </div>
+        <label>Available irrigation
+          <select id="irr"><option value="no">Rain only</option><option value="lim" selected>Limited (up to 150 mm per cycle)</option><option value="full">Full (up to 500 mm per cycle)</option></select>
+        </label>
+        <label>What is planted today (for comparison)
+          <select id="base"></select>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>3 · What matters most</legend>
+        <div class="slider"><span>Soil health</span><output id="o-ws">3</output><input type="range" id="ws" min="0" max="5" value="3"></div>
+        <div class="slider"><span>Save water</span><output id="o-ww">3</output><input type="range" id="ww" min="0" max="5" value="3"></div>
+        <div class="slider"><span>Income</span><output id="o-wi">3</output><input type="range" id="wi" min="0" max="5" value="3"></div>
+        <div class="slider"><span>Withstand bad years</span><output id="o-wr">3</output><input type="range" id="wr" min="0" max="5" value="3"></div>
+      </fieldset>
+    </form>
+
+    <div class="results">
+      <div>
+        <h3 id="climtitle">Monthly climate</h3>
+        <div class="chartbox" id="chart"></div>
+      </div>
+      <div class="legend" id="famlegend"></div>
+      <div id="plans" style="display:flex;flex-direction:column;gap:14px"></div>
+      <details>
+        <summary>How it is calculated and what still needs validation</summary>
+        <div>
+          <p class="note">Each year is split into three four-month seasons. For every crop and season a fit from 0 to 100 % is computed: mean temperature against the crop's optimal range, water balance (effective rainfall + available irrigation against the cycle's need), excess rain by drainage, and pH. A beam search builds 9-cycle sequences and scores them on four axes: soil (nitrogen, cover, residue, family diversity, repetitions), water (how much water beyond rain it needs), income (relative margin × fit, with a bonus after a legume and a penalty for repeating a family) and resilience (the same plan with 25 % less rain and +1.5 °C).</p>
+          <p class="note">Crop parameters are starting values within the typical FAO-56, FAO-33 and ECOCROP ranges; they must be checked one by one and adjusted with INTA technical sheets. The margin is a relative index from 0 to 5, not colones. The water balance is monthly and simple: it does not replace a crop model.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ================= INVESTIGAR ================= -->
+  <div id="p-investigar" role="tabpanel" class="prose" hidden>
+    <section>
+      <h2>The farmer first, then the satellite</h2>
+      <p>The challenge asks for a decision-support tool. Teams that lose build a map viewer; teams that win solve a concrete decision. Here the decision is a single one: what do I plant in each season over the next few years. Everything you research has to feed that answer.</p>
+      <ul>
+        <li><b>Talk to 3 to 5 people before the hackathon:</b> a staple-grain grower, a vegetable grower, and an extension agent from MAG or INTA. Ask how they decide what to plant today, who advises them, what went wrong in the last dry year, and whether they have a soil test.</li>
+        <li><b>Find out which soil data a farmer really has.</b> Almost nobody knows their organic-matter percentage. So the tool must accept simple answers (texture by feel, colour, whether it waterlogs) and fill in the rest with SoilGrids.</li>
+        <li><b>Write down exact quotes.</b> A real quote from a grower in the video is worth more than any chart.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>NASA data that actually moves the decision</h2>
+      <div class="tw"><table>
+        <tr><th>Source</th><th>What it gives</th><th>What it is for here</th><th>How to get it fast</th></tr>
+        <tr><td>NASA POWER (AG community)</td><td>Temperature, rainfall, radiation and modelled soil moisture, daily and climatological, per point</td><td>It is the base of the prototype: fit of each crop per season</td><td>REST API by latitude and longitude, returns JSON, no account</td></tr>
+        <tr><td>GPM IMERG</td><td>Satellite rainfall every 30 min, ~10 km</td><td>Start and end of the rainy season, mid-summer droughts, dry spells</td><td>Giovanni for area series; AppEEARS for points</td></tr>
+        <tr><td>SMAP (L3 and L4)</td><td>Surface and root-zone soil moisture, ~9 km</td><td>How much water is left in the profile at the end of the rainy season: decides whether a third cycle fits without irrigation</td><td>AppEEARS or Earthdata Search</td></tr>
+        <tr><td>MODIS / VIIRS NDVI and HLS (Landsat + Sentinel-2, 30 m)</td><td>Vegetation vigour over time</td><td>Plot history: detect monoculture, months of bare soil, and validate the model against dry years</td><td>AppEEARS (series per point or polygon)</td></tr>
+        <tr><td>ECOSTRESS / MOD16</td><td>Actual evapotranspiration</td><td>Refine water demand instead of using a fixed value per crop</td><td>AppEEARS</td></tr>
+        <tr><td>NEX-GDDP-CMIP6</td><td>Downscaled climate projections (~25 km)</td><td>Replace the fixed “+1.5 °C” scenario with the projected change for that point</td><td>It is heavy: precompute deltas for a few pilot areas</td></tr>
+        <tr><td>GRACE-FO</td><td>Groundwater changes, very coarse resolution</td><td>Regional context for the water-saving argument</td><td>For the pitch only, not for the plot</td></tr>
+      </table></div>
+      <p class="note">Complementary local data: ISRIC SoilGrids (texture, pH, carbon at 250 m), INTA technical sheets, IMN ENSO bulletins, and CNP or SEPSA prices to replace the margin index with real numbers. Check on the challenge page which resources NASA lists when the full statement is published.</p>
+    </section>
+
+    <section>
+      <h2>Agronomy the model must respect</h2>
+      <div class="two">
+        <div>
+          <h3>Rotation rules</h3>
+          <ul>
+            <li>Do not repeat a botanical family in consecutive cycles: it breaks pest and soil-disease cycles.</li>
+            <li>A legume before a crop that takes up a lot of nitrogen (maize, potato, vegetables).</li>
+            <li>Never leave bare soil in the heavy-rain season on sloping land.</li>
+            <li>Alternate deep and shallow roots.</li>
+            <li>Green manures (mucuna, crotalaria) in the season that cannot support a cash crop anyway.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>What to read</h3>
+          <ul>
+            <li>FAO-56: crop coefficients (Kc) and reference evapotranspiration.</li>
+            <li>FAO-33: yield response to water deficit (Ky factor).</li>
+            <li>ECOCROP: temperature, rainfall and pH ranges per species.</li>
+            <li>How El Niño affects Costa Rica's Pacific slope (less rain) versus the Caribbean.</li>
+            <li>Projects from the 2022–2025 Space Apps agriculture challenges, to avoid repeating what has been done.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>How to show that it works</h2>
+      <ol>
+        <li><b>Backtest.</b> Take a known dry year in Guanacaste, download that year's POWER rainfall and the NDVI series of a grain area. If the model says “low fit” and NDVI also dropped, you have a validation almost no team presents.</li>
+        <li><b>Expert check.</b> Show three plans to an extension agent and ask which one they would plant and which one is nonsense. Fix the catalog with what they say.</li>
+        <li><b>Sensitivity test.</b> Change the pH or texture and check that the plan changes in the logical direction. If it does not change, that field is not needed in the form.</li>
+      </ol>
+    </section>
+  </div>
+
+  <!-- ================= COMPETIR ================= -->
+  <div id="p-competir" role="tabpanel" class="prose" hidden>
+    <section>
+      <h2>The proposal in one sentence</h2>
+      <p>“In two minutes and without fast internet, a farmer gets three 3-year rotations made for their plot, with the reason behind each one and how well each plan holds up in a dry year.”</p>
+      <p>What sets you apart: comparing against what the grower does today, explaining every recommendation in farm language, and showing the plan's weak spot instead of hiding it.</p>
+    </section>
+
+    <section>
+      <h2>Before 14 November</h2>
+      <p class="flag">This prototype is practice material. Space Apps expects the project to be built during the hackathon weekend, and the 2026 submission and judging guides come out on 13 November. Read them in full, including the AI-use section, and rebuild the code during the event with what you learned here.</p>
+      <ul>
+        <li><b>28 October:</b> the full challenge statement is released. Review the objectives, considerations and resource list, and adjust the scope.</li>
+        <li><b>2 November:</b> Space Apps Connect opens to talk with mentors.</li>
+        <li><b>Allowed preparation:</b> research, interview, learn the APIs, decide roles and check the crop catalog.</li>
+        <li><b>Submission:</b> the whole form in English; the video needs English subtitles and slides must be in English. Teams of up to six people.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>The 48 hours</h2>
+      <div class="tw"><table>
+        <tr><th>Block</th><th>What gets done</th><th>Done when</th></tr>
+        <tr><td>Saturday morning</td><td>Live POWER connection by latitude and longitude; verified crop catalog loaded</td><td>You type a coordinate and the real climograph appears</td></tr>
+        <tr><td>Saturday afternoon</td><td>Fit engine and rotation search; soil from SoilGrids with manual correction</td><td>Three different plans come out for two different areas</td></tr>
+        <tr><td>Saturday night</td><td>Plot history with NDVI; validation with a dry year</td><td>There is a “model versus satellite” chart</td></tr>
+        <tr><td>Sunday morning</td><td>Plain-language explanations, phone version, offline mode with preloaded areas</td><td>Someone outside the team uses it without help</td></tr>
+        <tr><td>Sunday afternoon</td><td>30-second video, project page, tidy repository</td><td>Submitted with two hours to spare</td></tr>
+      </table></div>
+    </section>
+
+    <section>
+      <h2>Roles for six people</h2>
+      <div class="two">
+        <div><ul>
+          <li><b>NASA data:</b> POWER, AppEEARS, cleaning and caching.</li>
+          <li><b>Model:</b> crop fit and rotation search.</li>
+          <li><b>Agronomy:</b> catalog, rules and contact with the extension agent.</li>
+        </ul></div>
+        <div><ul>
+          <li><b>Interface:</b> short form, plot calendar, mobile version.</li>
+          <li><b>Validation:</b> backtest and evidence chart.</li>
+          <li><b>Story:</b> script, video, English submission text.</li>
+        </ul></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What judges usually look at</h2>
+      <p class="note">Criteria from previous editions; confirm the 2026 ones in the judging guide.</p>
+      <div class="tw"><table>
+        <tr><th>Criterion</th><th>How the project covers it</th></tr>
+        <tr><td>Impact</td><td>A decision every grower makes every cycle; works at any coordinate because POWER is global</td></tr>
+        <tr><td>Creativity</td><td>Comparison with “what I do today”, visible weak spot, three options instead of an order</td></tr>
+        <tr><td>Validity</td><td>Sourced parameters (FAO, ECOCROP), test against a real dry year with NDVI, declared limits</td></tr>
+        <tr><td>Relevance</td><td>Uses the three inputs the challenge asks for: NASA observations, local soil and farmer priorities</td></tr>
+        <tr><td>Presentation</td><td>Open with a real grower and their problem, show the tool in use, close with the validation number</td></tr>
+      </table></div>
+    </section>
+
+    <section>
+      <h2>Risks worth saying out loud</h2>
+      <ul>
+        <li>POWER's resolution is coarse (tens of kilometres). In mountainous areas temperature must be corrected for altitude.</li>
+        <li>The market matters as much as the climate. Without real prices, the income axis is only indicative.</li>
+        <li>A wrong recommendation costs someone a harvest. The tool suggests and explains; it does not command.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<script id="logic">
+const MES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DIAS=[31,28.25,31,30,31,30,31,31,30,31,30,31];
+const SLOTS=[{n:'Dry',r:'Jan–Apr',m:[0,1,2,3]},{n:'Primera',r:'May–Aug',m:[4,5,6,7]},{n:'Postrera',r:'Sep–Dec',m:[8,9,10,11]}];
+// Approximate example values. NOT NASA data.
+const SITES={
+  gua:{name:'Liberia, Guanacaste · dry Pacific',lat:10.63,lon:-85.44,P:[2,3,6,30,200,250,150,210,350,320,100,12],T:[27.5,28.2,29,29.5,28.3,27.4,27.5,27.3,26.8,26.6,26.8,27]},
+  nor:{name:'San Carlos · humid Northern Zone',lat:10.47,lon:-84.64,P:[200,130,90,100,300,400,430,400,350,370,330,280],T:[24.3,24.8,25.6,26.3,26.4,26,25.6,25.7,25.8,25.5,24.9,24.4]},
+  car:{name:'Tierra Blanca, Cartago · highlands',lat:9.92,lon:-83.89,P:[40,25,20,50,200,220,160,180,250,270,130,70],T:[14.8,15.2,15.9,16.6,16.9,16.7,16.4,16.4,16.3,16.1,15.6,15]}
+};
+const FAM={gram:'Grasses',leg:'Legumes',sol:'Nightshades',cuc:'Cucurbits',raiz:'Roots and bulbs',cover:'Green manure',conv:'Sweet potato',none:'Fallow'};
+// w: cycle water (mm) · o: optimal mean-T range · a: limits · ph · nf: nitrogen effect · c: cover · r: residue · m: relative margin · wet: waterlogging tolerance
+const CROPS=[
+ {id:'maiz',n:'Maize',f:'gram',k:'gram',w:600,o:[20,30],a:[12,38],ph:[5.5,7.5],nf:-3,c:2,r:3,m:3,wet:1},
+ {id:'sorgo',n:'Sorghum',f:'gram',k:'gram',w:500,o:[24,33],a:[15,40],ph:[5.5,8],nf:-2,c:2,r:3,m:2,wet:2},
+ {id:'arroz',n:'Rainfed rice',f:'gram',k:'gram',w:650,o:[22,32],a:[16,38],ph:[5,7],nf:-2,c:2,r:2,m:3,wet:3},
+ {id:'frijol',n:'Bean',f:'leg',k:'leg',w:350,o:[17,27],a:[10,32],ph:[5.5,7],nf:1,c:1,r:1,m:3,wet:0},
+ {id:'mani',n:'Peanut',f:'leg',k:'leg',w:550,o:[22,30],a:[16,36],ph:[5.5,7],nf:1,c:2,r:1,m:3,wet:0},
+ {id:'caupi',n:'Cowpea',f:'leg',k:'leg',w:350,o:[22,33],a:[15,38],ph:[5,7.5],nf:2,c:2,r:2,m:2,wet:1},
+ {id:'mucuna',n:'Mucuna',f:'leg',k:'cover',w:350,o:[20,32],a:[15,38],ph:[5,7.5],nf:3,c:3,r:3,m:0,wet:1},
+ {id:'crota',n:'Crotalaria',f:'leg',k:'cover',w:300,o:[20,33],a:[14,38],ph:[5,7.5],nf:3,c:3,r:3,m:0,wet:1},
+ {id:'tomate',n:'Tomato',f:'sol',k:'sol',w:550,o:[18,27],a:[10,34],ph:[5.5,7],nf:-2,c:1,r:1,m:5,wet:0},
+ {id:'chile',n:'Sweet pepper',f:'sol',k:'sol',w:650,o:[18,28],a:[12,33],ph:[5.5,7],nf:-2,c:1,r:1,m:5,wet:0},
+ {id:'papa',n:'Potato',f:'sol',k:'sol',w:550,o:[14,21],a:[7,27],ph:[4.8,6.5],nf:-3,c:1,r:1,m:4,wet:0},
+ {id:'ayote',n:'Squash',f:'cuc',k:'cuc',w:450,o:[20,30],a:[14,36],ph:[5.5,7.5],nf:-1,c:3,r:2,m:3,wet:1},
+ {id:'melon',n:'Melon',f:'cuc',k:'cuc',w:450,o:[23,32],a:[16,38],ph:[6,7.5],nf:-2,c:2,r:1,m:5,wet:0},
+ {id:'cebolla',n:'Onion',f:'ali',k:'raiz',w:450,o:[13,24],a:[8,30],ph:[6,7],nf:-2,c:0,r:0,m:4,wet:0},
+ {id:'zanah',n:'Carrot',f:'api',k:'raiz',w:400,o:[14,22],a:[7,28],ph:[5.8,7],nf:-1,c:1,r:0,m:4,wet:0},
+ {id:'camote',n:'Sweet potato',f:'conv',k:'conv',w:500,o:[21,30],a:[15,36],ph:[5,7],nf:-1,c:3,r:2,m:3,wet:1},
+ {id:'desc',n:'Fallow',f:'',k:'none',w:0,o:[0,50],a:[-9,60],ph:[0,14],nf:0,c:1,r:1,m:0,wet:3}
+];
+const DESC=CROPS.length-1;
+const IRRCAP={no:0,lim:150,full:500};
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function scenario(cl,s){const k={normal:[1,0],seco:[.75,0],calor:[.9,1.5]}[s];return {P:cl.P.map(p=>p*k[0]),T:cl.T.map(t=>t+k[1])}}
+function stress(cl){return {P:cl.P.map(p=>p*.75),T:cl.T.map(t=>t+1.5)}}
+function fitCrop(c,slot,cl,farm){
+  if(c.k==='none')return{fit:1,irr:0,unmet:0,lim:''};
+  const Tm=slot.m.reduce((s,i)=>s+cl.T[i],0)/slot.m.length, rain=slot.m.reduce((s,i)=>s+cl.P[i],0);
+  let tf=1;
+  if(Tm<c.o[0])tf=clamp((Tm-c.a[0])/(c.o[0]-c.a[0]),0,1); else if(Tm>c.o[1])tf=clamp((c.a[1]-Tm)/(c.a[1]-c.o[1]),0,1);
+  const texF={arenoso:.62,franco:.75,arcilloso:.78}[farm.tex];
+  const eff=Math.min(rain*texF,c.w);
+  const def=c.w-eff, irr=Math.min(def,IRRCAP[farm.irr]), unmet=def-irr;
+  const wf=clamp(1-1.1*unmet/c.w,0,1);
+  const drain={arenoso:.6,franco:1,arcilloso:1.4}[farm.tex], ratio=rain/c.w;
+  const xf=1-clamp((ratio-2)*.2*((3-c.wet)/3)*drain,0,.6);
+  let pf=1; if(farm.ph<c.ph[0])pf=clamp(1-.4*(c.ph[0]-farm.ph),.3,1); else if(farm.ph>c.ph[1])pf=clamp(1-.4*(farm.ph-c.ph[1]),.3,1);
+  const parts=[[tf,Tm<c.o[0]?'cold':'heat'],[wf,'lack of water'],[xf,'excess rain'],[pf,'pH']].sort((a,b)=>a[0]-b[0]);
+  return{fit:tf*wf*xf*pf,irr,unmet,lim:parts[0][0]<.95?parts[0][1]:''};
+}
+function fits(cl,farm){return CROPS.map(c=>SLOTS.map(s=>fitCrop(c,s,cl,farm)))}
+function ymod(seq,i){
+  const c=CROPS[seq[i]]; if(i===0||c.k==='none')return 1;
+  const p=CROPS[seq[i-1]]; let m=1;
+  if(p.f&&p.f===c.f)m*=.8;
+  else{ for(let j=Math.max(0,i-3);j<i-1;j++) if(CROPS[seq[j]].f&&CROPS[seq[j]].f===c.f){m*=.92;break} }
+  if(p.nf>0&&c.nf<0)m*=p.nf>=3?1.15:1.1;
+  return m;
+}
+function evalSeq(seq,F,FS,farm,w,ref){
+  const L=seq.length; let inc=0,incRef=0,irr=0,unmet=0,need=0,sN=0,cov=0,res=0,rep=0,st=0,nc=0; const fam=new Set();
+  for(let i=0;i<L;i++){
+    const c=CROPS[seq[i]],s=i%3,f=F[seq[i]][s],m=ymod(seq,i);
+    inc+=c.m*f.fit*m; incRef+=ref[s]; irr+=f.irr; unmet+=f.unmet; need+=c.w;
+    sN+=c.nf*(c.nf>0?f.fit:1); cov+=c.c*f.fit; res+=c.r*f.fit;
+    if(c.f){fam.add(c.f); nc++; st+=Math.min(1,FS[seq[i]][s].fit*m); if(i>0&&CROPS[seq[i-1]].f===c.f)rep++}
+  }
+  const div=clamp(fam.size/Math.min(5,L),0,1);
+  const wc={plana:.2,media:.35,fuerte:.6}[farm.slope], wr=farm.om<2.5?.3:.2;
+  const nS=clamp((sN/L*9+9)/15,0,1);
+  const soil=clamp((.3*nS+wc*cov/L/3+wr*res/L/3+.25*div)/(.55+wc+wr)-.35*rep/Math.max(1,L-1),0,1);
+  const water=need?clamp(1-(irr+unmet)/need,0,1):1;
+  const income=incRef?clamp(inc/incRef,0,1):0;
+  const resil=nc?clamp(.8*st/nc+.2*div,0,1)*(nc/L>.5?1:nc/L*2):0;
+  const W=w.s+w.w+w.i+w.r||1;
+  return{total:(w.s*soil+w.w*water+w.i*income+w.r*resil)/W,soil,water,income,resil,irr,rep,fam:fam.size};
+}
+function plan(cl,farm,w){
+  const F=fits(cl,farm),FS=fits(stress(cl),farm);
+  const ref=SLOTS.map((_,s)=>Math.max(...CROPS.map((c,i)=>c.m*F[i][s].fit)));
+  let beam=[[]];
+  for(let i=0;i<9;i++){
+    const next=[];
+    for(const b of beam)for(let c=0;c<CROPS.length;c++){
+      if(c!==DESC&&F[c][i%3].fit<.3)continue;
+      const q=b.concat(c); next.push([q,evalSeq(q,F,FS,farm,w,ref).total]);
+    }
+    next.sort((a,b)=>b[1]-a[1]); beam=next.slice(0,300).map(x=>x[0]);
+  }
+  const out=[];
+  for(const q of beam){ if(out.every(o=>o.seq.filter((c,i)=>c!==q[i]).length>=3))out.push({seq:q,sc:evalSeq(q,F,FS,farm,w,ref)}); if(out.length===3)break }
+  const bi=CROPS.findIndex(c=>c.id===farm.base);
+  const bs=Array.from({length:9},(_,i)=>F[bi][i%3].fit>=.4?bi:DESC);
+  return{plans:out,base:{seq:bs,sc:evalSeq(bs,F,FS,farm,w,ref)},F};
+}
+function parsePower(txt){
+  const j=JSON.parse(txt), p=j&&j.properties&&j.properties.parameter;
+  if(!p||!p.PRECTOTCORR||!p.T2M)throw new Error('The JSON has no PRECTOTCORR and T2M.');
+  const K=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const P=K.map((k,i)=>p.PRECTOTCORR[k]*DIAS[i]), T=K.map(k=>p.T2M[k]);
+  if([...P,...T].some(v=>!isFinite(v)||v<-900))throw new Error('Some months have no data (value −999). Try another coordinate.');
+  const g=j.geometry&&j.geometry.coordinates||[];
+  return{P,T,lon:g[0],lat:g[1]};
+}
+if(typeof module!=='undefined')module.exports={plan,SITES,CROPS,scenario,parsePower};
+</script>
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  let custom=null;
+  // tabs
+  const tabs=[...document.querySelectorAll('.tabs button')];
+  function show(t){ if(!$('p-'+t))t='herramienta'; tabs.forEach(b=>{const on=b.dataset.tab===t;b.setAttribute('aria-selected',on);$('p-'+b.dataset.tab).hidden=!on}) }
+  tabs.forEach(b=>b.addEventListener('click',()=>{show(b.dataset.tab);try{history.replaceState(null,'','#'+b.dataset.tab)}catch(e){}}));
+  show((location.hash||'').slice(1)||'herramienta');
+
+  $('site').innerHTML=Object.entries(SITES).map(([k,s])=>`<option value="${k}">${s.name}</option>`).join('');
+  $('base').innerHTML=CROPS.filter(c=>c.m>0).map(c=>`<option value="${c.id}">${c.n}</option>`).join('');
+  $('famlegend').innerHTML=Object.entries(FAM).map(([k,n])=>`<span><i style="background:var(--f-${k})"></i>${n}</span>`).join('');
+
+  function link(){ $('powerlink').href=`https://power.larc.nasa.gov/api/temporal/climatology/point?parameters=T2M,T2M_MAX,T2M_MIN,PRECTOTCORR&community=AG&longitude=${(+$('lon').value).toFixed(4)}&latitude=${(+$('lat').value).toFixed(4)}&format=JSON` }
+  function climate(){ return custom||SITES[$('site').value] }
+
+  function chart(cl){
+    const W=660,H=230,L=44,R=40,T=14,B=44,pw=W-L-R,ph=H-T-B;
+    const pmax=Math.max(100,Math.ceil(Math.max(...cl.P)/100)*100);
+    const t0=Math.floor((Math.min(...cl.T)-2)/5)*5,t1=Math.ceil((Math.max(...cl.T)+2)/5)*5;
+    const bw=pw/12, y=p=>T+ph-(p/pmax)*ph, ty=t=>T+ph-((t-t0)/(t1-t0))*ph;
+    let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:520px;max-width:${W}px" role="img" aria-label="Rainfall and temperature by month">`;
+    for(let k=0;k<=4;k++){const v=pmax*k/4,yy=y(v);s+=`<line x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${yy+4}" text-anchor="end">${v}</text><text x="${W-R+6}" y="${yy+4}" style="fill:var(--temp)">${(t0+(t1-t0)*k/4).toFixed(0)}°</text>`}
+    cl.P.forEach((p,i)=>{s+=`<rect x="${L+i*bw+5}" y="${y(p)}" width="${bw-10}" height="${Math.max(0,T+ph-y(p))}" rx="2" fill="var(--rain)"><title>${MES[i]}: ${p.toFixed(0)} mm, ${cl.T[i].toFixed(1)} °C</title></rect><text x="${L+i*bw+bw/2}" y="${H-B+14}" text-anchor="middle">${MES[i]}</text>`});
+    s+=`<polyline fill="none" stroke="var(--temp)" stroke-width="2" points="${cl.T.map((t,i)=>`${L+i*bw+bw/2},${ty(t)}`).join(' ')}"/>`;
+    cl.T.forEach((t,i)=>{s+=`<circle cx="${L+i*bw+bw/2}" cy="${ty(t)}" r="2.5" fill="var(--temp)"/>`});
+    SLOTS.forEach((sl,i)=>{const x=L+i*4*bw;s+=`<line x1="${x+3}" x2="${x+4*bw-3}" y1="${H-18}" y2="${H-18}" stroke="var(--muted)" stroke-width="1.5"/><text x="${x+2*bw}" y="${H-5}" text-anchor="middle">${sl.n}</text>`});
+    s+=`<text x="${L-6}" y="${T-3}" text-anchor="end">mm</text></svg>`;
+    $('chart').innerHTML=s;
+  }
+  const pct=x=>Math.round(x*100);
+  function card(title,p,F,base,isBase){
+    const sc=p.sc; let cal='<div class="cal"><span class="h"></span>'+SLOTS.map(s=>`<span class="h">${s.n}<br>${s.r}</span>`).join('');
+    for(let y=0;y<3;y++){cal+=`<span class="h">Year ${y+1}</span>`;for(let s=0;s<3;s++){const ci=p.seq[y*3+s],c=CROPS[ci],f=F[ci][s];
+      cal+=`<div class="cell" style="background:var(--f-${c.k})" title="${c.n}: fit ${pct(f.fit)} %, irrigation ${Math.round(f.irr)} mm"><b>${c.n}</b><span>${c.k==='none'?'—':pct(f.fit)+' %'+(f.irr>5?' · '+Math.round(f.irr)+' mm':'')}</span></div>`}}
+    cal+='</div>';
+    const ms=[['Soil',sc.soil],['Water',sc.water],['Income',sc.income],['Resilience',sc.resil]].map(([n,v])=>`<span>${n}</span><div class="meter"><i style="width:${pct(v)}%"></i></div><span class="v">${pct(v)}</span>`).join('');
+    const why=[];
+    if(isBase){ why.push(`This is the score of planting only ${CROPS[p.seq.find(c=>c!==DESC)??DESC].n.toLowerCase()} in the seasons where it grows.`); if(sc.rep)why.push(`The same family repeats ${sc.rep} times in a row: pests build up and nitrogen runs out.`) }
+    else{
+      const leg=p.seq.filter(c=>CROPS[c].nf>0).length, cov=p.seq.filter(c=>CROPS[c].k==='cover').length;
+      if(leg)why.push(`${leg} of 9 cycles are legumes${cov?` (${cov} as green manure)`:''}: they restore nitrogen for the next crop.`);
+      why.push(sc.rep?`Repeats a family ${sc.rep} ${sc.rep>1?'times':'time'} in consecutive cycles; watch for soil pests.`:`${sc.fam} different families and none repeats in consecutive cycles.`);
+      const d=Math.round(sc.irr-base.sc.irr); why.push(`Estimated irrigation over 3 years: ${Math.round(sc.irr)} mm${Math.abs(d)>20?` (${d>0?'+':'−'}${Math.abs(d)} mm compared with today)`:''}.`);
+      let wi=-1,wf=2; p.seq.forEach((c,i)=>{const f=F[c][i%3];if(c!==DESC&&f.fit<wf){wf=f.fit;wi=i}});
+      if(wi>=0&&wf<.8){const f=F[p.seq[wi]][wi%3];why.push(`Weak spot: ${CROPS[p.seq[wi]].n.toLowerCase()} in ${SLOTS[wi%3].n} of year ${Math.floor(wi/3)+1} (fit ${pct(wf)} %${f.lim?', due to '+f.lim:''}).`)}
+      const di=pct(sc.total-base.sc.total); if(di>0)why.push(`${di} points above what is planted today.`);
+    }
+    return `<article class="plan${isBase?' base':''}"><header><h3>${title}</h3><span class="total"><b>${pct(sc.total)}</b> / 100</span></header>${cal}<div class="side"><div class="meters">${ms}</div><ul class="why">${why.map(x=>`<li>${x}</li>`).join('')}</ul></div></article>`;
+  }
+  function run(){
+    ['ws','ww','wi','wr'].forEach(k=>$('o-'+k).textContent=$(k).value);
+    const src=climate(), cl=scenario(src,$('scen').value);
+    const farm={tex:$('tex').value,slope:$('slope').value,ph:+$('ph').value||6,om:+$('om').value||0,irr:$('irr').value,base:$('base').value};
+    const w={s:+$('ws').value,w:+$('ww').value,i:+$('wi').value,r:+$('wr').value};
+    const fl=$('srcflag');
+    if(custom){fl.className='flag ok';fl.textContent=`Using the NASA POWER data you pasted (${custom.lat??'?'}, ${custom.lon??'?'}).`}
+    else{fl.className='flag';fl.textContent='Approximate example climate. This is NOT NASA data: load the POWER JSON to use real data.'}
+    $('climtitle').textContent='Monthly climate · '+(custom?'NASA POWER':src.name)+' · '+Math.round(cl.P.reduce((a,b)=>a+b,0))+' mm a year';
+    chart(cl);
+    const r=plan(cl,farm,w);
+    $('plans').innerHTML=(r.plans.length?r.plans.map((p,i)=>card('Plan '+'ABC'[i],p,r.F,r.base,false)).join(''):'<p class="flag">No crop in the catalog fits this climate. Check the data or add crops from the area.</p>')+card('What is planted today',r.base,r.F,r.base,true);
+  }
+  $('form').addEventListener('input',e=>{ if(e.target.id==='paste')return; if(e.target.id==='site'){custom=null;const s=SITES[$('site').value];$('lat').value=s.lat;$('lon').value=s.lon} link(); run() });
+  $('load').addEventListener('click',()=>{ const m=$('pastemsg'); try{custom=parsePower($('paste').value);m.textContent='Data loaded.';run()}catch(e){m.textContent='Could not read: '+(e.message||e)+' Copy the whole JSON from the first brace.'} });
+  link(); run();
+})();
+</script>
+
+</body></html>

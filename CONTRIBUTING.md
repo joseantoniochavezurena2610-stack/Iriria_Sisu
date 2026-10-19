@@ -1,40 +1,41 @@
-# Flujo de trabajo del equipo
+# Team workflow
 
-Para no perder tiempo peleando con git durante el hackatón:
+So we don't waste time fighting git during the hackathon:
 
-1. **Nunca hacer push directo a `main`.** Cada persona trabaja en su propia rama:
+1. **Never push directly to `main`.** Everyone works on their own branch:
    ```bash
-   git checkout -b feature/nombre-corto
+   git checkout -b feature/short-name
    ```
-2. **Commits pequeños y frecuentes**, mensajes claros:
+2. **Small, frequent commits** with clear messages:
    ```bash
    git add .
-   git commit -m "feat: eje ingreso en colones"
+   git commit -m "feat: income axis in colones"
    ```
-3. **Subir la rama y abrir Pull Request** (aunque sea el mismo equipo, ayuda a revisar rápido):
+3. **Push the branch and open a Pull Request** (even within the team, it makes reviews quick):
    ```bash
-   git push origin feature/nombre-corto
+   git push origin feature/short-name
    ```
-4. Antes de cada checkpoint de equipo (~cada 2-3h), hacer merge de lo que ya funciona a `main` para evitar conflictos gigantes al final.
-5. Si algo se rompe cerca de la entrega: **volver al último commit funcional** en vez de intentar arreglar en caliente.
+4. Before every team checkpoint (~every 2-3 h), merge whatever already works into `main` to avoid huge conflicts at the end.
+5. If something breaks close to the deadline: **go back to the last working commit** instead of trying to fix it under pressure.
    ```bash
    git log --oneline
-   git checkout <hash-del-commit-bueno>
+   git checkout <hash-of-the-good-commit>
    ```
 
-## Antes de abrir un PR
+## Before opening a PR
 ```bash
-npm test                              # pruebas del motor
-python3 scripts/catalogo_a_json.py    # si cambiaron el CSV del catálogo (suban también web/data/cultivos.json)
-python3 -m http.server 8000 --directory web   # revisar la web en http://localhost:8000
+npm test                                      # engine tests
+python3 scripts/catalog_to_json.py            # if you changed the catalog CSV (also commit web/data/crops.json)
+python3 -m http.server 8000 --directory web   # check the website at http://localhost:8000
 ```
-- Términos técnicos nuevos → `docs/glosario.md`.
-- Decisiones nuevas → `docs/decisiones.md`.
-- Nunca subir contraseñas ni llaves (Earthdata va en *Secrets* de GitHub).
+- New technical terms → `docs/glossary.md`.
+- New decisions → `docs/decisions.md`.
+- Never commit passwords or keys (Earthdata goes in GitHub *Secrets*).
+- Everything in the repository is written in **English**. The only exception is the Spanish team guides in `docs/team-guides-es/`.
 
-## Convención de mensajes de commit
-- `feat:` nueva funcionalidad
-- `fix:` corrección de bug
-- `data:` cambios relacionados a datasets/pipeline de datos
-- `docs:` cambios en documentación
-- `chore:` configuración, dependencias, etc.
+## Commit message convention
+- `feat:` new functionality
+- `fix:` bug fix
+- `data:` changes to datasets / the data pipeline
+- `docs:` documentation changes
+- `chore:` configuration, dependencies, etc.
