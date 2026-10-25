@@ -9,24 +9,25 @@ Farm assumed: rainfed rice grower, loam, flat land, pH from SoilGrids when avail
 
 | Canton | Rain May–Aug 2026 (mm) | Rice water coverage 2026 | A: rice falls short? | B: Primera year 1 (A / B / C) | B: rice proposed? |
 | --- | --- | --- | --- | --- | --- |
-| La Cruz | 391 | 60 % | yes | peanut / peanut / peanut | no |
-| Liberia | 441 | 58 % | yes | peanut / peanut / peanut | no |
-| Bagaces | 639 | 88 % | no | peanut / peanut / rice | yes |
-| Tilarán | 639 | 88 % | no | peanut / peanut / rice | yes |
-| Carrillo (Filadelfia) | 441 | 58 % | yes | peanut / peanut / peanut | no |
-| Cañas | 639 | 88 % | no | peanut / peanut / rice | yes |
-| Abangares (Las Juntas) | 639 | 88 % | no | peanut / peanut / rice | yes |
-| Santa Cruz | 441 | 58 % | yes | peanut / peanut / peanut | no |
-| Nicoya | 652 | 97 % | no | peanut / peanut / peanut | no |
-| Hojancha | 652 | 98 % | no | peanut / peanut / peanut | no |
-| Nandayure (Carmona) | 939 | 100 % | no | peanut / peanut / rice | yes |
+| La Cruz | 391 | 60 % | yes | mucuna / canavalia / maize | no |
+| Liberia | 441 | 58 % | yes | mucuna / canavalia / maize | no |
+| Bagaces | 639 | 88 % | no | mucuna / canavalia / maize | no |
+| Tilarán | 639 | 88 % | no | mucuna / canavalia / maize | no |
+| Carrillo (Filadelfia) | 441 | 58 % | yes | mucuna / canavalia / maize | no |
+| Cañas | 639 | 88 % | no | mucuna / canavalia / maize | no |
+| Abangares (Las Juntas) | 639 | 88 % | no | mucuna / canavalia / maize | no |
+| Santa Cruz | 441 | 58 % | yes | mucuna / canavalia / maize | no |
+| Nicoya | 652 | 97 % | no | mucuna / mucuna / canavalia | no |
+| Hojancha | 652 | 98 % | no | mucuna / mucuna / canavalia | no |
+| Nandayure (Carmona) | 939 | 100 % | no | mucuna / mucuna / canavalia | no |
 
 ## Result
 - A: with the rain POWER recorded, rainfed rice falls short in Primera 2026 in 4 of 11 cantons (La Cruz, Liberia, Carrillo (Filadelfia), Santa Cruz).
 - B: in those same cantons, plans made with data up to April 2026 proposed rice in Primera year 1 in 0 of 4.
-- Nandayure: POWER recorded 939 mm in May–Aug 2026 and the water balance covers 100 % of rice demand, so the engine does **not** flag rainfed rice there, and one of the plans still proposed it. This does not match the press report that growers there did not plant; one possible cause is the regional POWER cell; check it against IMN station data.
+- Nandayure: POWER recorded 939 mm in May–Aug 2026 and the water balance covers 100 % of rice demand, so the engine does **not** flag rainfed rice there. This does not match the press report that growers there did not plant; one possible cause is the regional POWER cell; check it against IMN station data.
 
 ## How to read it
 - La Nación (18 Jul 2026) reported that rice growers in Nandayure and Jicaral did not plant in 2026. Compare that with the Nandayure row.
 - NASA POWER is regional (the 11 cantons fall in 5 grid cells). Where POWER rain differs from IMN station reports, the gap is a limitation of the data, not something the engine can fix.
 - This is one season in one year: it can show agreement or disagreement with what happened, not prove the engine right.
+- Since 25 Oct 2026 income is in colones (decision D20). At published prices and costs rainfed rice loses money (about ₡150,000/ha per season), so part B no longer proposes rice in any canton: in the wetter cantons that is a price signal, not a water signal. Part A is the climate-only test.

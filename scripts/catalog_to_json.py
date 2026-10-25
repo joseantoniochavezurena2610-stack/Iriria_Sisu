@@ -22,7 +22,7 @@ NUMBERS = ["cycle_days", "ph_min", "ph_max", "ph_opt_min", "ph_opt_max", "t_min_
            "t_opt_max_c", "t_max_c", "kc_season", "waterlogging_tolerance", "drought_tolerance",
            "n_supply_kg_ha", "n_demand_kg_ha", "cover", "residue", "relative_margin"]
 OPTIONAL = ["yield_t_ha", "price_crc_kg", "production_cost_crc_ha"]
-TEXT = ["id", "seasons", "name", "family", "group", "agronomic_source", "economic_source", "verified_by"]
+TEXT = ["id", "seasons", "name", "family", "group", "agronomic_source", "economic_source", "economic_confidence", "verified_by"]
 BOOLEANS = ["legume", "green_manure"]
 VALID_SEASONS = ("dry", "primera", "postrera")
 
