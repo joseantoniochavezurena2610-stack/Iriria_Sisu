@@ -9,7 +9,7 @@ Challenge: **Change of Course — Adapting Farms with NASA Data.** Pilot region:
 In Costa Rica's North Pacific, the 2026-27 El Niño has already cut rainfall by about 37 % (Jan–Aug 2026), all 11 cantons of Guanacaste are under an orange alert, and the national weather service (IMN) expects effects at least until July 2027. Grain growers decide what to plant without a tool that brings together the coming climate, the soil of their farm and their finances.
 
 ## The solution
-A **web page** where the farmer (or the extension agent visiting them) enters their canton, what they plant, whether they have irrigation, what their soil is like and what matters most to them. The app uses **real NASA POWER rainfall and temperature since 2021** and NOAA's ENSO index to compare **3 three-year crop-rotation plans** against "keep planting what you plant today", showing the effect on **soil, water, risk and income** in a normal year and in an El Niño year. **No sensors needed**: everything comes from what the farmer knows. The decision is always theirs.
+A **web page** where the farmer (or the extension agent visiting them) enters their canton, what they plant, whether they have irrigation, what their soil is like and what matters most to them. The app uses **real NASA POWER rainfall and temperature since 2021** and NOAA's ENSO index to compare **3 three-year crop-rotation plans** against "keep planting what you plant today", showing the effect on **soil, water, risk and income** in a normal year and in an El Niño year. **No sensors and no field measurements** (the challenge is theoretical, D23): everything comes from NASA data and what the farmer knows. The decision is always theirs.
 
 Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.md`](docs/decisions.md)
 
@@ -27,15 +27,18 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
   | Backtest of rainfed rice in Primera 2026, 11 cantons | ✅ Done — agrees in 4 dry cantons; **does not** flag Nandayure, where POWER recorded 939 mm | [`docs/research/backtest-2026.md`](docs/research/backtest-2026.md) |
   | POWER vs IMERG rainfall cross-check | ⏳ Pending | `scripts/fetch_imerg.py` |
   | ±20 % sensitivity analysis | ⏳ Pending | — |
-  | Review by a MAG/INTA extension agent | ➖ Not required for the challenge (D22); after the event | — |
+  | 2023 backtest (weak El Niño) | ⏳ Pending (8 Nov) | `scripts/backtest_2026.mjs` |
+| Review by a MAG/INTA extension agent | ➖ Not required for the challenge (D22); after the event | — |
+| Physical soil tests or sensors | ➖ Not part of the project: the challenge is theoretical (D23) | — |
 
 ## 📚 Documentation
 | Document | What for |
 |---|---|
-| [`docs/team-guides-es/`](docs/team-guides-es/) | **Team guides (Spanish PDFs):** how the repo is organised, how to run the app, the **plan for the 5-person team** (`Plan_equipo_sin_Jose_Pablo.pdf`) and the **full history since day 0 with how to explain the project** (`Historial_y_guia_Iriria_Sisu.pdf`). All updated 25 Oct. |
+| [`docs/team-guides-es/`](docs/team-guides-es/) | **Team guides (Spanish PDFs):** how the repo is organised, how to run the app, **what is left to finish the project** (`Plan_para_terminar_Iriria_Sisu.pdf`), the **agenda for the 25 Oct team meeting** (`Reunion_25_oct_Iriria_Sisu.pdf`) and the **full history since day 0 with how to explain the project** (`Historial_y_guia_Iriria_Sisu.pdf`). All updated 25 Oct. |
 | [`docs/glossary.md`](docs/glossary.md) · [`docs/glossary.es.md`](docs/glossary.es.md) | **Glossary of technical terms**, in English and in Spanish — everyone should read it |
 | [`docs/decisions.md`](docs/decisions.md) | What we decided and why |
 | [`docs/plan.md`](docs/plan.md) | Week-by-week plan until the event and the 48 hours |
+| [`docs/event-nasa-resources.md`](docs/event-nasa-resources.md) | How we use the NASA data and real-time tools offered during the 48 hours |
 | [`docs/architecture.md`](docs/architecture.md) | How the web app is built, how to publish it (free GitHub Pages address) |
 | [`docs/engine-rules.md`](docs/engine-rules.md) | Engine formulas |
 | [`docs/video-script.md`](docs/video-script.md) | Script for the 30-second video |
@@ -78,7 +81,7 @@ archive/           earlier prototype (reference)
 | Juan Diego Chávez Ureña | Integration, deployment, security, data and engine |
 | Angeli Abarca Ureña | Economics, impact and operations |
 | Nesly Mejía Jiménez | Design, UX and video |
-| Britzie Yarith García Arias | Field work, validation and optional sensor |
+| Britzie Yarith García Arias | Validation, usability and NASA resources |
 
 Former member: José Pablo Ramírez Fernández built the first data pipeline (`scripts/fetch_data.py`, `data` workflow) and engine until 25 Oct 2026.
 

@@ -14,12 +14,15 @@
 | 🔴 | Watch the Monday `data` run after the ×24 POWER incident (D21): a red run means the guard worked and the good data stayed | Green or explained run | 26 Oct |
 | 🟠 | ±20 % sensitivity script on Kc, failure threshold, N credit and margins (same style as `scripts/backtest_2026.mjs`) | Table for Jose Antonio | 5 Nov |
 | 🟠 | Check that the weekly `data` workflow keeps committing without breaking `main` (every Monday) | Green runs | weekly |
+| 🟠 | 2023 backtest: extend `scripts/backtest_2026.mjs` to the weak 2023 El Niño | Table for Jose Antonio | 8 Nov |
+| 🟠 | Be ready to plug in NASA resources at the event (D24): know the path script → JSON → guard → test in [`event-nasa-resources.md`](../event-nasa-resources.md) | — | 13 Nov |
 | 🟡 | Optional: team Earthdata account as repo *secrets* and `fetch_imerg.py` for the IMERG cross-check | `imerg_monthly.json` | only if time |
 
 Moved to after the event (D19): soil moisture (`GWETROOT`) in the engine, Content-Security-Policy meta.
 
 ## During the 48 hours
 - Run the `data` workflow at the start (fresh data).
+- Hours 3–20: plug in the NASA resources Science adopts (D24); each one with the D21 guard and a test.
 - Owner of `main`: merge at every checkpoint; engine fixes from Science's review. Nothing new after hour 30.
 - Hour 46: tag `v1.0` and verify the public link (no login, incognito, phone on mobile data).
 

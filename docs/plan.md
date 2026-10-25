@@ -13,6 +13,9 @@ Current decisions: [`decisions.md`](decisions.md).
 - [x] Glossary, architecture, engine rules and video script
 - [x] Whole repository, app and v1 prototype in English; team guides in Spanish
 
+## Scope (25 Oct): theoretical challenge
+The team does **no physical tests** (no soil samples, ribbon tests, sensors or field visits) — decision D23. Validation is done with data: tests, backtests, sensitivity and cross-checks. During the 48 hours NASA gives access to real data and real-time tools; we arrive with the rest ready and plug in what fits (D24).
+
 ## Team change (25 Oct)
 José Pablo left the team (D17). His pipeline, engine and tests stay and keep running. His open tasks were reassigned below; the custom domain was dropped in favour of the free GitHub Pages address (D18), and two extras were moved to after the event (D19).
 
@@ -34,7 +37,7 @@ José Pablo left the team (D17). His pipeline, engine and tests stay and keep ru
 - [ ] Update the team on the Space Apps site (5 members) — **Angeli**
 - [ ] Review repository collaborators after the team change — **Jose Antonio** (owner)
 - [ ] Read the whole [glossary](glossary.md) — **everyone**
-- [ ] Ask the organisers whether we may arrive with pre-existing code — **Angeli**
+- [x] Ask the organisers whether we may arrive with pre-existing code — answered 22 Oct: allowed (D25)
 
 ### Week 2 · 26 Oct – 1 Nov — science and economics
 - [x] Prices, production costs and yields for every crop — done 25 Oct from public web sources (D20); **Angeli** reviews the "estimate" rows and replaces any she can source better
@@ -47,7 +50,9 @@ José Pablo left the team (D17). His pipeline, engine and tests stay and keep ru
 - [ ] ±20 % sensitivity script — **Juan Diego** (5 Nov) · interpretation — **Jose Antonio**
 - [x] Income axis in colones (engine + test) — done 25 Oct
 - ~~Take the app to a MAG/INTA extension agent~~ → not required for the challenge (D22); after the event
-- [ ] Internal user test: two people outside the code use the public link and note what they did not understand — **Angeli + Britzie**
+- [ ] Internal user test: two people outside the code use the public link and note what they did not understand — **Angeli + Britzie** (8 Nov)
+- [ ] NASA resources inventory for the 48 hours ([`event-nasa-resources.md`](event-nasa-resources.md)) — **Britzie** (8 Nov)
+- [ ] 2023 backtest (weak El Niño): extend `scripts/backtest_2026.mjs` — **Juan Diego** (8 Nov) · interpretation — **Jose Antonio**
 - [ ] Run `npm test` and the `data` workflow once, as backup — **Jose Antonio**
 
 ### Week 4 · 9–13 Nov — freeze
@@ -58,8 +63,9 @@ José Pablo left the team (D17). His pipeline, engine and tests stay and keep ru
 ## During the 48 hours
 | Hour | Milestone |
 |---|---|
-| 0–3 | Run the `data` workflow (Juan Diego); confirm the challenge, review the pre-existing-code rules, adjust to what the organisers ask |
-| 3–20 | Pending improvements (prioritised list in Issues), fresh data from the workflow |
+| 0–3 | Run the `data` workflow (Juan Diego); confirm the challenge; **inventory the NASA data and real-time tools offered** against [`event-nasa-resources.md`](event-nasa-resources.md) (Britzie + Jose Antonio) |
+| 3–8 | Science decides *adopt / cross-check / skip* for each resource; Integration plugs the adopted ones in (script → JSON → guard → test) (D24) |
+| 8–20 | Pending improvements (prioritised list in Issues) and the new NASA data in the app; **hour 20: last call** for new data sources |
 | 20–30 | Interface and copy polish; phone testing |
 | 30 | **Freeze**: fixes only |
 | 30–40 | Record and edit the video with English subtitles |
@@ -71,12 +77,12 @@ José Pablo left the team (D17). His pipeline, engine and tests stay and keep ru
 |---|---|---|
 | Juan Diego Chávez Ureña | Integration, deployment, security, data and engine | [integration-security.md](roles/integration-security.md) |
 | Jose Antonio Chávez Ureña | Science lead | [science-lead.md](roles/science-lead.md) |
-| Britzie Yarith García Arias | Field work, validation and optional sensor | [field-and-sensors.md](roles/field-and-sensors.md) |
+| Britzie Yarith García Arias | Validation, usability and NASA resources | [validation-usability.md](roles/validation-usability.md) |
 | Angeli Abarca Ureña | Economics, impact and operations | [economics-operations.md](roles/economics-operations.md) |
 | Nesly Mejía Jiménez | Design, UX and video | [design-video.md](roles/design-video.md) |
 
 ## Blockers / pending decisions
-- May we arrive with pre-existing code? (ask the organisers)
+- ~~May we arrive with pre-existing code?~~ → yes, confirmed 22 Oct (D25)
 - ~~Final domain name~~ → no custom domain (D18)
 - ~~Approval or review by MAG/INTA~~ → not needed to compete (D22)
 - Watch the next Monday `data` run: if POWER still returns ×24 rainfall the run fails on purpose and the 19 Oct data stays (D21)
