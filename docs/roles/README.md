@@ -10,14 +10,14 @@ Team deliverables: **video (≤ 30 s)** and **web prototype**. Each role has tas
 | Integration, deployment, security, data and engine | Juan Diego Chávez Ureña | [integration-security.md](integration-security.md) |
 | Economics, impact and operations | Angeli Abarca Ureña | [economics-operations.md](economics-operations.md) |
 | Design, UX and video | Nesly Mejía Jiménez | [design-video.md](design-video.md) |
-| Field work, validation and optional sensor | Britzie Yarith García Arias | [field-and-sensors.md](field-and-sensors.md) |
+| Validation, usability and NASA resources | Britzie Yarith García Arias | [validation-usability.md](validation-usability.md) |
 
 ## How they connect
 ```
 Science ──catalog and rules──▶ Engine (Integration) ──JSON + engine.js──▶ Website (Design + Integration)
    ▲                                 ▲                                     │
 Economics ──prices and costs─────────┘                                     ▼
-Field work ──internal user tests and dress rehearsal───────────▶  Video + public link
+Validation ──user tests, NASA inventory, dress rehearsal───────▶  Video + public link
 ```
 
 ## Critical dependencies
@@ -28,6 +28,7 @@ Field work ──internal user tests and dress rehearsal────────
 5. **Freeze** of formulas and catalog → **13 Nov**.
 
 ## Common rules
+- The challenge is theoretical (D23): nobody does physical tests; everything is validated with data.
 - Every new term goes into the glossary, in both versions: [English](../glossary.md) and [Spanish](../glossary.es.md).
 - No number in the app or the video without a source.
 - Branches + PRs (see `CONTRIBUTING.md`). The tests (`npm test`) must pass.

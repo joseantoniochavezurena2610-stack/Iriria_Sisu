@@ -9,7 +9,7 @@
 | ✅ | Prices, costs and yields for every crop — **done 25 Oct** from public web sources (D20) | `yield_t_ha`, `price_crc_kg`, `production_cost_crc_ha`, `economic_source`, `economic_confidence` in the CSV; [`research/prices-and-costs.md`](../research/prices-and-costs.md) |
 | 🟠 | Review the rows marked **estimate** (sorghum, cowpea, peanut, melon and watermelon prices, green-manure cost) and replace any with a better public source | Edited CSV + `python scripts/catalog_to_json.py` |
 | 🟠 | Be able to explain why rice and beans lose money in the app (published prices below published costs) | 2 sentences for the submission |
-| 🔴 | Ask the organisers about the pre-existing-code rule | Answer in `docs/decisions.md` |
+| ✅ | Pre-existing-code rule — answered 22 Oct: allowed (D25). The submission form must say what was built before and during the event | `docs/decisions.md` |
 | ✅ | Urea price for legume nitrogen — done: ₡27,755 per 45 kg sack (MAG-SEPSA, Aug 2026) → ₡1,341 per kg N | In `engine.js` |
 
 ## During the 48 hours
