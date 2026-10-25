@@ -20,7 +20,7 @@ Make sure **every number the app shows can be defended**. "Best Use of Science" 
 | 🔴 | Review the [glossary](../glossary.md): definitions and Spanish terms are correct | PR |
 | 🔴 | Compare POWER rainfall with IMN stations (Liberia, Nicoya **and Nandayure**) for 2021-2026 — the 2026 backtest does not flag Nandayure, so this decides how we present it | Table + conclusion, by 1 Nov |
 | 🟠 | Resolve the ❓ items in `research/verified-summary.md` | No ❓ in anything used in the video |
-| 🟡 | Expert validation with an agronomist/extension agent | 1-2 quotes |
+| ➖ | ~~Expert validation with an agronomist/extension agent~~ — not required for the challenge (D22); after the event | — |
 
 ## 4. Validation
 1. **2026 backtest**: run the engine with May 2026 climate; does it advise against rainfed rice in Nandayure? (Rice growers in Nandayure and Jicaral did not plant.)

@@ -17,11 +17,11 @@ Team deliverables: **video (≤ 30 s)** and **web prototype**. Each role has tas
 Science ──catalog and rules──▶ Engine (Integration) ──JSON + engine.js──▶ Website (Design + Integration)
    ▲                                 ▲                                     │
 Economics ──prices and costs─────────┘                                     ▼
-Field work ──tests with farmers / extension agents────────────▶  Video + public link
+Field work ──internal user tests and dress rehearsal───────────▶  Video + public link
 ```
 
 ## Critical dependencies
-1. **Prices and costs** (Economics) → **1 Nov**, so the engine can use colones by 8 Nov.
+1. **Prices and costs** → ✅ done 25 Oct (D20); Economics reviews the rows marked "estimate".
 2. **Verified catalog** (Science) → deadline **8 Nov**.
 3. **Real data in `web/data/`** (`data` workflow) → ✅ done; refreshed every Monday by itself.
 4. **Public link + HTTPS** (Juan Diego, with Jose Antonio's owner account) → **27 Oct**: https://joseantoniochavezurena2610-stack.github.io/Iriria_Sisu/

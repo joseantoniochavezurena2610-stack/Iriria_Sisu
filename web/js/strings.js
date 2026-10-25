@@ -2,6 +2,9 @@
 // Pure module: no DOM. app.js applies the strings to the page; engine.js uses the
 // reason and notice templates. Keeping them here lets the team review the wording in one file.
 
+/** Colones, rounded to the nearest thousand: ₡1,234,000 / −₡147,000. */
+export const crc = (x) => `${x < 0 ? '−' : ''}₡${(Math.round(Math.abs(x) / 1000) * 1000).toLocaleString('en-US')}`;
+
 const S = {
     'page.title': 'Iriria Sìsù — Crop rotations for Guanacaste',
     skip: 'Skip to content',
@@ -52,6 +55,8 @@ const S = {
     'status.offline': 'You are offline: showing the data saved on this device.',
     'plan.title': (v) => `Plan ${v.letter}`, 'plan.base': 'If you keep planting what you plant today', 'plan.none': 'No crop in the catalog fits these conditions.',
     'plan.relative': 'relative score',
+    'plan.margin': (v) => `Expected net margin: <b>${crc(v.total)}</b> per hectare over 3 years${v.diff != null ? ` (${v.diff >= 0 ? '+' : '−'}${crc(Math.abs(v.diff))} compared with today)` : ''}`,
+    'plan.marginNote': 'Margins use published Costa Rican prices and costs; values marked “estimate” in the Data tab are the team’s best estimate.',
     'cell.fallow': 'Fallow', 'cell.fit': (v) => `fit ${v.p} %`, 'cell.irrigation': (v) => `irrigation ${v.mm} mm`,
     'cell.short': (v) => `water short: ${v.k} of ${v.n} years`,
     'axis.soil': 'Soil', 'axis.water': 'Water', 'axis.risk': 'Safety', 'axis.income': 'Income',
@@ -67,17 +72,18 @@ const S = {
     'data.et0': 'Water the air demands (ET0)', 'data.et0Src': 'Computed with Hargreaves (FAO-56, eq. 52) from POWER temperature', 'data.monthly': 'Monthly',
     'data.enso': 'ENSO phase', 'data.auto': 'Automatic', 'data.fallback': 'Fallback table',
     'data.soil': 'Reference soil', 'data.soilPending': 'SoilGrids 2.0 (ISRIC) — pending; the REST API is paused', 'data.soilWhen': 'Only when the farmer does not know their pH',
+    'data.money': 'Prices, costs and yields', 'data.moneySrc': 'MAG-SEPSA cost structures (Chorotega 2026), Defensoría de los Habitantes (beans, Jun 2026), mill and market prices reported in the press, MAG-SEPSA urea price (Aug 2026)', 'data.moneyStatus': 'Each crop is marked sourced, derived or estimate',
     'data.ranges': 'Crop ranges', 'data.rangesSrc': 'FAO-56 (Kc, duration) and FAO ECOCROP (pH, temperature)', 'data.rangesStatus': 'Initial values under review',
-    'data.heads': ['Crop', 'Seasons', 'Cycle (days)', 'pH min', 'pH max', 'Kc', 'Drought tolerance (0-3)', 'N supply (kg/ha)', 'Margin (1-5)', 'Verified'],
+    'data.heads': ['Crop', 'Seasons', 'Cycle (days)', 'pH min', 'pH max', 'Kc', 'Drought tolerance (0-3)', 'N supply (kg/ha)', 'Yield (t/ha)', 'Price (₡/kg)', 'Cost (₡/ha)', 'Economic data'],
     'data.h2': 'Data and sources', 'data.catalog': 'Crop catalog',
-    'data.catalogNote': 'Initial values. The "Verified" column shows which ones the science lead has already reviewed.',
+    'data.catalogNote': 'Agronomic ranges come from FAO-56 and ECOCROP. "Economic data" says how each price and cost was obtained: <b>sourced</b> (published Costa Rican figure), <b>derived</b> (computed from published figures) or <b>estimate</b> (no Costa Rican series found; the team’s best estimate). Sources are in the catalog CSV on GitHub.',
     'how.html': `<h2>How it works</h2>
     <ol class="steps">
       <li><b>Real climate for your canton.</b> We download daily rainfall and temperature from NASA POWER since January 2021, and compute how much water the air demands (ET0, FAO's Hargreaves method). Root-zone soil moisture is downloaded too, but the engine does not use it yet.</li>
       <li><b>We separate the years.</b> Using NOAA's official index we label each month as El Niño, La Niña or neutral. That lets us compare a normal year with an El Niño year using the rain that actually fell, not an invented percentage.</li>
       <li><b>We test every crop in every season.</b> Dry (Jan–Apr), Primera (May–Aug, includes the mid-summer drought or <i>canícula</i>) and Postrera (Sep–Dec). We check whether there is enough water (FAO-56-style balance), whether the temperature suits the crop and whether your pH allows it.</li>
       <li><b>We search the possible 3-year rotations</b>, keeping the 250 best at each step, and discard those that make no sense (pH out of range, crop out of season, same family repeated).</li>
-      <li><b>We score from 0 to 100</b> on four things: <b>Soil</b> (nitrogen, ground cover, changing families), <b>Water</b> (how much irrigation or deficit remains), <b>Safety</b> (in how many observed years water fell short) and <b>Income</b>.</li>
+      <li><b>We score from 0 to 100</b> on four things: <b>Soil</b> (nitrogen, ground cover, changing families), <b>Water</b> (how much irrigation or deficit remains), <b>Safety</b> (in how many observed years water fell short) and <b>Income</b> (expected net margin in colones: yield × price − production cost, plus the fertiliser a legume saves the next crop).</li>
       <li><b>You decide the weight</b> of each one. We show the 3 best plans and how each would do in a normal year and in an El Niño year. If it keeps at least 85 % of its score in an El Niño year and its Safety stays at 50 or more, we label it a <b>robust plan</b>.</li>
     </ol>
     <h3>What we do not promise</h3>
@@ -86,10 +92,10 @@ const S = {
       <li>Satellite and model data are <b>regional</b> (grid cells tens of km wide; the 11 cantons fall in 5 cells). What you know about your farm (pH, texture, irrigation) is what tailors the result to your plot.</li>
       <li>Risk is counted over few years (2021 → today; only 2 El Niño events), so we show counts like “1 of 2 years”, not percentages.</li>
       <li>Crop ranges come from FAO and the literature; the team is checking them against Costa Rican sources.</li>
-      <li>Income is still <b>relative</b> (1 to 5) until prices and costs are verified.</li>
+      <li>Prices and costs are recent Costa Rican averages, not your farm’s. Rice and beans lose money at today’s prices in Chorotega (published figures); melon and watermelon need irrigation and a buyer. Some values are estimates and are labelled so.</li>
     </ul>`,
     'foot.html': 'Iriria Sìsù · Costa Rican team at the NASA International Space Apps Challenge 2026. Data: NASA POWER (NASA Langley), NOAA CPC ENSO index, FAO. Open source (MIT) on <a href="https://github.com/joseantoniochavezurena2610-stack/iriria_sisu">GitHub</a>. This tool does not replace advice from an agronomist.',
-    'wa.text': (v) => `Iriria Sìsù — ${v.canton}, ${v.scenario}.\n${v.plan}: ${v.seq}\nScore ${v.score}/100 (relative).\n${v.link}`,
+    'wa.text': (v) => `Iriria Sìsù — ${v.canton}, ${v.scenario}.\n${v.plan}: ${v.seq}\nScore ${v.score}/100 (relative).${v.margin != null ? ` Expected net margin ${crc(v.margin)}/ha over 3 years.` : ''}\n${v.link}`,
     // engine
     'r.nothing': 'Nothing is planted: the soil rests, but there is no income. None of the current crops fits these conditions.',
     'r.legumes': (v) => `${v.legs} of 9 seasons use legumes${v.green ? ` (${v.green} as green manure)` : ''}: they leave nitrogen for the next crop.`,
@@ -99,6 +105,9 @@ const S = {
     'r.weak': (v) => `Weak spot: ${v.crop} in the ${v.season} season of year ${v.year} — water fell short in ${v.k} of ${v.n} observed years of that scenario${v.limiting ? ` (limiting: ${v.limiting})` : ''}.`,
     'r.noShort': 'In the observed years (2021 → today) no season of this plan ran out of water.',
     'r.above': (v) => `${v.d} points above what is planted today.`,
+    'r.money': (v) => `Expected net margin ${crc(v.total)} per hectare over 3 years (${crc(v.perYear)} a year)${v.diff != null ? `, ${v.diff >= 0 ? crc(v.diff) + ' more' : crc(-v.diff) + ' less'} than what is planted today` : ''}.`,
+    'r.loss': (v) => `${v.crop.charAt(0).toUpperCase() + v.crop.slice(1)} in the ${v.season} season of year ${v.year} loses about ${crc(v.crc)} per hectare at current prices and costs.`,
+    'r.nsaved': (v) => `Nitrogen left by legumes saves about ${crc(v.crc)} per hectare of urea over the 3 years.`,
     'n.noPh': 'pH was not used: without a soil test the engine cannot rule out crops because of acidity.',
     'n.excluded': (v) => `${v.crop}: ruled out because of pH ${v.ph} outside the tolerable range (${v.min}–${v.max}).`,
     'n.maxloss': (v) => `No plan keeps income within the maximum loss of ${v.p} %; the best plans are shown anyway.`,

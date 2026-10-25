@@ -14,8 +14,9 @@
 | SMAP L4 | NASA NSIDC | https://nsidc.org/data/smap | Open (NASA) | 9 km soil moisture | Future; check mission status |
 | HLS / VIIRS (NDVI) | NASA LP DAAC | https://www.earthdata.nasa.gov/data/projects/hls | Open | Validate vegetation stress in 2023 and 2026 | Future (validation) |
 | Worldview / GIBS | NASA ESDIS | https://worldview.earthdata.nasa.gov | Open | Images for the video | Video |
-| Wholesale prices | PIMA / CENADA | — | Public | Income axis in colones | Pending (Angeli) |
-| Production costs | MAG / INTA | — | Public | Income axis in colones | Pending (Angeli) |
+| Production costs and yields | MAG-SEPSA cost structures (InfoAgro) | https://www.infoagro.go.cr/costos-de-produccion/ | Public | Income axis in colones | **Core** (D20) |
+| Producer prices | Defensoría de los Habitantes, press reports (Semanario Universidad), MEIC rice decree | see [`research/prices-and-costs.md`](research/prices-and-costs.md) | Public | Income axis in colones | **Core** (D20) |
+| Urea price | MAG-SEPSA input-price survey, Aug 2026 | https://www.infoagro.go.cr | Public | Value of legume nitrogen | **Core** (D20) |
 | Planted area | INEC — National Agricultural Survey 2024 | — | Public | Context | Context |
 
 ## Access
@@ -29,5 +30,6 @@
 - **Ongoing ENSO:** NOAA's official rule needs 5 seasons; El Niño 2026 is labelled from June as *ongoing* and months the index has not published yet inherit its phase (*estimated*).
 - **Finding to review (science):** according to POWER, the worst year (May–Nov) of 2021-2025 is 2023, and in Nandayure Primera barely dries out during El Niño. Cross-check with IMERG and IMN stations.
 - **Latency:** the last month may be incomplete; months with fewer than 25 valid days are not used.
+- **Bad downloads (25 Oct 2026):** POWER returned rainfall 24× too high for every month. Files were restored to the 19 Oct run and a plausibility guard (month ≤ 2,500 mm, year ≤ 6,000 mm) now stops such a run (D21).
 - **SoilGrids is modelled**, with few Costa Rican samples: reference only.
 - **MODIS** ends in late 2026 / early 2027: not used.

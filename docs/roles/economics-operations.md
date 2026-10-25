@@ -6,11 +6,11 @@
 | Priority | Task | Deliverable |
 |---|---|---|
 | 🔴 | **Update the team on the Space Apps site** (José Pablo left, D17) | Registration shows 5 members |
-| 🔴 | Reference price for each crop in the catalog (PIMA/CENADA) — **by 1 Nov** (the engine needs it) | `price_crc_kg` and `economic_source` columns in `data/catalog/crops_guanacaste.csv` |
-| 🔴 | Production cost per hectare (MAG/INTA sheets) and typical yield in Guanacaste — **by 1 Nov** | `production_cost_crc_ha`, `yield_t_ha` |
+| ✅ | Prices, costs and yields for every crop — **done 25 Oct** from public web sources (D20) | `yield_t_ha`, `price_crc_kg`, `production_cost_crc_ha`, `economic_source`, `economic_confidence` in the CSV; [`research/prices-and-costs.md`](../research/prices-and-costs.md) |
+| 🟠 | Review the rows marked **estimate** (sorghum, cowpea, peanut, melon and watermelon prices, green-manure cost) and replace any with a better public source | Edited CSV + `python scripts/catalog_to_json.py` |
+| 🟠 | Be able to explain why rice and beans lose money in the app (published prices below published costs) | 2 sentences for the submission |
 | 🔴 | Ask the organisers about the pre-existing-code rule | Answer in `docs/decisions.md` |
-| 🟠 | Urea price to translate legume nitrogen into colones | Sourced value |
-| 🟠 | Contacts at MAG / INTA extension agencies or cooperatives in Guanacaste | List |
+| ✅ | Urea price for legume nitrogen — done: ₡27,755 per 45 kg sack (MAG-SEPSA, Aug 2026) → ₡1,341 per kg N | In `engine.js` |
 
 ## During the 48 hours
 - Owner of the clock (milestones in `docs/plan.md`).

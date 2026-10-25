@@ -7,7 +7,7 @@
 |---|---|---|
 | 🔴 | Try the **ribbon test** (texture) on 3 different soils and compare with what the app says | Photos + note in `docs/research/` |
 | 🔴 | One-page guide: how to get a soil test in Guanacaste (INTA, UCR, private labs), cost and turnaround | `docs/research/soil-testing.md` |
-| 🟠 | With Angeli: show the app to a grower or extension agent and note what they did not understand | List of improvements (Issues) |
+| 🟠 | With Angeli: internal user test — two people who did not code use the public link and note what they did not understand (no institutional review needed, D22) | List of improvements (Issues) |
 | 🟠 | Phone usability tests: fill in the form in < 2 min | Measured time |
 | 🟠 | Owner of the **dress rehearsal** (week 4): someone who did not code uses the public link from scratch on a phone; note every stumble | List in Issues |
 | 🟡 | (Optional) ESP32 sensor + calibrated capacitive probe as a prop for the video | Only if there is time |
