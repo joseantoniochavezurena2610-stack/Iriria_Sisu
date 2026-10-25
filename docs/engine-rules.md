@@ -50,7 +50,11 @@ Seasons: **Dry** (Jan–Apr), **Primera** (May–Aug, contains the *canícula*),
 
 **Maximum loss**: if the farmer sets it, plans whose income is lower than "today's" × (1 − loss) are discarded.
 
-**Robust plan**: score with all-El Niño ≥ 85 % of the score with all-normal **and** El Niño safety ≥ 50.
+**Robust plan**: score with all-El Niño ≥ 85 % of the score with all-normal **and** El Niño safety ≥ 50. The card prints this rule under the badge; a plan that misses it is labelled "Sensitive to El Niño" with the opposite rule.
+
+**How risk is shown**: as a count of observed years ("water short: 1 of 2 years"), from the same `failureProbability` result (`round(prob × n)` of `n`). Percentages are not shown because `n` is 2–6 years.
+
+**Text**: reason and notice templates live in `web/js/strings.js`.
 
 ## 6. To do for the science lead and Economics
 - [ ] Verify every catalog value with a source (FAO-56, ECOCROP, INTA/MAG) and fill in `verified_by`.

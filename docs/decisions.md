@@ -33,3 +33,12 @@ Every team decision with its date and its reason. If something changes, add a ne
 |---|---|---|
 | D10 | **Everything is in English** for greater impact: repository, code, data, documentation, the app and the v1 prototype. | The only exception is the **team guides in Spanish** (PDFs in [`team-guides-es/`](team-guides-es/)). The glossary lists the Spanish term next to each English one so the team stays on the same page. Local terms with no good English equivalent (*Primera*, *Postrera*, *canícula*, canton names) are kept and explained. |
 | D11 | **Bilingual glossary.** | The glossary exists in full in English ([`glossary.md`](glossary.md)) and Spanish ([`glossary.es.md`](glossary.es.md)), each listing the term in the other language. Both are updated together. |
+
+## 25 Oct 2026 — Behaviour audit (who can actually use the tool)
+| # | Decision | What it implies |
+|---|---|---|
+| D12 | **The app stays 100 % in English, with no language option.** Confirms D10 after talking with the organisers (25 Oct 2026): for impact the project must be fully in English, not bilingual. | No Spanish interface and no language switch. All app text lives in `web/js/strings.js`; a test checks there is no switch. Plain English is used instead of jargon ("water the air demands" next to ET0, counts instead of percentages), since the extension agent is the one who explains the plan to Spanish-speaking growers. Team guides in Spanish stay as they are (D10 exception). |
+| D13 | **Defaults must not stand in for the farmer's data.** | pH starts as "I don't know" (SoilGrids reference, labelled as modelled); the reason Safety starts at 4 is shown under the sliders. |
+| D14 | **Risk is shown as counts, not percentages.** | "Water short in 1 of 2 years" instead of "50 %": with 2021 → today there are only 2 El Niño events. The "El Niño year" button is labelled "Average El Niño year" and its note says it mixes 2023-24 (mild) and 2026 (severe). |
+| D15 | **Every badge shows its rule.** | Under "Robust plan" / "Sensitive to El Niño" the card prints the 85 % / Safety 50 rule from `engine.js`. |
+| D16 | **Validation is reported as it is.** | README lists each check as Done or Pending. The 2026 backtest is published even though it does not flag Nandayure. |

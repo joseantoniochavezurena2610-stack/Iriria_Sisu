@@ -115,3 +115,30 @@ test('real data: every canton file loads and builds scenarios', () => {
     assert.ok(meta.from <= '2021-01', `${p.id} starts ${meta.from}`);
   }
 });
+
+// ---- Behaviour-audit changes (Oct 2026) ----
+import { t, hasKey } from '../web/js/strings.js';
+
+test('reasons give risk as a count of observed years, never as a percentage', () => {
+  const r = recommend({ crops, scenarios, planScenarios: Array(9).fill('el_nino'), farm: baseFarm, priorities });
+  for (const p of [...r.plans, r.base]) for (const reason of p.reasons) {
+    assert.ok(!/fell short in \d+ %/.test(reason), reason);
+    if (reason.startsWith('Weak spot')) assert.match(reason, /fell short in \d+ of \d+ observed years/);
+  }
+});
+
+test('pH exclusion notice names the crop and its tolerable range', () => {
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm: { ...baseFarm, ph: 4.0 }, priorities });
+  assert.ok(r.notices.some((a) => /ruled out because of pH 4 outside the tolerable range \(\d/.test(a)));
+});
+
+test('the interface is English only: no language switch and no Spanish strings', async () => {
+  const fs = await import('node:fs');
+  const html = fs.readFileSync(new URL('../web/index.html', import.meta.url), 'utf8');
+  assert.match(html, /<html lang="en">/);
+  assert.ok(!/id="lang"/.test(html));
+  assert.ok(!hasKey('lang.toggle'));
+  assert.ok(!fs.existsSync(new URL('../web/js/i18n.js', import.meta.url)));
+  for (const k of ['r.weak', 'cell.short', 'badge.robustRule', 'how.html']) assert.ok(hasKey(k), k);
+  assert.match(t('cell.short', { k: 1, n: 2 }), /1 of 2 years/);
+});

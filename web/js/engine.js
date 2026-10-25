@@ -8,6 +8,7 @@
 // Formulas are documented in docs/engine-rules.md. Pure functions: no DOM, no network.
 
 import { SEASONS, seasonClimate, effectiveRainfall } from './climate.js';
+import { t, cropName, seasonText } from './strings.js';
 
 export const PARAMETERS = {
   // Total available water (mm per metre of soil) by texture — typical FAO-56 ranges (table 19)
@@ -70,7 +71,7 @@ function phFactor(c, ph) {
 export function evaluateCrop(c, climate, farm) {
   if (c.group === 'none') return { suit: 1, water: waterBalance(c, climate, farm), limiting: '', excluded: null };
   const ph = phFactor(c, farm.ph);
-  if (ph.excluded) return { suit: 0, water: null, limiting: 'pH', excluded: `pH ${farm.ph} outside the tolerable range (${c.ph_min}–${c.ph_max})` };
+  if (ph.excluded) return { suit: 0, water: null, limiting: 'pH', excluded: `pH ${farm.ph} outside the tolerable range (${c.ph_min}–${c.ph_max})`, phRange: { min: c.ph_min, max: c.ph_max } };
   const cycleMonths = Math.max(1, Math.round(Math.min(4, c.cycle_days / 30.4)));
   const T = climate.T.slice(0, cycleMonths).reduce((a, b) => a + b, 0) / cycleMonths;
   const fT = temperatureFactor(c, T);
@@ -187,26 +188,31 @@ function search(ctx, allowed) {
 
 const lower = (name) => name.charAt(0).toLowerCase() + name.slice(1);
 
-/** Plain-language reasons, always with the number behind them. */
+/** Plain-language reasons, always with the number behind them. Risk is given as a count ("1 of 2 years"). */
 function reasons(plan, base, crops, ctx) {
   const r = [];
   const sc = plan.scores;
   const seq = plan.sequence;
-  if (!sc.planted) return ['Nothing is planted: the soil rests, but there is no income. None of the current crops fits these conditions.'];
+  if (!sc.planted) return [t('r.nothing')];
   const legs = seq.filter((k) => crops[k].legume).length;
   const green = seq.filter((k) => crops[k].green_manure).length;
-  if (legs) r.push(`${legs} of 9 seasons use legumes${green ? ` (${green} as green manure)` : ''}: they leave nitrogen for the next crop.`);
-  r.push(sc.rep ? `Repeats the same crop family ${sc.rep} ${sc.rep > 1 ? 'times' : 'time'} in a row: watch for pests and soil depletion.` : `${sc.families} different crop families and none repeats back to back.`);
-  if (ctx.farm.irrigation !== 'none' || sc.irrigation > 1) r.push(`Estimated irrigation over 3 years: ${Math.round(sc.irrigation)} mm${base ? ` (${Math.round(sc.irrigation - base.scores.irrigation) >= 0 ? '+' : '−'}${Math.abs(Math.round(sc.irrigation - base.scores.irrigation))} mm compared with today)` : ''}.`);
+  if (legs) r.push(t('r.legumes', { legs, green }));
+  r.push(sc.rep ? t('r.repeats', { rep: sc.rep }) : t('r.families', { n: sc.families }));
+  if (ctx.farm.irrigation !== 'none' || sc.irrigation > 1) {
+    r.push(t('r.irrigation', { mm: Math.round(sc.irrigation), diff: base ? Math.round(sc.irrigation - base.scores.irrigation) : null }));
+  }
   let weakest = null;
   sc.detail.forEach((d, i) => { if (crops[seq[i]].group !== 'none' && d.prob != null && (!weakest || d.prob > weakest.prob)) weakest = { ...d, i }; });
   if (weakest && weakest.prob > 0) {
     const s = SEASONS[weakest.i % 3];
-    r.push(`Weak spot: ${lower(crops[seq[weakest.i]].name)} in the ${s.name} season of year ${Math.floor(weakest.i / 3) + 1} — water fell short in ${pct(weakest.prob)} % of the ${weakest.n} observed years of that scenario${weakest.limiting ? ` (limiting: ${weakest.limiting})` : ''}.`);
-  } else r.push('In the observed years (2021 → today) no season of this plan ran out of water.');
+    r.push(t('r.weak', {
+      crop: lower(cropName(crops[seq[weakest.i]])), season: seasonText(s.id).name, year: Math.floor(weakest.i / 3) + 1,
+      k: Math.round(weakest.prob * weakest.n), n: weakest.n, limiting: weakest.limiting ? t(`lim.${weakest.limiting}`) : '',
+    }));
+  } else r.push(t('r.noShort'));
   if (base) {
     const d = pct(plan.scores.total - base.scores.total);
-    if (d > 0) r.push(`${d} points above what is planted today.`);
+    if (d > 0) r.push(t('r.above', { d }));
   }
   return r;
 }
@@ -222,7 +228,7 @@ function reasons(plan, base, crops, ctx) {
  */
 export function recommend({ crops, scenarios, planScenarios, farm, priorities }) {
   const notices = [];
-  if (farm.ph == null) notices.push('pH was not used: without a soil test the engine cannot rule out crops because of acidity.');
+  if (farm.ph == null) notices.push(t('n.noPh'));
   const weights = { soil: +priorities.soil || 0, water: +priorities.water || 0, risk: +priorities.risk || 0, income: +priorities.income || 0 };
   if (!(weights.soil + weights.water + weights.risk + weights.income)) Object.keys(weights).forEach((k) => { weights[k] = 1; });
 
@@ -236,12 +242,12 @@ export function recommend({ crops, scenarios, planScenarios, farm, priorities })
     const ok = [];
     crops.forEach((c, k) => {
       const ev = table[s][i % 3][k];
-      if (ev.excluded) excluded.set(c.id, ev.excluded);
+      if (ev.excluded) excluded.set(c.id, ev.phRange);
       if (c.group === 'none' || ev.suit >= P.minSuitability) ok.push(k);
     });
     return ok;
   });
-  for (const [c, why] of excluded) notices.push(`${crops.find((x) => x.id === c).name}: ruled out because of ${why}.`);
+  for (const [c, range] of excluded) notices.push(t('n.excluded', { crop: cropName(crops.find((x) => x.id === c)), ph: farm.ph, ...range }));
 
   // What is planted today: the current crop wherever it fits, fallow elsewhere.
   const iCurrent = crops.findIndex((c) => c.id === farm.current_crop);
@@ -253,7 +259,7 @@ export function recommend({ crops, scenarios, planScenarios, farm, priorities })
     const floor = base.scores.income * (1 - farm.max_loss_pct / 100);
     const kept = candidates.filter((c) => c.scores.income >= floor);
     if (kept.length) candidates = kept;
-    else notices.push(`No plan keeps income within the maximum loss of ${farm.max_loss_pct} %; the best plans are shown anyway.`);
+    else notices.push(t('n.maxloss', { p: farm.max_loss_pct }));
   }
 
   // Diversity: each plan must change at least 3 seasons AND use a different crop mix.
