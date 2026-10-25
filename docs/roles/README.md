@@ -5,7 +5,6 @@ Team deliverables: **video (≤ 30 s)** and **web prototype**. Each role has tas
 | Role | Person | Plan |
 |---|---|---|
 | Science lead | Jose Antonio Chávez Ureña | [science-lead.md](science-lead.md) |
-| Data, engine and domain | José Pablo Ramírez Fernández | [data-and-engine.md](data-and-engine.md) |
 | Integration, deployment and security | Juan Diego Chávez Ureña | [integration-security.md](integration-security.md) |
 | Economics, impact and operations | Angeli Abarca Ureña | [economics-operations.md](economics-operations.md) |
 | Design, UX and video | Nesly Mejía Jiménez | [design-video.md](design-video.md) |
