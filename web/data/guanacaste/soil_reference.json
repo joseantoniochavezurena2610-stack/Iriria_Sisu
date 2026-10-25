@@ -1,7 +1,7 @@
 {
  "source": "SoilGrids 2.0 (ISRIC), WCS service, 0-30 cm mean — MODELLED values, not measured",
  "license": "CC BY 4.0",
- "generated": "2026-10-25",
+ "generated": "2026-10-19",
  "points": {
   "la-cruz": {
    "phh2o": 6.18,
