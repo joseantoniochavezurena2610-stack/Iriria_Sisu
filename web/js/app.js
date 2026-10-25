@@ -1,7 +1,7 @@
 // app.js — Iriria Sìsù interface. Loads the data, calls the engine and draws the plans.
 import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js';
 import { recommend } from './engine.js';
-import { t, cropName, seasonText, monthNames, detectLang } from './i18n.js';
+import { t, cropName, seasonText, monthNames } from './strings.js';
 
 const $ = (id) => document.getElementById(id);
 const pct = (x) => Math.round(x * 100);
@@ -12,14 +12,8 @@ const PLAN_SCENARIOS = {
 };
 const FIELDS = ['canton', 'current', 'irrigation', 'texture', 'ph', 'slope', 'om', 'soil', 'water', 'risk', 'income', 'maxloss'];
 
-const state = { scenario: 'forecast', lang: 'en', climate: {}, data: null, map: null, markers: {}, lastScenarios: null, last: null };
-const L = (key, vars) => t(state.lang, key, vars);
-
-// Browser storage can be missing or throw (private mode, previews): every access is guarded.
-const store = {
-  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-  set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* not available */ } },
-};
+const state = { scenario: 'forecast', climate: {}, data: null, map: null, markers: {}, lastScenarios: null, last: null };
+const L = t;
 
 async function json(path, optional = false) {
   try {
@@ -34,28 +28,20 @@ async function json(path, optional = false) {
 
 function setStatus(text, kind = '') { const f = $('status'); f.className = `flag ${kind}`; f.textContent = text; }
 
-// ------------------------------------------------------------------ language
-function applyLang() {
-  document.documentElement.lang = state.lang;
-  document.title = L('page.title');
-  document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = L(el.dataset.i18n); });
-  document.querySelectorAll('[data-i18n-html]').forEach((el) => { el.innerHTML = L(el.dataset.i18nHtml); });
-  document.querySelectorAll('[data-i18n-aria]').forEach((el) => { el.setAttribute('aria-label', L(el.dataset.i18nAria)); });
-  $('lang').setAttribute('lang', state.lang === 'es' ? 'en' : 'es');
-  if (!state.data) return;
+// ------------------------------------------------------------------ text
+// Static labels live in strings.js; the HTML carries the same English text so the page reads fine before scripts run.
+function fillLists() {
   const keep = $('current').value;
   $('current').innerHTML = state.data.crops.filter((c) => c.group !== 'cover')
-    .map((c) => `<option value="${c.id}">${c.group === 'none' ? L('crop.nothing') : cropName(state.lang, c)}</option>`).join('');
+    .map((c) => `<option value="${c.id}">${c.group === 'none' ? L('crop.nothing') : cropName(c)}</option>`).join('');
   if (keep) $('current').value = keep;
   $('famlegend').innerHTML = GROUP_KEYS.map((k) => `<span><i style="background:var(--g-${k})"></i>${L(`group.${k}`)}</span>`).join('');
+  document.querySelectorAll('[data-html]').forEach((el) => { el.innerHTML = L(el.dataset.html); });
   dataTab();
 }
 
 // ------------------------------------------------------------------ loading
 async function start() {
-  const q = new URLSearchParams(location.search);
-  state.lang = detectLang({ urlLang: q.get('lang'), saved: store.get('lang'), browser: navigator.language });
-  applyLang();
   try {
     const [points, crops, enso, summary, soil] = await Promise.all([
       json('data/guanacaste/points.json'), json('data/crops.json'), json('data/enso.json'),
@@ -65,7 +51,7 @@ async function start() {
   } catch (e) { setStatus(e.message, 'bad'); return; }
 
   $('canton').innerHTML = state.data.points.map((p) => `<option value="${p.id}">${p.name}</option>`).join('');
-  applyLang();
+  fillLists();
   readUrl();
   tabs();
   drawMap();
@@ -89,7 +75,6 @@ function currentLink() {
   FIELDS.forEach((k) => q.set(k, $(k).value));
   q.set('phunknown', $('phunknown').checked ? '1' : '0');
   q.set('scenario', state.scenario);
-  q.set('lang', state.lang);
   return `${location.origin}${location.pathname}?${q}`;
 }
 
@@ -125,12 +110,6 @@ function wire() {
     update();
   });
   document.querySelectorAll('#scenario button').forEach((b) => b.addEventListener('click', () => { state.scenario = b.dataset.sc; update(); }));
-  $('lang').addEventListener('click', () => {
-    state.lang = state.lang === 'es' ? 'en' : 'es';
-    store.set('lang', state.lang);
-    applyLang();
-    update();
-  });
   $('locate').addEventListener('click', () => {
     if (!navigator.geolocation) { $('locmsg').textContent = L('loc.unsupported'); return; }
     $('locmsg').textContent = L('loc.locating');
@@ -161,7 +140,7 @@ function whatsappText() {
   if (!state.last) return '';
   const { plans, base, crops } = state.last;
   const p = plans[0] || base;
-  const seq = p.sequence.map((k) => (crops[k].group === 'none' ? L('cell.fallow') : cropName(state.lang, crops[k])));
+  const seq = p.sequence.map((k) => (crops[k].group === 'none' ? L('cell.fallow') : cropName(crops[k])));
   const years = [0, 1, 2].map((a) => `${a + 1}: ${seq.slice(a * 3, a * 3 + 3).join(' → ')}`).join(' | ');
   return L('wa.text', {
     canton: $('canton').selectedOptions[0]?.textContent || '', scenario: L(`sc.${state.scenario}`),
@@ -205,7 +184,7 @@ function chart(sc) {
   state.lastScenarios = sc;
   const box = $('chart');
   const n = sc.normal.monthly, ni = sc.el_nino.monthly;
-  const months = monthNames(state.lang);
+  const months = monthNames();
   // Draw at the width available, so text keeps its size on a phone.
   const W = Math.round(Math.max(300, Math.min(680, box.clientWidth || 680)));
   const H = W < 480 ? 220 : 250, Lm = 40, R = 10, T = 24, B = 44, pw = W - Lm - R, ph = H - T - B;
@@ -222,20 +201,20 @@ function chart(sc) {
     s += `<text x="${x + bw / 2}" y="${H - B + 14}" text-anchor="middle">${label(months[i])}</text>`;
   });
   s += `<polyline fill="none" stroke="var(--et)" stroke-width="2" stroke-dasharray="4 3" points="${n.map((m, i) => `${Lm + i * bw + bw / 2},${y(m.ET0)}`).join(' ')}"/>`;
-  SEASONS.forEach((se, i) => { const x = Lm + i * 4 * bw; s += `<line x1="${x + 3}" x2="${x + 4 * bw - 3}" y1="${H - 18}" y2="${H - 18}" stroke="var(--muted)" stroke-width="1.5"/><text x="${x + 2 * bw}" y="${H - 5}" text-anchor="middle">${seasonText(state.lang, se.id).name}</text>`; });
+  SEASONS.forEach((se, i) => { const x = Lm + i * 4 * bw; s += `<line x1="${x + 3}" x2="${x + 4 * bw - 3}" y1="${H - 18}" y2="${H - 18}" stroke="var(--muted)" stroke-width="1.5"/><text x="${x + 2 * bw}" y="${H - 5}" text-anchor="middle">${seasonText(se.id).name}</text>`; });
   s += `<text x="${Lm - 6}" y="10" text-anchor="end">mm</text></svg>`;
   box.innerHTML = s;
 }
 
 function card(title, plan, crops, year0, isBase) {
   const sc = plan.scores;
-  const st = (id) => seasonText(state.lang, id);
+  const st = (id) => seasonText(id);
   let cal = `<div class="cal"><span class="h"></span>${SEASONS.map((e) => `<span class="h" title="${st(e.id).hint}">${st(e.id).name}<br>${st(e.id).range}</span>`).join('')}`;
   for (let a = 0; a < 3; a++) {
     cal += `<span class="h">${year0 + a}</span>`;
     for (let e = 0; e < 3; e++) {
       const i = a * 3 + e, c = crops[plan.sequence[i]], d = sc.detail[i];
-      const name = c.group === 'none' ? L('cell.fallow') : cropName(state.lang, c);
+      const name = c.group === 'none' ? L('cell.fallow') : cropName(c);
       const short = d.prob != null && d.n ? Math.round(d.prob * d.n) : null;
       const bits = c.group === 'none' ? ['—'] : [L('cell.fit', { p: pct(d.suit) })];
       if (c.group !== 'none' && d.irrigation > 5) bits.push(L('cell.irrigation', { mm: Math.round(d.irrigation) }));
@@ -280,7 +259,7 @@ async function update() {
 
   const crops = state.data.crops;
   const r = recommend({
-    crops, scenarios: sc.scenarios, planScenarios: PLAN_SCENARIOS[state.scenario], farm: farm(), lang: state.lang,
+    crops, scenarios: sc.scenarios, planScenarios: PLAN_SCENARIOS[state.scenario], farm: farm(),
     priorities: { soil: +$('soil').value, water: +$('water').value, risk: +$('risk').value, income: +$('income').value },
   });
   state.last = { ...r, crops };
@@ -305,8 +284,8 @@ function dataTab() {
   const cols = ['name', 'seasons', 'cycle_days', 'ph_min', 'ph_max', 'kc_season', 'drought_tolerance', 'n_supply_kg_ha', 'relative_margin', 'verified_by'];
   const heads = L('data.heads');
   const cellOf = (c, k) => {
-    if (k === 'name') return cropName(state.lang, c);
-    if (k === 'seasons' && Array.isArray(c.seasons)) return c.seasons.map((s) => seasonText(state.lang, s)?.name || s).join(', ');
+    if (k === 'name') return cropName(c);
+    if (k === 'seasons' && Array.isArray(c.seasons)) return c.seasons.map((s) => seasonText(s)?.name || s).join(', ');
     return Array.isArray(c[k]) ? c[k].join(', ') : c[k] ?? '—';
   };
   $('croptable').innerHTML = `<thead><tr>${heads.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${crops.map((c) => `<tr>${cols.map((k) => `<td>${cellOf(c, k)}</td>`).join('')}</tr>`).join('')}</tbody>`;

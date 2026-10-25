@@ -9,7 +9,7 @@ Challenge: **Change of Course — Adapting Farms with NASA Data.** Pilot region:
 In Costa Rica's North Pacific, the 2026-27 El Niño has already cut rainfall by about 37 % (Jan–Aug 2026), all 11 cantons of Guanacaste are under an orange alert, and the national weather service (IMN) expects effects at least until July 2027. Grain growers decide what to plant without a tool that brings together the coming climate, the soil of their farm and their finances.
 
 ## The solution
-A **web page, in Spanish or English** (it follows the browser's language, with a switch), where the farmer (or the extension agent visiting them) enters their canton, what they plant, whether they have irrigation, what their soil is like and what matters most to them. The app uses **real NASA POWER rainfall and temperature since 2021** and NOAA's ENSO index to compare **3 three-year crop-rotation plans** against "keep planting what you plant today", showing the effect on **soil, water, risk and income** in a normal year and in an El Niño year. **No sensors needed**: everything comes from what the farmer knows. The decision is always theirs.
+A **web page** where the farmer (or the extension agent visiting them) enters their canton, what they plant, whether they have irrigation, what their soil is like and what matters most to them. The app uses **real NASA POWER rainfall and temperature since 2021** and NOAA's ENSO index to compare **3 three-year crop-rotation plans** against "keep planting what you plant today", showing the effect on **soil, water, risk and income** in a normal year and in an El Niño year. **No sensors needed**: everything comes from what the farmer knows. The decision is always theirs.
 
 Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.md`](docs/decisions.md)
 
@@ -21,7 +21,7 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 
   | Check | Status | Where |
   |---|---|---|
-  | Automated engine tests (19) | ✅ Done, run on every push | [`tests/`](tests/) |
+  | Automated engine tests (17) | ✅ Done, run on every push | [`tests/`](tests/) |
   | Backtest of rainfed rice in Primera 2026, 11 cantons | ✅ Done — agrees in 4 dry cantons; **does not** flag Nandayure, where POWER recorded 939 mm | [`docs/research/backtest-2026.md`](docs/research/backtest-2026.md) |
   | POWER vs IMERG rainfall cross-check | ⏳ Pending | `scripts/fetch_imerg.py` |
   | ±20 % sensitivity analysis | ⏳ Pending | — |
@@ -45,7 +45,7 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 ## 🛠️ Stack
 - **Static website:** HTML + CSS + JavaScript (no server, no build step). Map with Leaflet.
 - **Engine:** `web/js/engine.js` (pure functions, runs in the browser) + tests with `node --test`.
-- **Languages:** `web/js/i18n.js` (Spanish for growers, English for judges; every string exists in both, checked by the tests).
+- **Text:** every string the app shows lives in `web/js/strings.js` (English only, decision D10).
 - **Offline:** `web/sw.js` keeps the page and the cantons already opened on the device, for farms without signal.
 - **Data:** Python scripts (standard library) run weekly by **GitHub Actions**, saving JSON to `web/data/`.
 - **Hosting:** GitHub Pages + custom domain (handled by José Pablo).

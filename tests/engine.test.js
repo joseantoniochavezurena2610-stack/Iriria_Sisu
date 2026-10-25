@@ -117,7 +117,7 @@ test('real data: every canton file loads and builds scenarios', () => {
 });
 
 // ---- Behaviour-audit changes (Oct 2026) ----
-import { detectLang, cropName, missingKeys } from '../web/js/i18n.js';
+import { t, hasKey } from '../web/js/strings.js';
 
 test('reasons give risk as a count of observed years, never as a percentage', () => {
   const r = recommend({ crops, scenarios, planScenarios: Array(9).fill('el_nino'), farm: baseFarm, priorities });
@@ -127,29 +127,18 @@ test('reasons give risk as a count of observed years, never as a percentage', ()
   }
 });
 
-test('the engine answers in Spanish when asked', () => {
-  const r = recommend({ crops, scenarios, planScenarios: normal9, farm: { ...baseFarm, ph: null }, priorities, lang: 'es' });
-  assert.ok(r.notices.some((a) => a.startsWith('No se usó el pH')));
-  assert.ok(r.plans[0].reasons.every((x) => !/^(Weak spot|In the observed|Repeats)/.test(x)));
+test('pH exclusion notice names the crop and its tolerable range', () => {
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm: { ...baseFarm, ph: 4.0 }, priorities });
+  assert.ok(r.notices.some((a) => /ruled out because of pH 4 outside the tolerable range \(\d/.test(a)));
 });
 
-test('pH exclusion notice names the crop and its range in both languages', () => {
-  const en = recommend({ crops, scenarios, planScenarios: normal9, farm: { ...baseFarm, ph: 4.0 }, priorities });
-  const es = recommend({ crops, scenarios, planScenarios: normal9, farm: { ...baseFarm, ph: 4.0 }, priorities, lang: 'es' });
-  assert.ok(en.notices.some((a) => /ruled out because of pH 4/.test(a)));
-  assert.ok(es.notices.some((a) => /descartado porque el pH 4/.test(a)));
-});
-
-test('language detection: URL, then saved choice, then browser', () => {
-  assert.equal(detectLang({ urlLang: 'en', saved: 'es', browser: 'es-CR' }), 'en');
-  assert.equal(detectLang({ saved: 'es', browser: 'en-US' }), 'es');
-  assert.equal(detectLang({ browser: 'es-CR' }), 'es');
-  assert.equal(detectLang({ browser: 'en-GB' }), 'en');
-  assert.equal(detectLang({}), 'en');
-});
-
-test('every English string has a Spanish version and every crop a Spanish name', () => {
-  assert.deepEqual(missingKeys('es'), []);
-  for (const c of crops) assert.ok(cropName('es', c) && cropName('es', c) !== c.name || c.id === 'none', c.id);
-  assert.equal(cropName('es', crops.find((c) => c.id === 'rice')), 'Arroz (secano)');
+test('the interface is English only: no language switch and no Spanish strings', async () => {
+  const fs = await import('node:fs');
+  const html = fs.readFileSync(new URL('../web/index.html', import.meta.url), 'utf8');
+  assert.match(html, /<html lang="en">/);
+  assert.ok(!/id="lang"/.test(html));
+  assert.ok(!hasKey('lang.toggle'));
+  assert.ok(!fs.existsSync(new URL('../web/js/i18n.js', import.meta.url)));
+  for (const k of ['r.weak', 'cell.short', 'badge.robustRule', 'how.html']) assert.ok(hasKey(k), k);
+  assert.match(t('cell.short', { k: 1, n: 2 }), /1 of 2 years/);
 });
