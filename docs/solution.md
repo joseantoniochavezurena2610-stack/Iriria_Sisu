@@ -9,7 +9,7 @@ In Guanacaste, the 2026-27 El Niño has already cut more than a third of the rai
 ## What changed from v2
 | v2 | v3 | Why |
 |---|---|---|
-| Streamlit (Python) | **100 % static web** (HTML/JS), engine in the browser | Opens on any phone from a link; $0; custom domain |
+| Streamlit (Python) | **100 % static web** (HTML/JS), engine in the browser | Opens on any phone from a link; $0; free GitHub Pages address (D18) |
 | Region to be decided | **Guanacaste**, 11 cantons | Area hit hardest by El Niño |
 | 30 years of climate (1995-2025) | **2021 → today** (at least 5 years) | Team rule; includes El Niño 2023 and 2026 and La Niña 2021-23 and 2024-26 |
 | ESP32 sensor at the core | **The farmer enters their data**; sensor optional | No dependency on hardware |
@@ -32,7 +32,7 @@ Rainfed rice, maize, sorghum, common bean, cowpea, peanut, melon, watermelon, mu
 |---|---|
 | NASA, NOAA, SoilGrids, FAO data | $0 |
 | Hosting (GitHub Pages) | $0 |
-| Domain | Yearly registrar fee (José Pablo gets quotes) |
+| Domain | $0 — free GitHub Pages address, no custom domain (D18) |
 | Explanations | $0 (templates, no LLM) |
 | Sensor | Not required |
 

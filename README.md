@@ -30,11 +30,11 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 ## 📚 Documentation
 | Document | What for |
 |---|---|
-| [`docs/team-guides-es/`](docs/team-guides-es/) | **Team guides (Spanish PDFs):** how the repo is organised, what to read, and how to run the app |
+| [`docs/team-guides-es/`](docs/team-guides-es/) | **Team guides (Spanish PDFs):** how the repo is organised, how to run the app, and the **plan for the 5-person team** (`Plan_equipo_sin_Jose_Pablo.pdf`, 25 Oct — it replaces the domain and role parts of the 18 Oct guides) |
 | [`docs/glossary.md`](docs/glossary.md) · [`docs/glossary.es.md`](docs/glossary.es.md) | **Glossary of technical terms**, in English and in Spanish — everyone should read it |
 | [`docs/decisions.md`](docs/decisions.md) | What we decided and why |
 | [`docs/plan.md`](docs/plan.md) | Week-by-week plan until the event and the 48 hours |
-| [`docs/architecture.md`](docs/architecture.md) | How the web app is built, how to publish it, and the **domain** |
+| [`docs/architecture.md`](docs/architecture.md) | How the web app is built, how to publish it (free GitHub Pages address) |
 | [`docs/engine-rules.md`](docs/engine-rules.md) | Engine formulas |
 | [`docs/video-script.md`](docs/video-script.md) | Script for the 30-second video |
 | [`docs/data-sources.md`](docs/data-sources.md) | Datasets, licences and limitations |
@@ -48,7 +48,7 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 - **Text:** every string the app shows lives in `web/js/strings.js` (English only, decision D10).
 - **Offline:** `web/sw.js` keeps the page and the cantons already opened on the device, for farms without signal.
 - **Data:** Python scripts (standard library) run weekly by **GitHub Actions**, saving JSON to `web/data/`.
-- **Hosting:** GitHub Pages + custom domain (handled by José Pablo).
+- **Hosting:** GitHub Pages at its free address, `https://joseantoniochavezurena2610-stack.github.io/Iriria_Sisu/` (no custom domain: decision D18).
 
 ## 🚀 How to run it
 ```bash
@@ -73,15 +73,16 @@ archive/           earlier prototype (reference)
 | Name | Role |
 |---|---|
 | Jose Antonio Chávez Ureña | Science lead |
-| José Pablo Ramírez Fernández | Data, engine and domain |
-| Juan Diego Chávez Ureña | Integration, deployment and security |
+| Juan Diego Chávez Ureña | Integration, deployment, security, data and engine |
 | Angeli Abarca Ureña | Economics, impact and operations |
 | Nesly Mejía Jiménez | Design, UX and video |
 | Britzie Yarith García Arias | Field work, validation and optional sensor |
 
+Former member: José Pablo Ramírez Fernández built the first data pipeline (`scripts/fetch_data.py`, `data` workflow) and engine until 25 Oct 2026.
+
 ## 🎬 Submission
 - Video (≤ 30 s, English subtitles): _[link]_
-- Prototype: _[domain pending]_
+- Prototype: https://joseantoniochavezurena2610-stack.github.io/Iriria_Sisu/ _(live once GitHub Pages is turned on)_
 
 ## 📜 Data and licences
 Code under the MIT licence. Open data from NASA (POWER, GPM), NOAA CPC, FAO and ISRIC (SoilGrids, CC BY 4.0). Details in [`docs/data-sources.md`](docs/data-sources.md). This tool does not replace advice from an agronomist.
