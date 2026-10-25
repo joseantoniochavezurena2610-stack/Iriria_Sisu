@@ -30,7 +30,7 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 ## 📚 Documentation
 | Document | What for |
 |---|---|
-| [`docs/team-guides-es/`](docs/team-guides-es/) | **Team guides (Spanish PDFs):** how the repo is organised, how to run the app, and the **plan for the 5-person team** (`Plan_equipo_sin_Jose_Pablo.pdf`, 25 Oct — it replaces the domain and role parts of the 18 Oct guides) |
+| [`docs/team-guides-es/`](docs/team-guides-es/) | **Team guides (Spanish PDFs):** how the repo is organised, how to run the app, and the **plan for the 5-person team** (`Plan_equipo_sin_Jose_Pablo.pdf`). All three updated 25 Oct. |
 | [`docs/glossary.md`](docs/glossary.md) · [`docs/glossary.es.md`](docs/glossary.es.md) | **Glossary of technical terms**, in English and in Spanish — everyone should read it |
 | [`docs/decisions.md`](docs/decisions.md) | What we decided and why |
 | [`docs/plan.md`](docs/plan.md) | Week-by-week plan until the event and the 48 hours |
