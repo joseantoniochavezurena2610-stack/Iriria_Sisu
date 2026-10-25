@@ -168,7 +168,7 @@ If you find a word that is not here, add it to the right section in **both versi
 | **CDN** | CDN | Network of servers that delivers files quickly from the nearest location. | Leaflet and the fonts come from a CDN; the app works even if they fail. |
 | **CNAME** | CNAME | DNS record meaning "this name points to that other name". | To point `www.ourdomain` to GitHub Pages. |
 | **DNS** | DNS | The internet's "phone book": translates a domain into the server's address. | Domain setup. |
-| **Domain** | Dominio | The page's name (e.g. `iririasisu.app`). Bought yearly from a registrar. | José Pablo finds and buys it. |
+| **Domain** | Dominio | The page's name (e.g. `iririasisu.app`). Bought yearly from a registrar. | Not used for Space Apps: we publish at the free GitHub Pages address (D18). |
 | **GitHub Actions** | GitHub Actions | Automations that run on GitHub's servers when something happens in the repo. | Download NASA data, run tests and publish. |
 | **GitHub Pages** | GitHub Pages | Free GitHub hosting for static pages, with HTTPS and custom domains. | Recommended option to publish `web/`. |
 | **Hosting** | Hosting | The service where the page lives. | — |

@@ -18,22 +18,25 @@ Make sure **every number the app shows can be defended**. "Best Use of Science" 
 | 🔴 | Verify every catalog value with a source (FAO-56, ECOCROP, INTA/MAG sheets) | `verified_by` filled in the CSV |
 | 🔴 | Review the formulas and thresholds in [`engine-rules.md`](../engine-rules.md) | Comments / PR |
 | 🔴 | Review the [glossary](../glossary.md): definitions and Spanish terms are correct | PR |
-| 🟠 | Compare POWER rainfall with IMN stations (Liberia, Nicoya) for 2021-2026 | Table + conclusion |
+| 🔴 | Compare POWER rainfall with IMN stations (Liberia, Nicoya **and Nandayure**) for 2021-2026 — the 2026 backtest does not flag Nandayure, so this decides how we present it | Table + conclusion, by 1 Nov |
 | 🟠 | Resolve the ❓ items in `research/verified-summary.md` | No ❓ in anything used in the video |
 | 🟡 | Expert validation with an agronomist/extension agent | 1-2 quotes |
 
 ## 4. Validation
 1. **2026 backtest**: run the engine with May 2026 climate; does it advise against rainfed rice in Nandayure? (Rice growers in Nandayure and Jicaral did not plant.)
 2. **2023 backtest**: weak El Niño in Guanacaste → the engine should not penalise as much.
-3. **±20 % sensitivity** on Kc, failure threshold, N credit and margins: does the top 3 change?
-4. **IMERG vs POWER cross-check** (José Pablo).
+3. **±20 % sensitivity** on Kc, failure threshold, N credit and margins: does the top 3 change? (Juan Diego prepares the script by 5 Nov; you interpret it.)
+4. **IMERG vs POWER cross-check** (optional, Juan Diego — only if the Earthdata account is ready).
 5. **Automated tests** (`npm test`) for every new rule.
 
-## 5. Golden rules
+## 5. Backup for Juan Diego
+You own the repository. Before 8 Nov, run `npm test` once and re-run the `data` workflow from the Actions tab, so the team is not stuck if Juan Diego is unavailable.
+
+## 6. Golden rules
 - No number without a source in `data-sources.md` / `confirmed-data.md`.
 - Every output states its scale ("regional data, tens of km").
 - If data is missing the app says so; nothing is silently filled in.
 - Science freeze on 13 Nov.
 
-## 6. Your part in the video
+## 7. Your part in the video
 The 10–20 s scene (normal vs El Niño). Check that the canton and the numbers shown are real and verified.
