@@ -16,7 +16,7 @@ One of the **two only deliverables** (the other is the web prototype).
 | 5–10 s | Phone: farmer picks canton, crop and texture | "Iriria Sìsù une datos de la NASA con lo que el agricultor sabe de su finca." | "Iriria Sìsù combines NASA data with what farmers know about their land." |
 | 10–20 s | "Normal year" button → "Average El Niño year": show what the engine really does for the canton recorded (check `docs/research/backtest-2026.md`: Liberia/Santa Cruz drop rice; Nandayure does not); "Robust plan" label **with its rule visible** | "Compara rotaciones a 3 años en un año normal y en uno El Niño, con la lluvia real desde 2021." | "It compares 3-year rotations in normal and El Niño years, using real rainfall since 2021." |
 | 20–26 s | Soil / Water / Safety / Income axes and the reasons | "Muestra qué le pasa al suelo, al agua y al ingreso. La decisión es del agricultor." | "It shows the effect on soil, water and income. The farmer decides." |
-| 26–30 s | Logo + website domain | "Iriria Sìsù. Datos del espacio para sembrar mejor." | "Iriria Sìsù. Space data for better planting." |
+| 26–30 s | Logo + public link (`joseantoniochavezurena2610-stack.github.io/Iriria_Sisu`, large and readable, or a QR code) | "Iriria Sìsù. Datos del espacio para sembrar mejor." | "Iriria Sìsù. Space data for better planting." |
 
 > **Narrate in English** (decision D12: the project is 100 % in English). Use the English column as the narration and as the subtitles. The Spanish column is kept only as a reference for the team.
 

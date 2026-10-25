@@ -170,7 +170,7 @@ Si encuentran una palabra que no está aquí, agréguenla en la sección que le 
 | **CDN** | CDN | Red de servidores que entrega archivos rápido desde el lugar más cercano. | Leaflet y fuentes vienen de CDN; la app funciona aunque fallen. |
 | **CNAME** | CNAME | Registro DNS que dice "este nombre apunta a este otro nombre". | Para apuntar `www.nuestrodominio` a GitHub Pages. |
 | **DNS** | DNS | "Guía telefónica" de internet: traduce un dominio a la dirección del servidor. | Configuración del dominio. |
-| **Dominio** | Domain | Nombre de la página (ej. `iririasisu.app`). Se compra a un registrador por año. | Lo busca y compra José Pablo. |
+| **Dominio** | Domain | Nombre de la página (ej. `iririasisu.app`). Se compra a un registrador por año. | No se usa en Space Apps: publicamos en la dirección gratuita de GitHub Pages (D18). |
 | **GitHub Actions** | GitHub Actions | Automatizaciones que corren en servidores de GitHub cuando pasa algo en el repo. | Bajar datos NASA, correr pruebas y publicar. |
 | **GitHub Pages** | GitHub Pages | Hosting gratuito de páginas estáticas de GitHub, con HTTPS y dominio propio. | Opción recomendada para publicar `web/`. |
 | **HTTPS / certificado TLS** | HTTPS / TLS certificate | Conexión cifrada (el candadito). Obligatoria para usar ubicación del celular. | GitHub Pages lo da gratis con dominio propio. |
