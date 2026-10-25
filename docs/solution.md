@@ -34,7 +34,7 @@ Rainfed rice, maize, sorghum, common bean, cowpea, peanut, melon, watermelon, mu
 | Hosting (GitHub Pages) | $0 |
 | Domain | $0 — free GitHub Pages address, no custom domain (D18) |
 | Explanations | $0 (templates, no LLM) |
-| Sensor | Not required |
+| Sensor | Not part of the project (theoretical challenge, D23) |
 
 **Inside the engine (since 25 Oct, D20):** income is in colones per hectare: yield × price − production cost, plus the urea a legume saves the next crop, with the maximum-tolerable-loss filter in colones. Sources and confidence of every value: [`research/prices-and-costs.md`](research/prices-and-costs.md).
 
@@ -43,5 +43,6 @@ After the event (nothing here is needed to compete, D22): MAG/INTA extension age
 
 ## What we do NOT promise
 - We do not predict the harvest; we compare plans.
+- We took no measurements on any farm: the challenge is theoretical (D23). The inputs are NASA/NOAA/FAO/ISRIC data and what the farmer enters.
 - The data is regional (cells tens of km wide).
 - Crop ranges come from FAO; prices and costs are recent Costa Rican averages and some are labelled estimates.

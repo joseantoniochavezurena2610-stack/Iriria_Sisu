@@ -60,7 +60,7 @@ Reviewed on 18 Oct 2026. Legend: ✅ verified · ⚠️ corrected / nuanced · �
 | 18 | List of "other teams" | ❓ | If these are projects from another edition, they are a reference for what judges have already seen; confirm where the list came from | — |
 
 ### Conceptual errors corrected in the documents
-- **"Verify SMAP with a capacitive sensor":** a SMAP pixel (9 km) and a single-point sensor do not measure the same thing. A sensor does **not validate** SMAP; it **complements** it. Since 18 Oct the app does not depend on sensors at all (decision D7).
+- **"Verify SMAP with a capacitive sensor":** a SMAP pixel (9 km) and a single-point sensor do not measure the same thing. A sensor does **not validate** SMAP; it **complements** it. Since 18 Oct the app does not depend on sensors at all (decision D7), and since 25 Oct sensors are out of the project (D23).
 - **NASA POWER also provides soil moisture** (`GWETTOP`, `GWETROOT`, fraction 0-1). Good for the MVP without Earthdata; SMAP L4 is an improvement.
 - **Two seasons are not enough for CR's Pacific side:** there is a **dry** season (Dec–Apr), **Primera**, **canícula** (Jul–Aug) and **Postrera**. El Niño hits exactly the canícula and Postrera. The app uses 3 seasons (Dry / Primera / Postrera) and the canícula enters the risk through each year's real rainfall.
 - **El Niño is not a flat "−30 %":** in CR the Pacific dries while the Caribbean can get wetter. The scenario comes from real analog years measured with POWER (2023 and 2026), not a fixed percentage.
