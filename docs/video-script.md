@@ -10,7 +10,7 @@ One of the **two only deliverables** (the other is the web prototype).
 - Guide: https://www.spaceappschallenge.org/resources/project-submission-guide/
 
 ## Script (30 s) — everything on screen is the real app
-| Time | Image | Narration | Subtitle (EN) |
+| Time | Image | Team reference (ES, not used in the video) | Narration and subtitle (EN) |
 |---|---|---|---|
 | 0–5 s | Dry field in Guanacaste → map with the 11 cantons on alert | "Guanacaste perdió más de un tercio de su lluvia este año." | "Guanacaste's region lost over a third of its rain this year." + on-screen source: *IMN, North Pacific, Jan–Aug 2026: −37 %* |
 | 5–10 s | Phone: farmer picks canton, crop and texture | "Iriria Sìsù une datos de la NASA con lo que el agricultor sabe de su finca." | "Iriria Sìsù combines NASA data with what farmers know about their land." |
@@ -18,7 +18,7 @@ One of the **two only deliverables** (the other is the web prototype).
 | 20–26 s | Soil / Water / Safety / Income axes and the reasons | "Muestra qué le pasa al suelo, al agua y al ingreso. La decisión es del agricultor." | "It shows the effect on soil, water and income. The farmer decides." |
 | 26–30 s | Logo + website domain | "Iriria Sìsù. Datos del espacio para sembrar mejor." | "Iriria Sìsù. Space data for better planting." |
 
-> The narration column is in Spanish because the farmers are Spanish-speaking; the subtitles are the English version the judges read. If the team narrates in English, use the subtitle column as the narration.
+> **Narrate in English** (decision D12: the project is 100 % in English). Use the English column as the narration and as the subtitles. The Spanish column is kept only as a reference for the team.
 
 ## Checklist
 - [ ] Real data loaded (not synthetic) for the canton shown
@@ -26,7 +26,6 @@ One of the **two only deliverables** (the other is the web prototype).
 - [ ] English subtitles reviewed
 - [ ] Royalty-free music (record the source)
 - [ ] No number without a source in `docs/confirmed-data.md`
-- [ ] Record the app in Spanish (growers) and show the ES/EN switch once (judges)
 - [ ] The crops named in the narration match what the engine shows on screen for that canton
 - [ ] Public link tested from another account / incognito
 - [ ] Backup: the video file saved in the team Drive

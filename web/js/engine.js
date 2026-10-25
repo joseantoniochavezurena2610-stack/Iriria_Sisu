@@ -8,7 +8,7 @@
 // Formulas are documented in docs/engine-rules.md. Pure functions: no DOM, no network.
 
 import { SEASONS, seasonClimate, effectiveRainfall } from './climate.js';
-import { t, cropName, seasonText } from './i18n.js';
+import { t, cropName, seasonText } from './strings.js';
 
 export const PARAMETERS = {
   // Total available water (mm per metre of soil) by texture — typical FAO-56 ranges (table 19)
@@ -190,30 +190,29 @@ const lower = (name) => name.charAt(0).toLowerCase() + name.slice(1);
 
 /** Plain-language reasons, always with the number behind them. Risk is given as a count ("1 of 2 years"). */
 function reasons(plan, base, crops, ctx) {
-  const L = ctx.lang;
   const r = [];
   const sc = plan.scores;
   const seq = plan.sequence;
-  if (!sc.planted) return [t(L, 'r.nothing')];
+  if (!sc.planted) return [t('r.nothing')];
   const legs = seq.filter((k) => crops[k].legume).length;
   const green = seq.filter((k) => crops[k].green_manure).length;
-  if (legs) r.push(t(L, 'r.legumes', { legs, green }));
-  r.push(sc.rep ? t(L, 'r.repeats', { rep: sc.rep }) : t(L, 'r.families', { n: sc.families }));
+  if (legs) r.push(t('r.legumes', { legs, green }));
+  r.push(sc.rep ? t('r.repeats', { rep: sc.rep }) : t('r.families', { n: sc.families }));
   if (ctx.farm.irrigation !== 'none' || sc.irrigation > 1) {
-    r.push(t(L, 'r.irrigation', { mm: Math.round(sc.irrigation), diff: base ? Math.round(sc.irrigation - base.scores.irrigation) : null }));
+    r.push(t('r.irrigation', { mm: Math.round(sc.irrigation), diff: base ? Math.round(sc.irrigation - base.scores.irrigation) : null }));
   }
   let weakest = null;
   sc.detail.forEach((d, i) => { if (crops[seq[i]].group !== 'none' && d.prob != null && (!weakest || d.prob > weakest.prob)) weakest = { ...d, i }; });
   if (weakest && weakest.prob > 0) {
     const s = SEASONS[weakest.i % 3];
-    r.push(t(L, 'r.weak', {
-      crop: lower(cropName(L, crops[seq[weakest.i]])), season: seasonText(L, s.id).name, year: Math.floor(weakest.i / 3) + 1,
-      k: Math.round(weakest.prob * weakest.n), n: weakest.n, limiting: weakest.limiting ? t(L, `lim.${weakest.limiting}`) : '',
+    r.push(t('r.weak', {
+      crop: lower(cropName(crops[seq[weakest.i]])), season: seasonText(s.id).name, year: Math.floor(weakest.i / 3) + 1,
+      k: Math.round(weakest.prob * weakest.n), n: weakest.n, limiting: weakest.limiting ? t(`lim.${weakest.limiting}`) : '',
     }));
-  } else r.push(t(L, 'r.noShort'));
+  } else r.push(t('r.noShort'));
   if (base) {
     const d = pct(plan.scores.total - base.scores.total);
-    if (d > 0) r.push(t(L, 'r.above', { d }));
+    if (d > 0) r.push(t('r.above', { d }));
   }
   return r;
 }
@@ -226,17 +225,16 @@ function reasons(plan, base, crops, ctx) {
  * @param {string[]} p.planScenarios scenario per slot (9), e.g. IMN forecast: 2 × 'el_nino' + 7 × 'normal'
  * @param {object} p.farm          {ph|null, texture, slope, irrigation, current_crop, organic_matter|null, max_loss_pct|null}
  * @param {object} p.priorities    {soil, water, risk, income} from 0 to 5
- * @param {string} [p.lang]       'en' (default) or 'es' — language of reasons and notices
  */
-export function recommend({ crops, scenarios, planScenarios, farm, priorities, lang = 'en' }) {
+export function recommend({ crops, scenarios, planScenarios, farm, priorities }) {
   const notices = [];
-  if (farm.ph == null) notices.push(t(lang, 'n.noPh'));
+  if (farm.ph == null) notices.push(t('n.noPh'));
   const weights = { soil: +priorities.soil || 0, water: +priorities.water || 0, risk: +priorities.risk || 0, income: +priorities.income || 0 };
   if (!(weights.soil + weights.water + weights.risk + weights.income)) Object.keys(weights).forEach((k) => { weights[k] = 1; });
 
   const table = prepareEvaluations(crops, scenarios, farm);
   const ref = incomeReference(crops, table, planScenarios);
-  const ctx = { crops, table, planScenarios, farm, weights, ref, lang };
+  const ctx = { crops, table, planScenarios, farm, weights, ref };
   const iFallow = crops.findIndex((c) => c.group === 'none');
 
   const excluded = new Map();
@@ -249,7 +247,7 @@ export function recommend({ crops, scenarios, planScenarios, farm, priorities, l
     });
     return ok;
   });
-  for (const [c, range] of excluded) notices.push(t(lang, 'n.excluded', { crop: cropName(lang, crops.find((x) => x.id === c)), ph: farm.ph, ...range }));
+  for (const [c, range] of excluded) notices.push(t('n.excluded', { crop: cropName(crops.find((x) => x.id === c)), ph: farm.ph, ...range }));
 
   // What is planted today: the current crop wherever it fits, fallow elsewhere.
   const iCurrent = crops.findIndex((c) => c.id === farm.current_crop);
@@ -261,7 +259,7 @@ export function recommend({ crops, scenarios, planScenarios, farm, priorities, l
     const floor = base.scores.income * (1 - farm.max_loss_pct / 100);
     const kept = candidates.filter((c) => c.scores.income >= floor);
     if (kept.length) candidates = kept;
-    else notices.push(t(lang, 'n.maxloss', { p: farm.max_loss_pct }));
+    else notices.push(t('n.maxloss', { p: farm.max_loss_pct }));
   }
 
   // Diversity: each plan must change at least 3 seasons AND use a different crop mix.

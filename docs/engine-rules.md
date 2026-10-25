@@ -54,7 +54,7 @@ Seasons: **Dry** (Jan–Apr), **Primera** (May–Aug, contains the *canícula*),
 
 **How risk is shown**: as a count of observed years ("water short: 1 of 2 years"), from the same `failureProbability` result (`round(prob × n)` of `n`). Percentages are not shown because `n` is 2–6 years.
 
-**Language**: `recommend({ …, lang: 'es' })` returns reasons and notices in Spanish; the default is English. Templates live in `web/js/i18n.js`.
+**Text**: reason and notice templates live in `web/js/strings.js`.
 
 ## 6. To do for the science lead and Economics
 - [ ] Verify every catalog value with a source (FAO-56, ECOCROP, INTA/MAG) and fill in `verified_by`.
