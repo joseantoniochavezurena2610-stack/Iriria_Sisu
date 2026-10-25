@@ -13,7 +13,7 @@
 | 🟡 | Screenshots for the README and the submission form | `assets/screenshots/` |
 
 ## During the 48 hours
-- H0–30: visual polish with Juan Diego / José Pablo.
+- H0–30: visual polish with Juan Diego.
 - H30–40: record and edit the video.
 
 ## Design rules
