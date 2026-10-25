@@ -78,6 +78,7 @@ const md = [
   '- La Nación (18 Jul 2026) reported that rice growers in Nandayure and Jicaral did not plant in 2026. Compare that with the Nandayure row.',
   '- NASA POWER is regional (the 11 cantons fall in 5 grid cells). Where POWER rain differs from IMN station reports, the gap is a limitation of the data, not something the engine can fix.',
   '- This is one season in one year: it can show agreement or disagreement with what happened, not prove the engine right.',
+  '- Since 25 Oct 2026 income is in colones (decision D20). At published prices and costs rainfed rice loses money (about ₡150,000/ha per season), so part B no longer proposes rice in any canton: in the wetter cantons that is a price signal, not a water signal. Part A is the climate-only test.',
   '',
 ];
 writeFileSync(new URL('../docs/research/backtest-2026.md', import.meta.url), md.join('\n'));

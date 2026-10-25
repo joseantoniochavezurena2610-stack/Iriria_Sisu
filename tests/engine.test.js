@@ -142,3 +142,71 @@ test('the interface is English only: no language switch and no Spanish strings',
   for (const k of ['r.weak', 'cell.short', 'badge.robustRule', 'how.html']) assert.ok(hasKey(k), k);
   assert.match(t('cell.short', { k: 1, n: 2 }), /1 of 2 years/);
 });
+
+// ---- Income in colones (25 Oct 2026, decision D20) ----
+import { seasonMargin, hasEconomics, PARAMETERS } from '../web/js/engine.js';
+import { crc } from '../web/js/strings.js';
+
+test('every planted crop in the catalog has yield, price, cost and an economic confidence label', () => {
+  assert.ok(hasEconomics(crops));
+  for (const c of crops) assert.ok(['sourced', 'derived', 'estimate', 'n/a'].includes(c.economic_confidence), `${c.id}: ${c.economic_confidence}`);
+});
+
+test('season margin = yield × price × suitability − cost, and fallow is ₡0', () => {
+  const maize = crops[idx('maize')];
+  const m = seasonMargin(maize, { suit: 1, risk: { prob: 0 } });
+  assert.equal(Math.round(m.margin), Math.round(maize.yield_t_ha * 1000 * maize.price_crc_kg - maize.production_cost_crc_ha));
+  assert.equal(seasonMargin(crops[idx('fallow')], { suit: 1 }).margin, 0);
+  const halfRisk = seasonMargin(maize, { suit: 1, risk: { prob: 1 } });
+  assert.ok(halfRisk.revenue < m.revenue);
+});
+
+test('a legume before maize saves urea, valued at ₡1,341 per kg of N', () => {
+  const maize = crops[idx('maize')], bean = crops[idx('bean')];
+  const alone = seasonMargin(maize, { suit: 1, risk: { prob: 0 } });
+  const after = seasonMargin(maize, { suit: 1, risk: { prob: 0 } }, 1, bean, 1);
+  assert.equal(PARAMETERS.nitrogenPriceCrcPerKg, 1341);
+  assert.equal(Math.round(after.nSaved), Math.round(Math.min(bean.n_supply_kg_ha, maize.n_demand_kg_ha) * 1341));
+  assert.ok(after.margin > alone.margin);
+});
+
+test('plans report a margin in colones and the income axis stays between 0 and 1', () => {
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm: baseFarm, priorities });
+  assert.ok(r.money);
+  for (const p of [...r.plans, r.base]) {
+    assert.ok(Number.isFinite(p.scores.margin));
+    assert.ok(p.scores.income >= 0 && p.scores.income <= 1);
+    assert.ok(p.reasons.some((x) => x.startsWith('Expected net margin')));
+  }
+});
+
+test('maximum-loss filter works in colones', () => {
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm: { ...baseFarm, current_crop: 'maize', max_loss_pct: 10 }, priorities });
+  const floor = r.base.scores.margin - Math.abs(r.base.scores.margin) * 0.1;
+  if (!r.notices.some((n) => n.includes('maximum loss'))) for (const p of r.plans) assert.ok(p.scores.margin >= floor - 1);
+});
+
+test('colones are formatted to the nearest thousand', () => {
+  assert.equal(crc(1234567), '₡1,235,000');
+  assert.equal(crc(-147500), '−₡148,000');
+});
+
+// ---- Data guard (25 Oct 2026, decision D21) ----
+import { MAX_MONTH_RAIN_MM } from '../web/js/climate.js';
+
+test('real data: no canton has an implausible month or year of rain (guards against the ×24 POWER download)', () => {
+  const pts = loadJSON('../web/data/guanacaste/points.json').points;
+  for (const p of pts) {
+    const { months } = loadJSON(`../web/data/guanacaste/climate_${p.id}.json`);
+    for (const m of months) assert.ok(m.P <= MAX_MONTH_RAIN_MM, `${p.id} ${m.year}-${m.month}: ${m.P} mm`);
+    const years = {};
+    for (const m of months) (years[m.year] ||= []).push(m.P);
+    for (const [y, v] of Object.entries(years)) if (v.length === 12) assert.ok(v.reduce((a, b) => a + b, 0) < 6000, `${p.id} ${y}`);
+  }
+});
+
+test('live download refuses rainfall 24 times too high', () => {
+  const par = { PRECTOTCORR: {}, T2M: {}, T2M_MAX: {}, T2M_MIN: {} };
+  for (let d = 1; d <= 30; d++) { const k = `202106${String(d).padStart(2, '0')}`; par.PRECTOTCORR[k] = 16 * 24; par.T2M[k] = 27; par.T2M_MAX[k] = 32; par.T2M_MIN[k] = 23; }
+  assert.throws(() => processPowerDaily({ properties: { parameter: par }, geometry: { coordinates: [-85.4, 10.6] } }, 10.6), /implausible/);
+});
