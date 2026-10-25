@@ -161,7 +161,7 @@ Si encuentran una palabra que no está aquí, agréguenla en la sección que le 
 | **Prueba unitaria** | Unit test | Pequeño programa que verifica que una función hace lo esperado. | `tests/engine.test.js` (`npm test`). |
 | **Regla dura** | Hard rule | Condición que descarta una opción sin importar el puntaje. | pH fuera de rango, cultivo fuera de época. |
 | **Riesgo (eje Seguridad)** | Risk (Safety axis) | 1 − fracción de años observados en que el agua no alcanzó. | Viene de los datos 2021→hoy, año por año. |
-| **Validación experta** | Expert validation | Que un agrónomo/extensionista revise si los planes tienen sentido. | Pendiente (MAG/INTA). |
+| **Validación experta** | Expert validation | Que un agrónomo/extensionista revise si los planes tienen sentido. | No es requisito para el reto (D22); después del evento. |
 
 ## 8. Web, dominio y despliegue
 
@@ -187,9 +187,9 @@ Si encuentran una palabra que no está aquí, agréguenla en la sección que le 
 
 | Término | Inglés | Qué es | Cómo lo usamos |
 |---|---|---|---|
-| **Costo de producción** | Production cost | Lo que cuesta producir una hectárea (semilla, fertilizante, mano de obra, maquinaria). | Columna `production_cost_crc_ha` (pendiente). |
+| **Costo de producción** | Production cost | Lo que cuesta producir una hectárea (semilla, fertilizante, mano de obra, maquinaria). | Columna `production_cost_crc_ha` (estructuras de costos MAG-SEPSA). |
 | **Costo de transición** | Transition cost | Gasto extra de cambiar de cultivo (semilla nueva, equipo, aprender, buscar mercado). | Mejora futura del eje Ingreso. |
-| **Margen** | Margin | Ingreso por venta menos costos. | Hoy relativo (1–5) hasta tener precios reales. |
+| **Margen** | Margin | Ingreso por venta menos costos. | En colones por hectárea desde el 25 oct (D20). |
 | **Pérdida máxima tolerable** | Maximum tolerable loss | Cuánto ingreso está dispuesto a dejar de ganar el agricultor para reducir riesgo. | Pregunta opcional; filtra planes. |
 | **Precio mayorista** | Wholesale price | Precio de venta en mercados como CENADA. | Fuente para `price_crc_kg` (PIMA). |
 | **Urea (46 % N)** | Urea (46 % N) | Fertilizante nitrogenado más común. | Para traducir el nitrógeno de las leguminosas a colones ahorrados. |

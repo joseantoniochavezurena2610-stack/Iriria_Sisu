@@ -150,7 +150,7 @@ If you find a word that is not here, add it to the right section in **both versi
 | **Backtest** | Prueba hacia atrás | Running the model with data from a past year and comparing with what really happened. | 2026 is a natural experiment: rice growers in Nandayure did not plant. |
 | **Beam search** | Búsqueda en haz | An algorithm that builds solutions step by step keeping only the N best partial ones. | Builds the 9-season rotations without testing every combination (11⁹). |
 | **Black box** | Caja negra | A model whose decisions cannot be explained. | **What we avoid**: transparent rules. |
-| **Expert validation** | Validación experta | An agronomist or extension agent checks whether the plans make sense. | Pending (MAG/INTA). |
+| **Expert validation** | Validación experta | An agronomist or extension agent checks whether the plans make sense. | Not required for the challenge (D22); after the event. |
 | **Hard rule** | Regla dura | A condition that rules out an option regardless of its score. | pH out of range, crop out of season. |
 | **Hypothesis** | Hipótesis | A statement that can be tested with data. | H1 and H2 in `docs/roles/science-lead.md`. |
 | **Multi-criteria decision** | Decisión multicriterio | Choosing among options evaluated on several weighted criteria at once. | Soil, Water, Risk and Income axes with the farmer's priorities. |
@@ -186,8 +186,8 @@ If you find a word that is not here, add it to the right section in **both versi
 | Term | Spanish | What it is | How we use it |
 |---|---|---|---|
 | **Maximum tolerable loss** | Pérdida máxima tolerable | How much income the farmer is willing to give up to reduce risk. | Optional question; filters plans. |
-| **Margin** | Margen | Sales income minus costs. | Relative (1–5) for now, until real prices are in. |
-| **Production cost** | Costo de producción | What it costs to produce one hectare (seed, fertiliser, labour, machinery). | `production_cost_crc_ha` column (pending). |
+| **Margin** | Margen | Sales income minus costs. | In colones per hectare since 25 Oct (D20). |
+| **Production cost** | Costo de producción | What it costs to produce one hectare (seed, fertiliser, labour, machinery). | `production_cost_crc_ha` column (MAG-SEPSA cost structures). |
 | **Transition cost** | Costo de transición | Extra cost of switching crops (new seed, equipment, learning, finding a market). | Future improvement of the Income axis. |
 | **Urea (46 % N)** | Urea | The most common nitrogen fertiliser. | To translate legume nitrogen into colones saved. |
 | **Wholesale price** | Precio mayorista | Selling price in markets such as CENADA. | Source for `price_crc_kg` (PIMA). |

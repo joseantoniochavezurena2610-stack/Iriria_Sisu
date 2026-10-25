@@ -36,12 +36,12 @@ Rainfed rice, maize, sorghum, common bean, cowpea, peanut, melon, watermelon, mu
 | Explanations | $0 (templates, no LLM) |
 | Sensor | Not required |
 
-**Inside the engine:** income is relative (1–5) for now. Next step: margin = yield × price (PIMA/CENADA) − cost (MAG/INTA), plus fertiliser savings from legume nitrogen, and the maximum-tolerable-loss filter (already implemented).
+**Inside the engine (since 25 Oct, D20):** income is in colones per hectare: yield × price − production cost, plus the urea a legume saves the next crop, with the maximum-tolerable-loss filter in colones. Sources and confidence of every value: [`research/prices-and-costs.md`](research/prices-and-costs.md).
 
 ## Path to impact
-MAG/INTA extension agencies and Guanacaste cooperatives: the extension agent opens the link during the visit, fills in the form with the grower and prints the plan. The same engine works for other regions of the Central American Dry Corridor by changing the catalog and the points.
+After the event (nothing here is needed to compete, D22): MAG/INTA extension agencies and Guanacaste cooperatives, where the extension agent opens the link during the visit, fills in the form with the grower and prints the plan. The same engine works for other regions of the Central American Dry Corridor by changing the catalog and the points.
 
 ## What we do NOT promise
 - We do not predict the harvest; we compare plans.
 - The data is regional (cells tens of km wide).
-- Crop ranges are being verified; income is relative until prices are in.
+- Crop ranges come from FAO; prices and costs are recent Costa Rican averages and some are labelled estimates.

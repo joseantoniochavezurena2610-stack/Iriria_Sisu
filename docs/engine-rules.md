@@ -45,10 +45,10 @@ Seasons: **Dry** (Jan–Apr), **Primera** (May–Aug, contains the *canícula*),
 | **Soil** | 0.35 × normalised nitrogen balance + 0.25 × ground cover + 0.15 × residue + 0.25 × family diversity − 0.08 × repetitions − erosion (seasons with little cover × slope factor). Low organic matter gives more weight to residue. |
 | **Water** | 1 − (irrigation + unmet deficit) / total demand. Measures how much the plan depends on water the rain does not provide. |
 | **Safety (Risk)** | 1 − average failure probability of the planted seasons. |
-| **Income** | Σ relative_margin × suitability × rotation effect × (1 − 0.5 × failure prob.), normalised against the best possible crop in each season. **Relative** until verified prices are available. |
+| **Income** | In **colones per hectare** (D20). Each season: yield × price × suitability × rotation effect × (1 − 0.5 × failure prob.) − production cost + nitrogen left by a previous legume (up to what the crop needs) × ₡1,341 per kg N (urea). The plan's margin is the sum of its 9 seasons. The axis goes from 0 (the worst viable crop every season) to 1 (the best one every season); fallow (₡0) sits in between. If any crop lacks yield, price or cost, the engine falls back to the old relative margin. |
 | **Total** | Weighted average with the farmer's priorities. |
 
-**Maximum loss**: if the farmer sets it, plans whose income is lower than "today's" × (1 − loss) are discarded.
+**Maximum loss**: if the farmer sets it, plans whose margin in colones is lower than today's − |today's| × loss are discarded.
 
 **Robust plan**: score with all-El Niño ≥ 85 % of the score with all-normal **and** El Niño safety ≥ 50. The card prints this rule under the badge; a plan that misses it is labelled "Sensitive to El Niño" with the opposite rule.
 
@@ -59,6 +59,6 @@ Seasons: **Dry** (Jan–Apr), **Primera** (May–Aug, contains the *canícula*),
 ## 6. To do for the science lead and Economics
 - [ ] Verify every catalog value with a source (FAO-56, ECOCROP, INTA/MAG) and fill in `verified_by`.
 - [ ] Review thresholds: minimum suitability 0.35; failure 0.75; carry-over 50 % of available water; depth 0.6 m.
-- [ ] Replace `relative_margin` with yield × price − cost (the columns already exist in the CSV).
+- [x] Replace `relative_margin` with yield × price − cost — done 25 Oct (D20).
 - [ ] Use `GWETROOT` (POWER soil moisture) for the initial reserve instead of the previous-month rule.
 - [ ] Sensitivity analysis (±20 %) and 2023 / 2026 backtests.

@@ -19,7 +19,7 @@ José Pablo left the team (D17). His pipeline, engine and tests stay and keep ru
 | His task | Now | New date |
 |---|---|---|
 | Domain + DNS | Not needed: https://joseantoniochavezurena2610-stack.github.io/Iriria_Sisu/ — **Juan Diego** turns on Pages with Jose Antonio's owner account | 27 Oct |
-| Income axis in colones | **Juan Diego** (engine) with Angeli's prices and costs | data 1 Nov · engine 8 Nov |
+| Income axis in colones | ✅ Done 25 Oct (D20): prices and costs researched on the web, engine and tests updated | — |
 | ±20 % sensitivity | **Juan Diego** writes the script · **Jose Antonio** interprets | 5 Nov |
 | POWER vs station data | **Jose Antonio** (IMN stations; Nandayure added) | 1 Nov |
 | Earthdata secrets + IMERG | **Juan Diego**, optional | if time |
@@ -37,7 +37,7 @@ José Pablo left the team (D17). His pipeline, engine and tests stay and keep ru
 - [ ] Ask the organisers whether we may arrive with pre-existing code — **Angeli**
 
 ### Week 2 · 26 Oct – 1 Nov — science and economics
-- [ ] Prices (PIMA/CENADA), production costs (MAG/INTA) and yields for every crop — **Angeli** (by 1 Nov)
+- [x] Prices, production costs and yields for every crop — done 25 Oct from public web sources (D20); **Angeli** reviews the "estimate" rows and replaces any she can source better
 - [ ] Compare POWER rainfall with IMN station data for Liberia, Nicoya and Nandayure — **Jose Antonio** (by 1 Nov)
 - [ ] Verify the catalog crop by crop with sources (`verified_by`) — **Jose Antonio**
 - [ ] Final mockups and palette; test the app on 3 different phones — **Nesly**
@@ -45,8 +45,9 @@ José Pablo left the team (D17). His pipeline, engine and tests stay and keep ru
 ### Week 3 · 2–8 Nov — validation and engine
 - [x] 2026 backtest (`scripts/backtest_2026.mjs`) — done 25 Oct; Nandayure does not match, see [`research/backtest-2026.md`](research/backtest-2026.md)
 - [ ] ±20 % sensitivity script — **Juan Diego** (5 Nov) · interpretation — **Jose Antonio**
-- [ ] Income axis in colones (engine + test) — **Juan Diego** (8 Nov)
-- [ ] Take the app to a MAG/INTA extension agent or a Guanacaste grower — **Angeli + Britzie**
+- [x] Income axis in colones (engine + test) — done 25 Oct
+- ~~Take the app to a MAG/INTA extension agent~~ → not required for the challenge (D22); after the event
+- [ ] Internal user test: two people outside the code use the public link and note what they did not understand — **Angeli + Britzie**
 - [ ] Run `npm test` and the `data` workflow once, as backup — **Jose Antonio**
 
 ### Week 4 · 9–13 Nov — freeze
@@ -77,3 +78,5 @@ José Pablo left the team (D17). His pipeline, engine and tests stay and keep ru
 ## Blockers / pending decisions
 - May we arrive with pre-existing code? (ask the organisers)
 - ~~Final domain name~~ → no custom domain (D18)
+- ~~Approval or review by MAG/INTA~~ → not needed to compete (D22)
+- Watch the next Monday `data` run: if POWER still returns ×24 rainfall the run fails on purpose and the 19 Oct data stays (D21)
