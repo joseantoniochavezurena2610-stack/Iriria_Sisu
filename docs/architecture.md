@@ -13,7 +13,7 @@ Team CSV   ──▶│ scripts/catalog_to_json.py   → web/data/crops.json    
               └──────────────────────────────────┬──────────────────────────────────────────────┘
                                                  │ automatic commit
                                                  ▼
-                    Static hosting (GitHub Pages + custom domain)  ──▶  farmer's browser
+                    Static hosting (GitHub Pages, free github.io address)  ──▶  farmer's browser
                                                                          web/js/app.js     (interface)
                                                                          web/js/climate.js (scenarios)
                                                                          web/js/engine.js  (engine)
@@ -65,7 +65,9 @@ python3 scripts/fetch_data.py                  # download NASA data (needs inter
 Equivalent alternatives (all free for static sites): Cloudflare Pages, Netlify, Vercel. Point them at the `web/` folder with no build step.
 
 <a id="domain"></a>
-## Domain (owner: José Pablo)
+## Domain (optional, after the event — decision D18)
+
+> Not needed for Space Apps: the app is published at the free GitHub Pages address. Use this section only if the team later buys a domain.
 ### Requirements
 - Short, easy to say on a farm and to type on a phone. Ideas: `iririasisu.app`, `iririasisu.com`, `iririasisu.cr`, `sisu.cr`. Avoid accents in the domain.
 - **HTTPS required** (the phone's location only works over HTTPS). GitHub Pages provides it for free.
