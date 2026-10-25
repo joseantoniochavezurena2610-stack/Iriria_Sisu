@@ -12,9 +12,9 @@ One of the **two only deliverables** (the other is the web prototype).
 ## Script (30 s) — everything on screen is the real app
 | Time | Image | Narration | Subtitle (EN) |
 |---|---|---|---|
-| 0–5 s | Dry field in Guanacaste → map with the 11 cantons on alert | "Guanacaste perdió más de un tercio de su lluvia este año." | "Guanacaste lost over a third of its rain this year." |
+| 0–5 s | Dry field in Guanacaste → map with the 11 cantons on alert | "Guanacaste perdió más de un tercio de su lluvia este año." | "Guanacaste's region lost over a third of its rain this year." + on-screen source: *IMN, North Pacific, Jan–Aug 2026: −37 %* |
 | 5–10 s | Phone: farmer picks canton, crop and texture | "Iriria Sìsù une datos de la NASA con lo que el agricultor sabe de su finca." | "Iriria Sìsù combines NASA data with what farmers know about their land." |
-| 10–20 s | "Normal year" button → "El Niño year": rice drops out, cowpea and sorghum come in; "Robust plan" label | "Compara rotaciones a 3 años en un año normal y en uno El Niño, con la lluvia real desde 2021." | "It compares 3-year rotations in normal and El Niño years, using real rainfall since 2021." |
+| 10–20 s | "Normal year" button → "Average El Niño year": show what the engine really does for the canton recorded (check `docs/research/backtest-2026.md`: Liberia/Santa Cruz drop rice; Nandayure does not); "Robust plan" label **with its rule visible** | "Compara rotaciones a 3 años en un año normal y en uno El Niño, con la lluvia real desde 2021." | "It compares 3-year rotations in normal and El Niño years, using real rainfall since 2021." |
 | 20–26 s | Soil / Water / Safety / Income axes and the reasons | "Muestra qué le pasa al suelo, al agua y al ingreso. La decisión es del agricultor." | "It shows the effect on soil, water and income. The farmer decides." |
 | 26–30 s | Logo + website domain | "Iriria Sìsù. Datos del espacio para sembrar mejor." | "Iriria Sìsù. Space data for better planting." |
 
@@ -26,5 +26,7 @@ One of the **two only deliverables** (the other is the web prototype).
 - [ ] English subtitles reviewed
 - [ ] Royalty-free music (record the source)
 - [ ] No number without a source in `docs/confirmed-data.md`
+- [ ] Record the app in Spanish (growers) and show the ES/EN switch once (judges)
+- [ ] The crops named in the narration match what the engine shows on screen for that canton
 - [ ] Public link tested from another account / incognito
 - [ ] Backup: the video file saved in the team Drive
