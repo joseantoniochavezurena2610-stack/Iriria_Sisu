@@ -73,7 +73,6 @@ archive/           earlier prototype (reference)
 | Name | Role |
 |---|---|
 | Jose Antonio Chávez Ureña | Science lead |
-| José Pablo Ramírez Fernández | Data, engine and domain |
 | Juan Diego Chávez Ureña | Integration, deployment and security |
 | Angeli Abarca Ureña | Economics, impact and operations |
 | Nesly Mejía Jiménez | Design, UX and video |
