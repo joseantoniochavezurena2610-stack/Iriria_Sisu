@@ -13,7 +13,7 @@ Every team decision with its date and its reason. If something changes, add a ne
 | D5 | **Data: at least the last 5 years (2021 → today).** | Every dataset in the model covers at least Jan 2021 to today. It includes La Niña 2021-23, El Niño 2023-24, La Niña 2024-26 and El Niño 2026. Older data (e.g. El Niño 2015) is only cited as historical context and never enters the engine. |
 | D6 | **Shared glossary.** | [`glossary.md`](glossary.md): every new technical term is added there. |
 | D7 | **The farmer enters their data; we do not depend on sensors.** | The form asks for canton, crop, irrigation, texture (ribbon test), pH (optional), slope, organic matter and priorities. If the farmer does not know their pH, SoilGrids is used as a reference (and the app says so). The ESP32 sensor becomes an **optional extra** that blocks nothing. |
-| D8 | **Domain: José Pablo finds and manages it** (systems engineer). | Requirements and steps in [`architecture.md#domain`](architecture.md#domain). Recommended hosting: GitHub Pages (free, HTTPS). |
+| D8 | **Domain: José Pablo finds and manages it** (systems engineer). *Replaced by D18 (25 Oct).* | Requirements and steps in [`architecture.md#domain`](architecture.md#domain). Recommended hosting: GitHub Pages (free, HTTPS). |
 | D9 | **Everything researched or changed goes to GitHub.** | Branches + PRs as in `CONTRIBUTING.md`. NASA data is downloaded and committed automatically by the `data` workflow. |
 
 ### Derived technical decisions
@@ -42,3 +42,10 @@ Every team decision with its date and its reason. If something changes, add a ne
 | D14 | **Risk is shown as counts, not percentages.** | "Water short in 1 of 2 years" instead of "50 %": with 2021 → today there are only 2 El Niño events. The "El Niño year" button is labelled "Average El Niño year" and its note says it mixes 2023-24 (mild) and 2026 (severe). |
 | D15 | **Every badge shows its rule.** | Under "Robust plan" / "Sensitive to El Niño" the card prints the 85 % / Safety 50 rule from `engine.js`. |
 | D16 | **Validation is reported as it is.** | README lists each check as Done or Pending. The 2026 backtest is published even though it does not flag Nandayure. |
+
+## 25 Oct 2026 — Team change
+| # | Decision | What it implies |
+|---|---|---|
+| D17 | **José Pablo Ramírez Fernández is no longer on the team** (not available). The team is now 5 people. | His tasks are reassigned in [`plan.md`](plan.md) and [`roles/`](roles/README.md). His finished work (data pipeline, engine, tests) stays and keeps running on its own (weekly `data` workflow). The Space Apps team registration must be updated. |
+| D18 | **No custom domain: the app uses the free GitHub Pages address** `https://joseantoniochavezurena2610-stack.github.io/Iriria_Sisu/`. Replaces D8. | Nothing to buy or renew, HTTPS included, no one person holds the domain. `docs/architecture.md#domain` stays as an optional step after the event. |
+| D19 | **Cut to fit 5 people.** | Kept: income in colones, sensitivity analysis, POWER vs IMN check, field session. Optional: IMERG cross-check (needs an Earthdata account). Moved to after the event: soil moisture (`GWETROOT`) in the engine, Content-Security-Policy. |
