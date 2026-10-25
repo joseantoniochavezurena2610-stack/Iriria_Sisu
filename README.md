@@ -17,7 +17,15 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 - **Hypothesis:** in El Niño years, rotations with legumes and drought-tolerant crops carry less risk than rainfed rice; and the best plan for a normal year is not always the best plan for an El Niño year.
 - **Data:** NASA POWER daily data 2021 → today (11 cantons), NOAA's ENSO index, FAO-56 and ECOCROP. See [`docs/data-sources.md`](docs/data-sources.md).
 - **Analysis:** a multi-criteria engine with transparent rules: FAO-56-style water balance with Hargreaves ET0, pH and calendar filters, rotation effects, and risk computed year by year. See [`docs/engine-rules.md`](docs/engine-rules.md).
-- **Validation:** backtests with El Niño 2023 and 2026, ±20 % sensitivity analysis, POWER vs IMERG cross-check, review by an extension agent, and automated tests.
+- **Validation** (status on 25 Oct 2026):
+
+  | Check | Status | Where |
+  |---|---|---|
+  | Automated engine tests (17) | ✅ Done, run on every push | [`tests/`](tests/) |
+  | Backtest of rainfed rice in Primera 2026, 11 cantons | ✅ Done — agrees in 4 dry cantons; **does not** flag Nandayure, where POWER recorded 939 mm | [`docs/research/backtest-2026.md`](docs/research/backtest-2026.md) |
+  | POWER vs IMERG rainfall cross-check | ⏳ Pending | `scripts/fetch_imerg.py` |
+  | ±20 % sensitivity analysis | ⏳ Pending | — |
+  | Review by a MAG/INTA extension agent | ⏳ Pending (week of 2–8 Nov) | [`docs/roles/field-and-sensors.md`](docs/roles/field-and-sensors.md) |
 
 ## 📚 Documentation
 | Document | What for |
@@ -31,12 +39,14 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 | [`docs/video-script.md`](docs/video-script.md) | Script for the 30-second video |
 | [`docs/data-sources.md`](docs/data-sources.md) | Datasets, licences and limitations |
 | [`docs/confirmed-data.md`](docs/confirmed-data.md) | Only verified facts, each with its source |
-| [`docs/research/`](docs/research/) | El Niño 2021-2026 and fact-checking of the research |
+| [`docs/research/`](docs/research/) | El Niño 2021-2026, fact-checking of the research and the 2026 backtest |
 | [`docs/roles/`](docs/roles/README.md) | Each person's plan |
 
 ## 🛠️ Stack
 - **Static website:** HTML + CSS + JavaScript (no server, no build step). Map with Leaflet.
 - **Engine:** `web/js/engine.js` (pure functions, runs in the browser) + tests with `node --test`.
+- **Text:** every string the app shows lives in `web/js/strings.js` (English only, decision D10).
+- **Offline:** `web/sw.js` keeps the page and the cantons already opened on the device, for farms without signal.
 - **Data:** Python scripts (standard library) run weekly by **GitHub Actions**, saving JSON to `web/data/`.
 - **Hosting:** GitHub Pages + custom domain (handled by José Pablo).
 
@@ -44,6 +54,7 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 ```bash
 python3 -m http.server 8000 --directory web    # open http://localhost:8000
 npm test                                        # engine tests (Node 20+)
+node scripts/backtest_2026.mjs                  # rewrites docs/research/backtest-2026.md
 ```
 Data is downloaded automatically by the **data** workflow (Actions tab). By hand: `python3 scripts/fetch_data.py`.
 

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Iriria Sìsù — Crop rotations for Guanacaste</title>
 <meta name="description" content="Compare 3-year crop-rotation plans for your farm in Guanacaste, Costa Rica, using NASA data and what you know about your soil.">
+<meta name="theme-color" content="#1d7044">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%231d7044'/%3E%3Cpath d='M16 25V12M16 16c-4 0-7-3-7-7 4 0 7 3 7 7zm0 2c4 0 7-3 7-7-4 0-7 3-7 7z' stroke='%23fff' stroke-width='2' fill='none'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -17,7 +18,7 @@
   <header class="head">
     <span class="eyebrow">NASA Space Apps 2026 · Change of Course</span>
     <h1>Iriria Sìsù</h1>
-    <p class="lede">Compare 3-year crop-rotation plans for your farm in Guanacaste, Costa Rica. We use NASA rainfall, temperature and soil-moisture data since 2021, plus what you know about your land. The decision is always yours.</p>
+    <p class="lede">Compare 3-year crop-rotation plans for your farm in Guanacaste, Costa Rica. We use NASA rainfall and temperature data since 2021, plus what you know about your land. The decision is always yours.</p>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Sections">
@@ -32,7 +33,7 @@
     <form id="form" class="panel" autocomplete="off" onsubmit="return false">
       <fieldset>
         <legend>1 · Where is your farm?</legend>
-        <label>Canton
+        <label><span>Canton</span>
           <select id="canton"></select>
         </label>
         <div id="map" class="map" aria-label="Map of Guanacaste: tap your canton"></div>
@@ -42,10 +43,10 @@
 
       <fieldset>
         <legend>2 · What do you plant today?</legend>
-        <label>Main crop
+        <label><span>Main crop</span>
           <select id="current"></select>
         </label>
-        <label>Do you have irrigation?
+        <label><span>Do you have irrigation?</span>
           <select id="irrigation">
             <option value="none">No, rain only</option>
             <option value="limited">A little (well, small reservoir)</option>
@@ -56,7 +57,7 @@
 
       <fieldset>
         <legend>3 · Your soil</legend>
-        <label>Texture
+        <label><span>Texture</span>
           <select id="texture">
             <option value="loam">Loam (neither loose nor sticky)</option>
             <option value="sandy">Sandy (loose, does not form a ball)</option>
@@ -64,24 +65,24 @@
           </select>
         </label>
         <details class="help"><summary>How do I know my texture?</summary>
-          <div><p>Ribbon test: wet a handful of soil and squeeze it between your thumb and index finger. If it does not form a ribbon, it is <b>sandy</b>. If it forms a short ribbon that breaks (less than 2.5 cm), it is <b>loam</b>. If it forms a long, shiny ribbon, it is <b>clay</b>.</p></div>
+          <div><p data-html="f3.helpBody">Ribbon test: wet a handful of soil and squeeze it between your thumb and index finger. If it does not form a ribbon, it is <b>sandy</b>. If it forms a short ribbon that breaks (less than 2.5 cm), it is <b>loam</b>. If it forms a long, shiny ribbon, it is <b>clay</b>.</p></div>
         </details>
         <div class="row2">
-          <label>Soil pH
-            <input type="number" id="ph" min="3.5" max="9.5" step="0.1" value="6.0" inputmode="decimal">
+          <label><span>Soil pH</span>
+            <input type="number" id="ph" min="3.5" max="9.5" step="0.1" value="6.0" inputmode="decimal" disabled>
           </label>
-          <label class="check"><input type="checkbox" id="phunknown"> I don't know my pH</label>
+          <label class="check"><input type="checkbox" id="phunknown" checked> <span>I don't know my pH</span></label>
         </div>
         <p class="note" id="phnote"></p>
         <div class="row2">
-          <label>Land
+          <label><span>Land</span>
             <select id="slope">
               <option value="flat">Flat</option>
               <option value="moderate">Somewhat sloped</option>
               <option value="steep">Very steep</option>
             </select>
           </label>
-          <label>Organic matter
+          <label><span>Organic matter</span>
             <select id="om">
               <option value="">I don't know</option>
               <option value="low">Low (light-coloured soil)</option>
@@ -94,11 +95,12 @@
 
       <fieldset>
         <legend>4 · What matters most to you?</legend>
-        <label class="slider">Take care of the soil <output id="o-soil">3</output><input type="range" id="soil" min="0" max="5" value="3"></label>
-        <label class="slider">Save water <output id="o-water">3</output><input type="range" id="water" min="0" max="5" value="3"></label>
-        <label class="slider">Lower the risk of losing the harvest <output id="o-risk">4</output><input type="range" id="risk" min="0" max="5" value="4"></label>
-        <label class="slider">Earn more <output id="o-income">3</output><input type="range" id="income" min="0" max="5" value="3"></label>
-        <label>At most, how much income could you give up compared with today?
+        <label class="slider"><span>Soil: take care of the soil</span> <output id="o-soil">3</output><input type="range" id="soil" min="0" max="5" value="3"></label>
+        <label class="slider"><span>Water: save water</span> <output id="o-water">3</output><input type="range" id="water" min="0" max="5" value="3"></label>
+        <label class="slider"><span>Safety: lower the risk of losing the harvest</span> <output id="o-risk">4</output><input type="range" id="risk" min="0" max="5" value="4"></label>
+        <label class="slider"><span>Income: earn more</span> <output id="o-income">3</output><input type="range" id="income" min="0" max="5" value="3"></label>
+        <p class="note">Safety starts at 4 because Costa Rica’s weather service (IMN) expects El Niño effects at least until July 2027. Move any slider: the plans update right away.</p>
+        <label><span>At most, how much income could you give up compared with today?</span>
           <select id="maxloss">
             <option value="">No limit</option>
             <option value="10">Up to 10 %</option>
@@ -110,12 +112,13 @@
     </form>
 
     <div class="results" aria-live="polite">
+      <p class="printmeta" id="printmeta"></p>
       <div class="scenario" role="radiogroup" aria-label="Climate scenario">
         <span class="eyebrow">Which climate do we compare against?</span>
         <div class="seg" id="scenario">
           <button type="button" data-sc="forecast" aria-pressed="true">Current forecast</button>
           <button type="button" data-sc="normal" aria-pressed="false">Normal year</button>
-          <button type="button" data-sc="el_nino" aria-pressed="false">El Niño year</button>
+          <button type="button" data-sc="el_nino" aria-pressed="false">Average El Niño year</button>
           <button type="button" data-sc="worst" aria-pressed="false">Worst year seen</button>
         </div>
         <p class="note" id="scnote"></p>
@@ -124,38 +127,25 @@
       <div>
         <h2 id="climtitle">Climate of your canton</h2>
         <div class="chartbox" id="chart"></div>
-        <div class="legend"><span><i style="background:var(--rain)"></i>Rainfall, years without El Niño</span><span><i style="background:var(--rain-nino)"></i>Rainfall, El Niño years</span><span><i style="background:var(--et)"></i>Water demanded by the air (ET0)</span></div>
+        <div class="legend"><span><i style="background:var(--rain)"></i><span>Rainfall, years without El Niño</span></span><span><i style="background:var(--rain-nino)"></i><span>Rainfall, El Niño years</span></span><span><i style="background:var(--et)"></i><span>Water the air demands (evapotranspiration, ET0)</span></span></div>
       </div>
       <div class="legend" id="famlegend"></div>
       <ul class="notices" id="notices"></ul>
+      <p class="note">Scores from 0 to 100 compare these plans with each other. They are not a harvest forecast, and the climate data is regional.</p>
       <div id="plans"></div>
+      <p class="printonly">Bring this plan to your extension agent (MAG/INTA) or cooperative to discuss it before buying seed.</p>
       <div class="actions">
         <button type="button" class="btn" id="print">Print or save as PDF</button>
+        <button type="button" class="btn sec" id="whatsapp">Send by WhatsApp</button>
         <button type="button" class="btn sec" id="share">Copy link to this plan</button>
         <span class="note" id="sharemsg" aria-live="polite"></span>
+        <p class="note full">The link includes your answers (canton, crop, soil and priorities).</p>
       </div>
     </div>
   </section>
 
   <!-- ===================== HOW IT WORKS ===================== -->
-  <section id="p-how" role="tabpanel" hidden class="prose">
-    <h2>How it works</h2>
-    <ol class="steps">
-      <li><b>Real climate for your canton.</b> We download daily rainfall, temperature and soil moisture from NASA POWER since January 2021, and compute how much water the air demands (ET0, FAO's Hargreaves method).</li>
-      <li><b>We separate the years.</b> Using NOAA's official index we label each month as El Niño, La Niña or neutral. That lets us compare a normal year with an El Niño year using the rain that actually fell, not an invented percentage.</li>
-      <li><b>We test every crop in every season.</b> Dry (Jan–Apr), Primera (May–Aug, includes the mid-summer drought or <i>canícula</i>) and Postrera (Sep–Dec). We check whether there is enough water (FAO-56-style balance), whether the temperature suits the crop and whether your pH allows it.</li>
-      <li><b>We build thousands of 3-year rotations</b> and discard those that make no sense (pH out of range, crop out of season, same family repeated).</li>
-      <li><b>We score from 0 to 100</b> on four things: <b>Soil</b> (nitrogen, ground cover, changing families), <b>Water</b> (how much irrigation or deficit remains), <b>Risk</b> (in how many observed years water fell short) and <b>Income</b>.</li>
-      <li><b>You decide the weight</b> of each one. We show the 3 best plans and how each would do in a normal year and in an El Niño year. If it holds up in both, we label it a <b>robust plan</b>.</li>
-    </ol>
-    <h3>What we do not promise</h3>
-    <ul>
-      <li>We do not predict your exact harvest: we compare plans against each other.</li>
-      <li>Satellite and model data are <b>regional</b> (grid cells tens of km wide). What you know about your farm (pH, texture, irrigation) is what tailors the result to your plot.</li>
-      <li>Crop ranges come from FAO and the literature; the team is checking them against Costa Rican sources.</li>
-      <li>Income is still <b>relative</b> (1 to 5) until prices and costs are verified.</li>
-    </ul>
-  </section>
+  <section id="p-how" role="tabpanel" hidden class="prose" data-html="how.html"></section>
 
   <!-- ===================== DATA ===================== -->
   <section id="p-data" role="tabpanel" hidden class="prose">
@@ -168,7 +158,7 @@
   </main>
 
   <footer class="foot">
-    <p>Iriria Sìsù · Costa Rican team at the NASA International Space Apps Challenge 2026. Data: NASA POWER (NASA Langley), NOAA CPC ENSO index, FAO. Open source (MIT) on <a href="https://github.com/joseantoniochavezurena2610-stack/iriria_sisu">GitHub</a>. This tool does not replace advice from an agronomist.</p>
+    <p data-html="foot.html">Iriria Sìsù · Costa Rican team at the NASA International Space Apps Challenge 2026. Data: NASA POWER (NASA Langley), NOAA CPC ENSO index, FAO. Open source (MIT) on <a href="https://github.com/joseantoniochavezurena2610-stack/iriria_sisu">GitHub</a>. This tool does not replace advice from an agronomist.</p>
   </footer>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin defer></script>
