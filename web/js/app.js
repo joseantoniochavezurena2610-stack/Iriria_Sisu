@@ -1,23 +1,25 @@
 // app.js — Iriria Sìsù interface. Loads the data, calls the engine and draws the plans.
-import { SEASONS, MONTHS, buildScenarios, powerUrl, processPowerDaily } from './climate.js';
+import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js';
 import { recommend } from './engine.js';
+import { t, cropName, seasonText, monthNames, detectLang } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
 const pct = (x) => Math.round(x * 100);
-const GROUPS = { gram: 'Grasses (rice, maize, sorghum)', leg: 'Legumes', cuc: 'Cucurbits (melon, watermelon)', cover: 'Green manure', none: 'Fallow' };
-const SCENARIO_NOTE = {
-  forecast: 'Costa Rica’s weather service (IMN) expects El Niño effects at least until July 2027: the Dry and Primera seasons of year 1 use the climate of the observed El Niño months; the rest use normal years.',
-  normal: 'Average of the months without El Niño since 2021.',
-  el_nino: 'Average of the El Niño months observed since 2021 (2023-24 and 2026). Note: El Niño 2023 barely dried Guanacaste; 2026 did.',
-  worst: 'The year with the least rain from May to November since 2021.',
-};
+const GROUP_KEYS = ['gram', 'leg', 'cuc', 'cover', 'none'];
 const PLAN_SCENARIOS = {
   forecast: ['el_nino', 'el_nino', ...Array(7).fill('normal')],
   normal: Array(9).fill('normal'), el_nino: Array(9).fill('el_nino'), worst: Array(9).fill('worst'),
 };
 const FIELDS = ['canton', 'current', 'irrigation', 'texture', 'ph', 'slope', 'om', 'soil', 'water', 'risk', 'income', 'maxloss'];
 
-const state = { scenario: 'forecast', climate: {}, data: null, map: null, markers: {} };
+const state = { scenario: 'forecast', lang: 'en', climate: {}, data: null, map: null, markers: {}, lastScenarios: null, last: null };
+const L = (key, vars) => t(state.lang, key, vars);
+
+// Browser storage can be missing or throw (private mode, previews): every access is guarded.
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* not available */ } },
+};
 
 async function json(path, optional = false) {
   try {
@@ -32,8 +34,28 @@ async function json(path, optional = false) {
 
 function setStatus(text, kind = '') { const f = $('status'); f.className = `flag ${kind}`; f.textContent = text; }
 
+// ------------------------------------------------------------------ language
+function applyLang() {
+  document.documentElement.lang = state.lang;
+  document.title = L('page.title');
+  document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = L(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-html]').forEach((el) => { el.innerHTML = L(el.dataset.i18nHtml); });
+  document.querySelectorAll('[data-i18n-aria]').forEach((el) => { el.setAttribute('aria-label', L(el.dataset.i18nAria)); });
+  $('lang').setAttribute('lang', state.lang === 'es' ? 'en' : 'es');
+  if (!state.data) return;
+  const keep = $('current').value;
+  $('current').innerHTML = state.data.crops.filter((c) => c.group !== 'cover')
+    .map((c) => `<option value="${c.id}">${c.group === 'none' ? L('crop.nothing') : cropName(state.lang, c)}</option>`).join('');
+  if (keep) $('current').value = keep;
+  $('famlegend').innerHTML = GROUP_KEYS.map((k) => `<span><i style="background:var(--g-${k})"></i>${L(`group.${k}`)}</span>`).join('');
+  dataTab();
+}
+
 // ------------------------------------------------------------------ loading
 async function start() {
+  const q = new URLSearchParams(location.search);
+  state.lang = detectLang({ urlLang: q.get('lang'), saved: store.get('lang'), browser: navigator.language });
+  applyLang();
   try {
     const [points, crops, enso, summary, soil] = await Promise.all([
       json('data/guanacaste/points.json'), json('data/crops.json'), json('data/enso.json'),
@@ -42,15 +64,11 @@ async function start() {
     state.data = { points: points.points, crops: crops.crops, enso, summary, soil };
   } catch (e) { setStatus(e.message, 'bad'); return; }
 
-  const { points, crops } = state.data;
-  $('canton').innerHTML = points.map((p) => `<option value="${p.id}">${p.name}</option>`).join('');
-  $('current').innerHTML = crops.filter((c) => c.group !== 'cover')
-    .map((c) => `<option value="${c.id}">${c.group === 'none' ? 'Nothing / fallow' : c.name}</option>`).join('');
-  $('famlegend').innerHTML = Object.entries(GROUPS).map(([k, n]) => `<span><i style="background:var(--g-${k})"></i>${n}</span>`).join('');
+  $('canton').innerHTML = state.data.points.map((p) => `<option value="${p.id}">${p.name}</option>`).join('');
+  applyLang();
   readUrl();
   tabs();
   drawMap();
-  dataTab();
   wire();
   await update();
 }
@@ -58,25 +76,29 @@ async function start() {
 function readUrl() {
   const q = new URLSearchParams(location.search);
   FIELDS.forEach((k) => { const v = q.get(k); if (v != null && $(k)) $(k).value = v; });
-  if (q.get('phunknown') === '1') $('phunknown').checked = true;
+  // pH starts as "I don't know" unless the link says otherwise. Older links carried a pH but no flag: that pH was the user's.
+  if (q.has('phunknown')) $('phunknown').checked = q.get('phunknown') === '1';
+  else if (q.has('ph')) $('phunknown').checked = false;
   if (q.get('scenario') && PLAN_SCENARIOS[q.get('scenario')]) state.scenario = q.get('scenario');
   if (!q.get('current')) $('current').value = 'rice';
+  ['soil', 'water', 'risk', 'income'].forEach((k) => { $(`o-${k}`).textContent = $(k).value; });
 }
 
 function currentLink() {
   const q = new URLSearchParams();
   FIELDS.forEach((k) => q.set(k, $(k).value));
-  if ($('phunknown').checked) q.set('phunknown', '1');
+  q.set('phunknown', $('phunknown').checked ? '1' : '0');
   q.set('scenario', state.scenario);
+  q.set('lang', state.lang);
   return `${location.origin}${location.pathname}?${q}`;
 }
 
 function tabs() {
   const buttons = [...document.querySelectorAll('.tabs button')];
-  const show = (t) => {
-    if (!$(`p-${t}`)) t = 'tool';
-    buttons.forEach((b) => { const on = b.dataset.tab === t; b.setAttribute('aria-selected', on); $(`p-${b.dataset.tab}`).hidden = !on; });
-    if (t === 'tool' && state.map) setTimeout(() => state.map.invalidateSize(), 50);
+  const show = (tab) => {
+    if (!$(`p-${tab}`)) tab = 'tool';
+    buttons.forEach((b) => { const on = b.dataset.tab === tab; b.setAttribute('aria-selected', on); $(`p-${b.dataset.tab}`).hidden = !on; });
+    if (tab === 'tool' && state.map) setTimeout(() => state.map.invalidateSize(), 50);
   };
   buttons.forEach((b) => b.addEventListener('click', () => { show(b.dataset.tab); try { history.replaceState(null, '', `${location.search}#${b.dataset.tab}`); } catch (e) { /* preview frames */ } }));
   show((location.hash || '').slice(1) || 'tool');
@@ -84,11 +106,10 @@ function tabs() {
 
 function drawMap() {
   if (!window.L || !$('map')) return; // no internet or no Leaflet: the list still works
-  const { points } = state.data;
-  const m = L.map('map', { scrollWheelZoom: false, attributionControl: true }).setView([10.5, -85.35], 8);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12, attribution: '© OpenStreetMap' }).addTo(m);
-  for (const p of points) {
-    state.markers[p.id] = L.circleMarker([p.lat, p.lon], { radius: 7, weight: 2, color: '#1d7044', fillOpacity: 0.4 })
+  const m = window.L.map('map', { scrollWheelZoom: false, attributionControl: true }).setView([10.5, -85.35], 8);
+  window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12, attribution: '© OpenStreetMap' }).addTo(m);
+  for (const p of state.data.points) {
+    state.markers[p.id] = window.L.circleMarker([p.lat, p.lon], { radius: 7, weight: 2, color: '#1d7044', fillOpacity: 0.4 })
       .addTo(m).bindTooltip(p.name).on('click', () => { $('canton').value = p.id; update(); });
   }
   state.map = m;
@@ -103,23 +124,48 @@ function wire() {
     if (e.target.type === 'range') $(`o-${e.target.id}`).textContent = e.target.value;
     update();
   });
-  ['soil', 'water', 'risk', 'income'].forEach((k) => { $(`o-${k}`).textContent = $(k).value; });
   document.querySelectorAll('#scenario button').forEach((b) => b.addEventListener('click', () => { state.scenario = b.dataset.sc; update(); }));
+  $('lang').addEventListener('click', () => {
+    state.lang = state.lang === 'es' ? 'en' : 'es';
+    store.set('lang', state.lang);
+    applyLang();
+    update();
+  });
   $('locate').addEventListener('click', () => {
-    if (!navigator.geolocation) { $('locmsg').textContent = 'Your browser does not support location.'; return; }
-    $('locmsg').textContent = 'Locating…';
+    if (!navigator.geolocation) { $('locmsg').textContent = L('loc.unsupported'); return; }
+    $('locmsg').textContent = L('loc.locating');
     navigator.geolocation.getCurrentPosition((pos) => {
       const { latitude: la, longitude: lo } = pos.coords;
       const d = (p) => (p.lat - la) ** 2 + ((p.lon - lo) * Math.cos(la * Math.PI / 180)) ** 2;
       const near = [...state.data.points].sort((a, b) => d(a) - d(b))[0];
       $('canton').value = near.id;
-      $('locmsg').textContent = `Nearest canton: ${near.name}. Your location is not stored or sent anywhere.`;
+      $('locmsg').textContent = L('loc.found', { name: near.name });
       update();
-    }, () => { $('locmsg').textContent = 'Could not get your location. Choose the canton from the list.'; }, { timeout: 10000 });
+    }, () => { $('locmsg').textContent = L('loc.failed'); }, { timeout: 10000 });
   });
   $('print').addEventListener('click', () => window.print());
   $('share').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(currentLink()); $('sharemsg').textContent = 'Link copied.'; } catch (e) { $('sharemsg').textContent = currentLink(); }
+    try { await navigator.clipboard.writeText(currentLink()); $('sharemsg').textContent = L('act.copied'); } catch (e) { $('sharemsg').textContent = currentLink(); }
+  });
+  $('whatsapp').addEventListener('click', () => {
+    const text = whatsappText();
+    if (text) window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+  });
+  let timer = null;
+  window.addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(() => { if (state.lastScenarios) chart(state.lastScenarios); }, 150); });
+  window.addEventListener('online', update);
+  window.addEventListener('offline', update);
+}
+
+function whatsappText() {
+  if (!state.last) return '';
+  const { plans, base, crops } = state.last;
+  const p = plans[0] || base;
+  const seq = p.sequence.map((k) => (crops[k].group === 'none' ? L('cell.fallow') : cropName(state.lang, crops[k])));
+  const years = [0, 1, 2].map((a) => `${a + 1}: ${seq.slice(a * 3, a * 3 + 3).join(' → ')}`).join(' | ');
+  return L('wa.text', {
+    canton: $('canton').selectedOptions[0]?.textContent || '', scenario: L(`sc.${state.scenario}`),
+    plan: plans[0] ? L('plan.title', { letter: 'A' }) : L('plan.base'), seq: years, score: pct(p.scores.total), link: currentLink(),
   });
 }
 
@@ -130,7 +176,7 @@ async function climateOf(id) {
   if (pre && pre.months && pre.months.length) return (state.climate[id] = { ...pre, origin: 'precomputed' });
   // Not precomputed: try a live download from the browser.
   const p = state.data.points.find((x) => x.id === id);
-  setStatus('Downloading NASA POWER data live (this can take a few seconds)…');
+  setStatus(L('status.live'));
   const end = new Date(Date.now() - 864e5);
   const r = await fetch(powerUrl(p.lat, p.lon, new Date(Date.UTC(2021, 0, 1)), end));
   if (!r.ok) throw new Error(`NASA POWER answered HTTP ${r.status}`);
@@ -144,8 +190,8 @@ function farm() {
   let ph = $('phunknown').checked ? null : (parseFloat($('ph').value) || null);
   $('ph').disabled = $('phunknown').checked;
   let note = '';
-  if ($('phunknown').checked && ref && ref.phh2o) { ph = ref.phh2o; note = `Using pH ${ref.phh2o} as a SoilGrids reference (modelled at 250 m, not measured on your farm). A soil test is better.`; }
-  else if ($('phunknown').checked) note = 'Without pH we cannot rule out crops because of acidity. A soil test (INTA, UCR or a private lab) is cheap and improves the result a lot.';
+  if ($('phunknown').checked && ref && ref.phh2o) { ph = ref.phh2o; note = L('ph.soilgrids', { ph: ref.phh2o }); }
+  else if ($('phunknown').checked) note = L('ph.none');
   $('phnote').textContent = note;
   return {
     ph, texture: $('texture').value, slope: $('slope').value, irrigation: $('irrigation').value,
@@ -156,55 +202,70 @@ function farm() {
 
 // ------------------------------------------------------------------ drawing
 function chart(sc) {
+  state.lastScenarios = sc;
+  const box = $('chart');
   const n = sc.normal.monthly, ni = sc.el_nino.monthly;
-  const W = 680, H = 250, L = 46, R = 16, T = 24, B = 44, pw = W - L - R, ph = H - T - B;
+  const months = monthNames(state.lang);
+  // Draw at the width available, so text keeps its size on a phone.
+  const W = Math.round(Math.max(300, Math.min(680, box.clientWidth || 680)));
+  const H = W < 480 ? 220 : 250, Lm = 40, R = 10, T = 24, B = 44, pw = W - Lm - R, ph = H - T - B;
   const max = Math.max(100, Math.ceil(Math.max(...n.map((m) => Math.max(m.P, m.ET0)), ...ni.map((m) => m.P)) / 100) * 100);
   const y = (v) => T + ph - (v / max) * ph, bw = pw / 12;
-  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:520px;max-width:${W}px" role="img" aria-label="Monthly rainfall in normal and El Niño years, and evapotranspiration">`;
-  for (let k = 0; k <= 4; k++) { const v = (max * k) / 4; s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`; }
+  const label = (m) => (bw < 34 ? m.charAt(0) : m);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px" role="img" aria-label="${L('chart.aria')}">`;
+  for (let k = 0; k <= 4; k++) { const v = (max * k) / 4; s += `<line x1="${Lm}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${Lm - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`; }
   n.forEach((m, i) => {
-    const x = L + i * bw, w = (bw - 8) / 2;
-    s += `<rect x="${x + 4}" y="${y(m.P)}" width="${w}" height="${T + ph - y(m.P)}" rx="2" fill="var(--rain)"><title>${MONTHS[i]} normal: ${Math.round(m.P)} mm (${m.n} months)</title></rect>`;
+    const x = Lm + i * bw, w = (bw - 6) / 2;
+    s += `<rect x="${x + 3}" y="${y(m.P)}" width="${w}" height="${T + ph - y(m.P)}" rx="2" fill="var(--rain)"><title>${L('chart.normalTip', { m: months[i], mm: Math.round(m.P), n: m.n })}</title></rect>`;
     const q = ni[i];
-    s += `<rect x="${x + 4 + w}" y="${y(q.P)}" width="${w}" height="${T + ph - y(q.P)}" rx="2" fill="var(--rain-nino)" ${q.filled ? 'opacity=".35"' : ''}><title>${MONTHS[i]} El Niño: ${Math.round(q.P)} mm${q.filled ? ' (no El Niño months observed: overall average used)' : ` (${q.n} months)`}</title></rect>`;
-    s += `<text x="${x + bw / 2}" y="${H - B + 14}" text-anchor="middle">${MONTHS[i]}</text>`;
+    s += `<rect x="${x + 3 + w}" y="${y(q.P)}" width="${w}" height="${T + ph - y(q.P)}" rx="2" fill="var(--rain-nino)" ${q.filled ? 'opacity=".35"' : ''}><title>${L('chart.ninoTip', { m: months[i], mm: Math.round(q.P), filled: q.filled, n: q.n })}</title></rect>`;
+    s += `<text x="${x + bw / 2}" y="${H - B + 14}" text-anchor="middle">${label(months[i])}</text>`;
   });
-  s += `<polyline fill="none" stroke="var(--et)" stroke-width="2" stroke-dasharray="4 3" points="${n.map((m, i) => `${L + i * bw + bw / 2},${y(m.ET0)}`).join(' ')}"/>`;
-  SEASONS.forEach((se, i) => { const x = L + i * 4 * bw; s += `<line x1="${x + 3}" x2="${x + 4 * bw - 3}" y1="${H - 18}" y2="${H - 18}" stroke="var(--muted)" stroke-width="1.5"/><text x="${x + 2 * bw}" y="${H - 5}" text-anchor="middle">${se.name}</text>`; });
-  s += `<text x="${L - 6}" y="10" text-anchor="end">mm</text></svg>`;
-  $('chart').innerHTML = s;
+  s += `<polyline fill="none" stroke="var(--et)" stroke-width="2" stroke-dasharray="4 3" points="${n.map((m, i) => `${Lm + i * bw + bw / 2},${y(m.ET0)}`).join(' ')}"/>`;
+  SEASONS.forEach((se, i) => { const x = Lm + i * 4 * bw; s += `<line x1="${x + 3}" x2="${x + 4 * bw - 3}" y1="${H - 18}" y2="${H - 18}" stroke="var(--muted)" stroke-width="1.5"/><text x="${x + 2 * bw}" y="${H - 5}" text-anchor="middle">${seasonText(state.lang, se.id).name}</text>`; });
+  s += `<text x="${Lm - 6}" y="10" text-anchor="end">mm</text></svg>`;
+  box.innerHTML = s;
 }
 
 function card(title, plan, crops, year0, isBase) {
   const sc = plan.scores;
-  let cal = `<div class="cal"><span class="h"></span>${SEASONS.map((e) => `<span class="h" title="${e.hint}">${e.name}<br>${e.range}</span>`).join('')}`;
+  const st = (id) => seasonText(state.lang, id);
+  let cal = `<div class="cal"><span class="h"></span>${SEASONS.map((e) => `<span class="h" title="${st(e.id).hint}">${st(e.id).name}<br>${st(e.id).range}</span>`).join('')}`;
   for (let a = 0; a < 3; a++) {
     cal += `<span class="h">${year0 + a}</span>`;
     for (let e = 0; e < 3; e++) {
       const i = a * 3 + e, c = crops[plan.sequence[i]], d = sc.detail[i];
-      const extra = c.group === 'none' ? '—' : `fit ${pct(d.suit)} %${d.irrigation > 5 ? ` · irrigation ${Math.round(d.irrigation)} mm` : ''}`;
-      cal += `<div class="cell" style="background:var(--g-${c.group})" title="${c.name}${d.prob != null ? ` · water fell short in ${pct(d.prob)} % of observed years` : ''}"><b>${c.group === 'none' ? 'Fallow' : c.name}</b><span>${extra}</span></div>`;
+      const name = c.group === 'none' ? L('cell.fallow') : cropName(state.lang, c);
+      const short = d.prob != null && d.n ? Math.round(d.prob * d.n) : null;
+      const bits = c.group === 'none' ? ['—'] : [L('cell.fit', { p: pct(d.suit) })];
+      if (c.group !== 'none' && d.irrigation > 5) bits.push(L('cell.irrigation', { mm: Math.round(d.irrigation) }));
+      if (short) bits.push(L('cell.short', { k: short, n: d.n }));
+      cal += `<div class="cell" style="background:var(--g-${c.group})"><b>${name}</b><span>${bits.join(' · ')}</span></div>`;
     }
   }
   cal += '</div>';
-  const axes = [['Soil', sc.soil], ['Water', sc.water], ['Safety', sc.risk], ['Income', sc.income]]
-    .map(([n, v]) => `<span>${n}</span><div class="meter"><i style="width:${pct(v)}%"></i></div><span class="v">${pct(v)}</span>`).join('');
-  const badge = plan.robust ? '<span class="badge">Robust plan</span>' : (!isBase && plan.comparison ? '<span class="badge warn">Sensitive to El Niño</span>' : '');
-  const comp = plan.comparison ? `<p class="comp">Normal year: <b>${pct(plan.comparison.normal)}</b> · El Niño year: <b>${pct(plan.comparison.el_nino)}</b></p>` : '';
-  return `<article class="plan${isBase ? ' base' : ''}"><header><h3>${title}</h3><div>${badge}<span class="total"><b>${pct(sc.total)}</b> / 100</span></div></header>${cal}<div class="side"><div class="meters">${axes}</div>${comp}<ul class="why">${plan.reasons.map((r) => `<li>${r}</li>`).join('')}</ul></div></article>`;
+  const axes = [['axis.soil', sc.soil], ['axis.water', sc.water], ['axis.risk', sc.risk], ['axis.income', sc.income]]
+    .map(([k, v]) => `<span>${L(k)}</span><div class="meter"><i style="width:${pct(v)}%"></i></div><span class="v">${pct(v)}</span>`).join('');
+  let badge = '', rule = '';
+  if (plan.robust) { badge = `<span class="badge">${L('badge.robust')}</span>`; rule = L('badge.robustRule'); }
+  else if (!isBase && plan.comparison) { badge = `<span class="badge warn">${L('badge.sensitive')}</span>`; rule = L('badge.sensitiveRule'); }
+  const comp = plan.comparison ? `<p class="comp">${L('comp', { n: pct(plan.comparison.normal), ni: pct(plan.comparison.el_nino) })}</p>` : '';
+  const ruleP = rule ? `<p class="rule">${rule}</p>` : '';
+  return `<article class="plan${isBase ? ' base' : ''}"><header><h3>${title}</h3><div>${badge}<span class="total"><b>${pct(sc.total)}</b> / 100 · ${L('plan.relative')}</span></div></header>${cal}<div class="side"><div class="meters">${axes}</div>${comp}${ruleP}<ul class="why">${plan.reasons.map((r) => `<li>${r}</li>`).join('')}</ul></div></article>`;
 }
 
 let turn = 0;
 async function update() {
+  if (!state.data) return;
   const mine = ++turn;
   document.querySelectorAll('#scenario button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.sc === state.scenario));
-  $('scnote').textContent = SCENARIO_NOTE[state.scenario];
+  $('scnote').textContent = L(`sc.note.${state.scenario}`);
   highlightMap();
   const id = $('canton').value;
   let climate;
   try { climate = await climateOf(id); } catch (e) {
     if (mine !== turn) return;
-    setStatus(`There is no NASA data for this canton yet and the live download failed (${e.message}). The team must run the "data" workflow on GitHub.`, 'bad');
+    setStatus(L('status.noData', { err: e.message }), 'bad');
     $('plans').innerHTML = ''; $('chart').innerHTML = ''; return;
   }
   if (mine !== turn) return;
@@ -212,34 +273,48 @@ async function update() {
   try { sc = buildScenarios(climate, state.data.enso); } catch (e) { setStatus(e.message, 'bad'); return; }
   const m = sc.meta;
   const shares = state.data.summary && (state.data.summary.cantons_per_cell || []).find((g) => g.includes(climate.name) && g.length > 1);
-  setStatus(`Data: NASA POWER${climate.origin === 'live' ? ' (downloaded now)' : ''}, ${m.from} to ${m.to} (${m.completeMonths} months). This is regional data from a grid cell tens of km wide${shares ? `, the same cell as ${shares.filter((n) => n !== climate.name).join(', ')}` : ''}; your farm may be drier or wetter.`, 'ok');
-  $('climtitle').textContent = `Climate of ${climate.name} · ${Math.round(sc.scenarios.normal.monthly.reduce((s, x) => s + x.P, 0))} mm a year without El Niño`;
+  const offline = navigator.onLine === false ? ` ${L('status.offline')}` : '';
+  setStatus(L('status.ok', { live: climate.origin === 'live', from: m.from, to: m.to, n: m.completeMonths, shares: shares ? shares.filter((x) => x !== climate.name).join(', ') : '' }) + offline, 'ok');
+  $('climtitle').textContent = L('clim.titleFull', { name: climate.name, mm: Math.round(sc.scenarios.normal.monthly.reduce((s, x) => s + x.P, 0)) });
   chart(sc.scenarios);
 
+  const crops = state.data.crops;
   const r = recommend({
-    crops: state.data.crops, scenarios: sc.scenarios, planScenarios: PLAN_SCENARIOS[state.scenario], farm: farm(),
+    crops, scenarios: sc.scenarios, planScenarios: PLAN_SCENARIOS[state.scenario], farm: farm(), lang: state.lang,
     priorities: { soil: +$('soil').value, water: +$('water').value, risk: +$('risk').value, income: +$('income').value },
   });
+  state.last = { ...r, crops };
   const today = new Date();
   const year0 = today.getMonth() >= 8 ? today.getFullYear() + 1 : today.getFullYear();
+  $('printmeta').textContent = L('print.meta', { canton: climate.name, scenario: L(`sc.${state.scenario}`), from: m.from, to: m.to, date: today.toISOString().slice(0, 10) });
   $('notices').innerHTML = r.notices.map((a) => `<li>${a}</li>`).join('');
-  $('plans').innerHTML = (r.plans.length ? r.plans.map((p, i) => card(`Plan ${'ABC'[i]}`, p, state.data.crops, year0, false)).join('')
-    : '<p class="flag bad">No crop in the catalog fits these conditions.</p>') + card('If you keep planting what you plant today', r.base, state.data.crops, year0, true);
+  $('plans').innerHTML = (r.plans.length ? r.plans.map((p, i) => card(L('plan.title', { letter: 'ABC'[i] }), p, crops, year0, false)).join('')
+    : `<p class="flag bad">${L('plan.none')}</p>`) + card(L('plan.base'), r.base, crops, year0, true);
 }
 
 function dataTab() {
   const { summary, enso, crops, soil } = state.data;
   const rows = [
-    ['Daily climate', 'NASA POWER (NASA Langley), daily API, AG community', summary ? `Generated ${summary.generated.slice(0, 10)}, since ${summary.window_start}` : 'Pending: run the "data" workflow'],
-    ['Evapotranspiration (ET0)', 'Computed with Hargreaves (FAO-56, eq. 52) from POWER temperature', 'Monthly'],
-    ['ENSO phase', enso.source, enso.automatic ? 'Automatic' : 'Fallback table'],
-    ['Reference soil', soil ? soil.source : 'SoilGrids 2.0 (ISRIC) — pending; the REST API is paused', 'Only when the farmer does not know their pH'],
-    ['Crop ranges', 'FAO-56 (Kc, duration) and FAO ECOCROP (pH, temperature)', 'Initial values under review'],
+    [L('data.climate'), L('data.climateSrc'), summary ? L('data.generated', { date: summary.generated.slice(0, 10), start: summary.window_start }) : L('data.pending')],
+    [L('data.et0'), L('data.et0Src'), L('data.monthly')],
+    [L('data.enso'), enso.source, enso.automatic ? L('data.auto') : L('data.fallback')],
+    [L('data.soil'), soil ? soil.source : L('data.soilPending'), L('data.soilWhen')],
+    [L('data.ranges'), L('data.rangesSrc'), L('data.rangesStatus')],
   ];
-  $('datainfo').innerHTML = `<div class="table"><table><thead><tr><th>What</th><th>Source</th><th>Status</th></tr></thead><tbody>${rows.map((f) => `<tr>${f.map((x) => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  $('datainfo').innerHTML = `<div class="table"><table><thead><tr><th>${L('data.what')}</th><th>${L('data.source')}</th><th>${L('data.status')}</th></tr></thead><tbody>${rows.map((f) => `<tr>${f.map((x) => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   const cols = ['name', 'seasons', 'cycle_days', 'ph_min', 'ph_max', 'kc_season', 'drought_tolerance', 'n_supply_kg_ha', 'relative_margin', 'verified_by'];
-  const heads = ['Crop', 'Seasons', 'Cycle (days)', 'pH min', 'pH max', 'Kc', 'Drought tolerance (0-3)', 'N supply (kg/ha)', 'Margin (1-5)', 'Verified'];
-  $('croptable').innerHTML = `<thead><tr>${heads.map((t) => `<th>${t}</th>`).join('')}</tr></thead><tbody>${crops.map((c) => `<tr>${cols.map((k) => `<td>${Array.isArray(c[k]) ? c[k].join(', ') : c[k] ?? '—'}</td>`).join('')}</tr>`).join('')}</tbody>`;
+  const heads = L('data.heads');
+  const cellOf = (c, k) => {
+    if (k === 'name') return cropName(state.lang, c);
+    if (k === 'seasons' && Array.isArray(c.seasons)) return c.seasons.map((s) => seasonText(state.lang, s)?.name || s).join(', ');
+    return Array.isArray(c[k]) ? c[k].join(', ') : c[k] ?? '—';
+  };
+  $('croptable').innerHTML = `<thead><tr>${heads.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${crops.map((c) => `<tr>${cols.map((k) => `<td>${cellOf(c, k)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+
+// Offline: after the first visit, the page and the data of the cantons opened stay on the device.
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* optional */ }); });
 }
 
 start();
