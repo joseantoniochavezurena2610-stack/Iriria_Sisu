@@ -21,11 +21,13 @@ Details: [`docs/solution.md`](docs/solution.md) · Decisions: [`docs/decisions.m
 
   | Check | Status | Where |
   |---|---|---|
-  | Automated engine tests (17) | ✅ Done, run on every push | [`tests/`](tests/) |
+  | Automated engine tests (25) | ✅ Done, run on every push | [`tests/`](tests/) |
+  | Income in colones from published Costa Rican prices and costs | ✅ Done 25 Oct — each crop labelled sourced / derived / estimate | [`docs/research/prices-and-costs.md`](docs/research/prices-and-costs.md) |
+  | Guard against implausible NASA downloads | ✅ Done 25 Oct — the 25 Oct POWER download was 24× too high and was rejected | [`docs/decisions.md`](docs/decisions.md) (D21) |
   | Backtest of rainfed rice in Primera 2026, 11 cantons | ✅ Done — agrees in 4 dry cantons; **does not** flag Nandayure, where POWER recorded 939 mm | [`docs/research/backtest-2026.md`](docs/research/backtest-2026.md) |
   | POWER vs IMERG rainfall cross-check | ⏳ Pending | `scripts/fetch_imerg.py` |
   | ±20 % sensitivity analysis | ⏳ Pending | — |
-  | Review by a MAG/INTA extension agent | ⏳ Pending (week of 2–8 Nov) | [`docs/roles/field-and-sensors.md`](docs/roles/field-and-sensors.md) |
+  | Review by a MAG/INTA extension agent | ➖ Not required for the challenge (D22); after the event | — |
 
 ## 📚 Documentation
 | Document | What for |
@@ -85,4 +87,4 @@ Former member: José Pablo Ramírez Fernández built the first data pipeline (`s
 - Prototype: https://joseantoniochavezurena2610-stack.github.io/Iriria_Sisu/ _(live once GitHub Pages is turned on)_
 
 ## 📜 Data and licences
-Code under the MIT licence. Open data from NASA (POWER, GPM), NOAA CPC, FAO and ISRIC (SoilGrids, CC BY 4.0). Details in [`docs/data-sources.md`](docs/data-sources.md). This tool does not replace advice from an agronomist.
+Code under the MIT licence. Open data from NASA (POWER, GPM), NOAA CPC, FAO and ISRIC (SoilGrids, CC BY 4.0); Costa Rican prices and costs from MAG-SEPSA, the Defensoría de los Habitantes and press reports (see [`docs/research/prices-and-costs.md`](docs/research/prices-and-costs.md)). Details in [`docs/data-sources.md`](docs/data-sources.md). This tool does not replace advice from an agronomist.

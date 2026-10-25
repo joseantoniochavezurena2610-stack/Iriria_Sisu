@@ -39,6 +39,11 @@ RAW_DIR = ROOT / "data" / "raw"
 
 WINDOW_START = date(2021, 1, 1)
 MIN_VALID_DAYS = 25  # a month with fewer valid days is treated as missing
+# Plausibility limits for Guanacaste. The wettest month in the good 2021-2026 series is ~1,300 mm
+# and the wettest year ~2,600 mm. On 25 Oct 2026 POWER returned rainfall exactly 24 times too high
+# for every month; these limits stop such a download from overwriting good data (decision D21).
+MAX_MONTH_RAIN_MM = 2500
+MAX_YEAR_RAIN_MM = 6000
 
 POWER_URL = "https://power.larc.nasa.gov/api/temporal/daily/point"
 # At most 20 parameters per point request. If the full set fails, retry with the basic set.
@@ -174,6 +179,21 @@ def process_power(raw: dict, lat: float) -> dict:
     return {"months": out, "last_day": last_valid_day.isoformat() if last_valid_day else None}
 
 
+def check_plausible(months: list[dict], units: str | None) -> None:
+    """Raises ValueError if the rainfall cannot be real (e.g. a units change at the source)."""
+    wettest = max(months, key=lambda m: m["P"] or 0) if months else None
+    if wettest and wettest["P"] > MAX_MONTH_RAIN_MM:
+        raise ValueError(f"implausible rainfall: {wettest['P']:.0f} mm in {wettest['year']}-{wettest['month']:02d} "
+                         f"(limit {MAX_MONTH_RAIN_MM} mm; POWER units reported: {units!r}). Keeping the previous data.")
+    years: dict[int, list[float]] = {}
+    for m in months:
+        years.setdefault(m["year"], []).append(m["P"] or 0)
+    for y, vals in years.items():
+        if len(vals) == 12 and sum(vals) > MAX_YEAR_RAIN_MM:
+            raise ValueError(f"implausible rainfall: {sum(vals):.0f} mm in {y} (limit {MAX_YEAR_RAIN_MM} mm; "
+                             f"POWER units reported: {units!r}). Keeping the previous data.")
+
+
 # ----------------------------------------------------------------------- ENSO
 def parse_index(text: str) -> list[dict]:
     rows = []
@@ -257,12 +277,20 @@ def main() -> int:
                "source": "NASA POWER, daily API, AG community (https://power.larc.nasa.gov)",
                "points": []}
     errors = 0
+    implausible = 0
     for pt in points:
         print(f"→ {pt['name']} ({pt['lat']}, {pt['lon']})")
         try:
             raw = download_power(pt["lat"], pt["lon"], end)
             write_json(RAW_DIR / f"power_{pt['id']}.json", raw)
             proc = process_power(raw, pt["lat"])
+            units = (raw.get("parameters", {}).get("PRECTOTCORR") or {}).get("units")
+            check_plausible(proc["months"], units)
+        except ValueError as e:
+            errors += 1
+            implausible += 1
+            print(f"  REJECTED: {e}", file=sys.stderr)
+            continue
         except Exception as e:  # noqa: BLE001
             errors += 1
             print(f"  ERROR: {e}", file=sys.stderr)
@@ -273,6 +301,7 @@ def main() -> int:
             "power_cell": {"lon": cell[0], "lat": cell[1]},
             "source": summary["source"],
             "parameters": sorted(raw["properties"]["parameter"].keys()),
+            "power_rain_units": units,
             "units": {"P": "mm/month", "ET0": "mm/month (Hargreaves, FAO-56)", "T": "°C", "Tmax": "°C",
                       "Tmin": "°C", "RH": "%", "Rad": "kWh/m²/day", "Wind": "m/s",
                       "GWETTOP": "fraction 0-1 (0-5 cm)", "GWETROOT": "fraction 0-1 (root zone)"},
@@ -284,6 +313,11 @@ def main() -> int:
                                   "last_day": proc["last_day"], "power_cell": data["power_cell"]})
         print(f"  {len(proc['months'])} complete months, last day {proc['last_day']}")
         time.sleep(2)  # be gentle with the API
+
+    if implausible:
+        # Fail the whole run: the workflow then stops before its commit step, so nothing is pushed.
+        print(f"Stopped: {implausible} location(s) returned implausible rainfall. Nothing will be committed.", file=sys.stderr)
+        return 1
 
     # Cantons sharing the same POWER meteorology cell (MERRA-2: 0.5° lat × 0.625° lon).
     # The API returns the requested coordinates, not the cell centre, so it is computed here.

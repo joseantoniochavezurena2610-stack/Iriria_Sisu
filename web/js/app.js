@@ -1,7 +1,7 @@
 // app.js — Iriria Sìsù interface. Loads the data, calls the engine and draws the plans.
 import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js';
 import { recommend } from './engine.js';
-import { t, cropName, seasonText, monthNames } from './strings.js';
+import { t, cropName, seasonText, monthNames, crc } from './strings.js';
 
 const $ = (id) => document.getElementById(id);
 const pct = (x) => Math.round(x * 100);
@@ -144,7 +144,7 @@ function whatsappText() {
   const years = [0, 1, 2].map((a) => `${a + 1}: ${seq.slice(a * 3, a * 3 + 3).join(' → ')}`).join(' | ');
   return L('wa.text', {
     canton: $('canton').selectedOptions[0]?.textContent || '', scenario: L(`sc.${state.scenario}`),
-    plan: plans[0] ? L('plan.title', { letter: 'A' }) : L('plan.base'), seq: years, score: pct(p.scores.total), link: currentLink(),
+    plan: plans[0] ? L('plan.title', { letter: 'A' }) : L('plan.base'), seq: years, score: pct(p.scores.total), margin: p.scores.margin, link: currentLink(),
   });
 }
 
@@ -206,7 +206,7 @@ function chart(sc) {
   box.innerHTML = s;
 }
 
-function card(title, plan, crops, year0, isBase) {
+function card(title, plan, crops, year0, isBase, base) {
   const sc = plan.scores;
   const st = (id) => seasonText(id);
   let cal = `<div class="cal"><span class="h"></span>${SEASONS.map((e) => `<span class="h" title="${st(e.id).hint}">${st(e.id).name}<br>${st(e.id).range}</span>`).join('')}`;
@@ -219,6 +219,7 @@ function card(title, plan, crops, year0, isBase) {
       const bits = c.group === 'none' ? ['—'] : [L('cell.fit', { p: pct(d.suit) })];
       if (c.group !== 'none' && d.irrigation > 5) bits.push(L('cell.irrigation', { mm: Math.round(d.irrigation) }));
       if (short) bits.push(L('cell.short', { k: short, n: d.n }));
+      if (c.group !== 'none' && d.margin != null) bits.push(crc(d.margin));
       cal += `<div class="cell" style="background:var(--g-${c.group})"><b>${name}</b><span>${bits.join(' · ')}</span></div>`;
     }
   }
@@ -230,7 +231,8 @@ function card(title, plan, crops, year0, isBase) {
   else if (!isBase && plan.comparison) { badge = `<span class="badge warn">${L('badge.sensitive')}</span>`; rule = L('badge.sensitiveRule'); }
   const comp = plan.comparison ? `<p class="comp">${L('comp', { n: pct(plan.comparison.normal), ni: pct(plan.comparison.el_nino) })}</p>` : '';
   const ruleP = rule ? `<p class="rule">${rule}</p>` : '';
-  return `<article class="plan${isBase ? ' base' : ''}"><header><h3>${title}</h3><div>${badge}<span class="total"><b>${pct(sc.total)}</b> / 100 · ${L('plan.relative')}</span></div></header>${cal}<div class="side"><div class="meters">${axes}</div>${comp}${ruleP}<ul class="why">${plan.reasons.map((r) => `<li>${r}</li>`).join('')}</ul></div></article>`;
+  const money = sc.margin != null ? `<p class="money">${L('plan.margin', { total: sc.margin, diff: !isBase && base && base.scores.margin != null ? sc.margin - base.scores.margin : null })}</p>` : '';
+  return `<article class="plan${isBase ? ' base' : ''}"><header><h3>${title}</h3><div>${badge}<span class="total"><b>${pct(sc.total)}</b> / 100 · ${L('plan.relative')}</span></div></header>${cal}<div class="side"><div class="meters">${axes}</div>${money}${comp}${ruleP}<ul class="why">${plan.reasons.map((r) => `<li>${r}</li>`).join('')}</ul></div></article>`;
 }
 
 let turn = 0;
@@ -267,8 +269,9 @@ async function update() {
   const year0 = today.getMonth() >= 8 ? today.getFullYear() + 1 : today.getFullYear();
   $('printmeta').textContent = L('print.meta', { canton: climate.name, scenario: L(`sc.${state.scenario}`), from: m.from, to: m.to, date: today.toISOString().slice(0, 10) });
   $('notices').innerHTML = r.notices.map((a) => `<li>${a}</li>`).join('');
-  $('plans').innerHTML = (r.plans.length ? r.plans.map((p, i) => card(L('plan.title', { letter: 'ABC'[i] }), p, crops, year0, false)).join('')
-    : `<p class="flag bad">${L('plan.none')}</p>`) + card(L('plan.base'), r.base, crops, year0, true);
+  $('plans').innerHTML = (r.plans.length ? r.plans.map((p, i) => card(L('plan.title', { letter: 'ABC'[i] }), p, crops, year0, false, r.base)).join('')
+    : `<p class="flag bad">${L('plan.none')}</p>`) + card(L('plan.base'), r.base, crops, year0, true)
+    + (r.money ? `<p class="note">${L('plan.marginNote')}</p>` : '');
 }
 
 function dataTab() {
@@ -278,14 +281,16 @@ function dataTab() {
     [L('data.et0'), L('data.et0Src'), L('data.monthly')],
     [L('data.enso'), enso.source, enso.automatic ? L('data.auto') : L('data.fallback')],
     [L('data.soil'), soil ? soil.source : L('data.soilPending'), L('data.soilWhen')],
+    [L('data.money'), L('data.moneySrc'), L('data.moneyStatus')],
     [L('data.ranges'), L('data.rangesSrc'), L('data.rangesStatus')],
   ];
   $('datainfo').innerHTML = `<div class="table"><table><thead><tr><th>${L('data.what')}</th><th>${L('data.source')}</th><th>${L('data.status')}</th></tr></thead><tbody>${rows.map((f) => `<tr>${f.map((x) => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-  const cols = ['name', 'seasons', 'cycle_days', 'ph_min', 'ph_max', 'kc_season', 'drought_tolerance', 'n_supply_kg_ha', 'relative_margin', 'verified_by'];
+  const cols = ['name', 'seasons', 'cycle_days', 'ph_min', 'ph_max', 'kc_season', 'drought_tolerance', 'n_supply_kg_ha', 'yield_t_ha', 'price_crc_kg', 'production_cost_crc_ha', 'economic_confidence'];
   const heads = L('data.heads');
   const cellOf = (c, k) => {
     if (k === 'name') return cropName(c);
     if (k === 'seasons' && Array.isArray(c.seasons)) return c.seasons.map((s) => seasonText(s)?.name || s).join(', ');
+    if (k === 'production_cost_crc_ha' && c[k] != null) return crc(c[k]);
     return Array.isArray(c[k]) ? c[k].join(', ') : c[k] ?? '—';
   };
   $('croptable').innerHTML = `<thead><tr>${heads.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${crops.map((c) => `<tr>${cols.map((k) => `<td>${cellOf(c, k)}</td>`).join('')}</tr>`).join('')}</tbody>`;

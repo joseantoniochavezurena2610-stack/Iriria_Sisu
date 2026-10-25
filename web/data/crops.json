@@ -11,7 +11,8 @@
    "family": "Poaceae",
    "group": "gram",
    "agronomic_source": "FAO-56 (Kc, duration); FAO ECOCROP (pH, T) — initial values",
-   "economic_source": "",
+   "economic_source": "Price: ₡20,247 per 73.6 kg sack paid by mills after the minimum price ended (Semanario Universidad, 24 May 2023) = ₡275/kg. Yield: 4.3 t/ha weighted national average (Decree 39763-MEIC). Cost: ₡27,253/sack MEIC reference price (2022, = cost + max. 20 % profit) ÷ 1.2 × 58.5 sacks/ha",
+   "economic_confidence": "derived",
    "verified_by": "pending",
    "legume": false,
    "green_manure": false,
@@ -32,9 +33,9 @@
    "cover": 2.0,
    "residue": 2.0,
    "relative_margin": 3.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 4.3,
+   "price_crc_kg": 275.0,
+   "production_cost_crc_ha": 1330000.0
   },
   {
    "id": "maize",
@@ -46,7 +47,8 @@
    "family": "Poaceae",
    "group": "gram",
    "agronomic_source": "FAO-56 (Kc, duration); FAO ECOCROP (pH, T) — initial values",
-   "economic_source": "",
+   "economic_source": "Cost and yield: MAG-SEPSA cost structure Maize Chorotega, updated Aug 2026 (production cycle ₡647,835/ha; 3.0 t/ha). Price: ₡15,000 per 46 kg quintal, Ceproma La Palmera, Upala (Semanario Universidad, 24 Nov 2023)",
+   "economic_confidence": "sourced",
    "verified_by": "pending",
    "legume": false,
    "green_manure": false,
@@ -67,9 +69,9 @@
    "cover": 2.0,
    "residue": 3.0,
    "relative_margin": 3.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 3.0,
+   "price_crc_kg": 326.0,
+   "production_cost_crc_ha": 647835.0
   },
   {
    "id": "sorghum",
@@ -81,7 +83,8 @@
    "family": "Poaceae",
    "group": "gram",
    "agronomic_source": "FAO-56 (Kc, duration); FAO ECOCROP (pH, T) — initial values",
-   "economic_source": "",
+   "economic_source": "Estimate: cost = 72.5 % of maize cost and yield ≈ 0.75 × maize, ratios from the El Salvador MAG cost report 2019-20 (semi-technified sorghum vs maize); price = 75 % of maize (feed-grain ratio). No Costa Rican market series found",
+   "economic_confidence": "estimate",
    "verified_by": "pending",
    "legume": false,
    "green_manure": false,
@@ -102,9 +105,9 @@
    "cover": 2.0,
    "residue": 3.0,
    "relative_margin": 2.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 2.5,
+   "price_crc_kg": 245.0,
+   "production_cost_crc_ha": 470000.0
   },
   {
    "id": "bean",
@@ -116,7 +119,8 @@
    "family": "Fabaceae",
    "group": "leg",
    "agronomic_source": "FAO-56 (Kc, duration); FAO ECOCROP (pH, T); N credit: typical literature range — initial values",
-   "economic_source": "",
+   "economic_source": "Price ₡34,000 and cost ₡42,571 per 46 kg quintal, Chorotega region (Defensoría de los Habitantes, 16 Jun 2026). Yield: 18 quintals/ha (MAG-SEPSA cost structure Bean Brunca, Jun 2025)",
+   "economic_confidence": "sourced",
    "verified_by": "pending",
    "legume": true,
    "green_manure": false,
@@ -137,9 +141,9 @@
    "cover": 1.0,
    "residue": 1.0,
    "relative_margin": 3.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 0.828,
+   "price_crc_kg": 739.0,
+   "production_cost_crc_ha": 766278.0
   },
   {
    "id": "cowpea",
@@ -151,7 +155,8 @@
    "family": "Fabaceae",
    "group": "leg",
    "agronomic_source": "FAO-56 (Kc, duration); FAO ECOCROP (pH, T); N credit: typical literature range — initial values",
-   "economic_source": "",
+   "economic_source": "Estimate: price = 80 % of common bean (no Costa Rican market series), cost = 75 % of bean (fewer inputs, drought tolerant), yield 0.9 t/ha (typical rainfed range in FAO literature)",
+   "economic_confidence": "estimate",
    "verified_by": "pending",
    "legume": true,
    "green_manure": false,
@@ -172,9 +177,9 @@
    "cover": 2.0,
    "residue": 2.0,
    "relative_margin": 2.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 0.9,
+   "price_crc_kg": 590.0,
+   "production_cost_crc_ha": 575000.0
   },
   {
    "id": "peanut",
@@ -186,7 +191,8 @@
    "family": "Fabaceae",
    "group": "leg",
    "agronomic_source": "FAO-56 (Kc, duration); FAO ECOCROP (pH, T); N credit: typical literature range — initial values",
-   "economic_source": "",
+   "economic_source": "Estimate: in-shell yield 2.0 t/ha and price ≈ US$1,200/t at ₡455/US$ (BCCR, Aug 2026); cost slightly above bean. No Costa Rican market series found",
+   "economic_confidence": "estimate",
    "verified_by": "pending",
    "legume": true,
    "green_manure": false,
@@ -207,9 +213,9 @@
    "cover": 2.0,
    "residue": 1.0,
    "relative_margin": 3.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 2.0,
+   "price_crc_kg": 550.0,
+   "production_cost_crc_ha": 900000.0
   },
   {
    "id": "melon",
@@ -220,7 +226,8 @@
    "family": "Cucurbitaceae",
    "group": "cuc",
    "agronomic_source": "FAO-56 (Kc, duration); FAO ECOCROP (pH, T); season: regional practice (dry season with irrigation) — initial values",
-   "economic_source": "",
+   "economic_source": "Cost and yield: MAG-SEPSA cost structure Melon Pacífico Central, Feb 2025 (₡3,389,002/ha; 26 t/ha; unit cost ₡130/kg). Price: estimate ₡180/kg farm gate (unit cost + ~38 %); PIMA publishes CENADA prices only as seasonal indices",
+   "economic_confidence": "derived",
    "verified_by": "pending",
    "legume": false,
    "green_manure": false,
@@ -241,9 +248,9 @@
    "cover": 2.0,
    "residue": 1.0,
    "relative_margin": 4.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 26.0,
+   "price_crc_kg": 180.0,
+   "production_cost_crc_ha": 3389002.0
   },
   {
    "id": "watermelon",
@@ -255,7 +262,8 @@
    "family": "Cucurbitaceae",
    "group": "cuc",
    "agronomic_source": "FAO-56 (Kc, duration); FAO ECOCROP (pH, T); season: regional practice (dry season with irrigation) — initial values",
-   "economic_source": "",
+   "economic_source": "Cost and yield: MAG cost model Watermelon national market, Chorotega, May 2020 (₡2,916,811/ha; 28 t/ha). Price: estimate ₡150/kg farm gate",
+   "economic_confidence": "derived",
    "verified_by": "pending",
    "legume": false,
    "green_manure": false,
@@ -276,9 +284,9 @@
    "cover": 2.0,
    "residue": 1.0,
    "relative_margin": 4.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 28.0,
+   "price_crc_kg": 150.0,
+   "production_cost_crc_ha": 2916811.0
   },
   {
    "id": "mucuna",
@@ -290,7 +298,8 @@
    "family": "Fabaceae",
    "group": "cover",
    "agronomic_source": "FAO ECOCROP (pH, T); green-manure N supply: typical literature range — initial values",
-   "economic_source": "",
+   "economic_source": "No sale. Cost: estimate for seed and sowing of a green manure (₡120,000/ha); its value enters as nitrogen saved on the next crop",
+   "economic_confidence": "estimate",
    "verified_by": "pending",
    "legume": true,
    "green_manure": true,
@@ -311,9 +320,9 @@
    "cover": 3.0,
    "residue": 3.0,
    "relative_margin": 0.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 0.0,
+   "price_crc_kg": 0.0,
+   "production_cost_crc_ha": 120000.0
   },
   {
    "id": "canavalia",
@@ -326,7 +335,8 @@
    "family": "Fabaceae",
    "group": "cover",
    "agronomic_source": "FAO ECOCROP (pH, T); green-manure N supply: typical literature range — initial values",
-   "economic_source": "",
+   "economic_source": "No sale. Cost: estimate for seed and sowing of a green manure (₡120,000/ha); its value enters as nitrogen saved on the next crop",
+   "economic_confidence": "estimate",
    "verified_by": "pending",
    "legume": true,
    "green_manure": true,
@@ -347,9 +357,9 @@
    "cover": 3.0,
    "residue": 3.0,
    "relative_margin": 0.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 0.0,
+   "price_crc_kg": 0.0,
+   "production_cost_crc_ha": 120000.0
   },
   {
    "id": "fallow",
@@ -362,7 +372,8 @@
    "family": "none",
    "group": "none",
    "agronomic_source": "Not applicable",
-   "economic_source": "",
+   "economic_source": "Not applicable",
+   "economic_confidence": "n/a",
    "verified_by": "n/a",
    "legume": false,
    "green_manure": false,
@@ -383,9 +394,9 @@
    "cover": 1.0,
    "residue": 1.0,
    "relative_margin": 0.0,
-   "yield_t_ha": null,
-   "price_crc_kg": null,
-   "production_cost_crc_ha": null
+   "yield_t_ha": 0.0,
+   "price_crc_kg": 0.0,
+   "production_cost_crc_ha": 0.0
   }
  ]
 }

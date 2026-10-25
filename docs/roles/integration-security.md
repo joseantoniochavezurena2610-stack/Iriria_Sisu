@@ -10,7 +10,8 @@
 |---|---|---|---|
 | 🔴 | Turn on GitHub Pages with the repo owner's account: *Settings → Pages → Source: GitHub Actions* and variable `PUBLISH_PAGES=true` | Public URL working: https://joseantoniochavezurena2610-stack.github.io/Iriria_Sisu/ | 27 Oct |
 | 🔴 | Protect `main` (PR required + `tests` workflow green) | Branch rule | 27 Oct |
-| 🔴 | Income axis in colones: margin = yield × price − cost per ha, from Angeli's columns in `data/catalog/crops_guanacaste.csv` | `engine.js` + test | 8 Nov |
+| ✅ | Income axis in colones (D20) | `engine.js` + 6 tests | done 25 Oct |
+| 🔴 | Watch the Monday `data` run after the ×24 POWER incident (D21): a red run means the guard worked and the good data stayed | Green or explained run | 26 Oct |
 | 🟠 | ±20 % sensitivity script on Kc, failure threshold, N credit and margins (same style as `scripts/backtest_2026.mjs`) | Table for Jose Antonio | 5 Nov |
 | 🟠 | Check that the weekly `data` workflow keeps committing without breaking `main` (every Monday) | Green runs | weekly |
 | 🟡 | Optional: team Earthdata account as repo *secrets* and `fetch_imerg.py` for the IMERG cross-check | `imerg_monthly.json` | only if time |

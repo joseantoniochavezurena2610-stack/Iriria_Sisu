@@ -140,6 +140,7 @@ export function et0Hargreaves(tmean, tmax, tmin, lat, day) {
 }
 
 export const POWER_URL = 'https://power.larc.nasa.gov/api/temporal/daily/point';
+export const MAX_MONTH_RAIN_MM = 2500;
 
 export function powerUrl(lat, lon, start, end) {
   const f = (d) => d.toISOString().slice(0, 10).replaceAll('-', '');
@@ -180,6 +181,9 @@ export function processPowerDaily(json, lat) {
     });
   }
   out.sort((a, b) => a.year - b.year || a.month - b.month);
+  // Same plausibility limit as scripts/fetch_data.py (decision D21): never use rainfall that cannot be real.
+  const wettest = out.reduce((w, m) => (m.P > (w ? w.P : -1) ? m : w), null);
+  if (wettest && wettest.P > MAX_MONTH_RAIN_MM) throw new Error(`NASA POWER returned implausible rainfall (${Math.round(wettest.P)} mm in ${wettest.year}-${String(wettest.month).padStart(2, '0')}); not used.`);
   const g = (json.geometry && json.geometry.coordinates) || [];
   return { months: out, power_cell: { lon: g[0], lat: g[1] }, source: 'NASA POWER, daily API, AG community (live download)' };
 }
