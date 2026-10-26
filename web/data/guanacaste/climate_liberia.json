@@ -19,6 +19,7 @@
   "T2M_MIN",
   "WS2M"
  ],
+ "power_rain_units": "mm/day",
  "units": {
   "P": "mm/month",
   "ET0": "mm/month (Hargreaves, FAO-56)",
@@ -31,7 +32,7 @@
   "GWETTOP": "fraction 0-1 (0-5 cm)",
   "GWETROOT": "fraction 0-1 (root zone)"
  },
- "last_day": "2026-10-16",
+ "last_day": "2026-10-21",
  "months": [
   {
    "year": 2021,
@@ -1056,16 +1057,16 @@
   {
    "year": 2026,
    "month": 9,
-   "P": 363.1,
-   "ET0": 107.2,
-   "T": 27.62,
-   "Tmax": 30.73,
-   "Tmin": 25.47,
-   "RH": 84.7,
+   "P": 253.5,
+   "ET0": 125.0,
+   "T": 28.79,
+   "Tmax": 32.59,
+   "Tmin": 25.86,
+   "RH": 77.6,
    "Rad": 17.26,
-   "Wind": 2.02,
-   "GWETTOP": 0.655,
-   "GWETROOT": 0.598,
+   "Wind": 2.35,
+   "GWETTOP": 0.593,
+   "GWETROOT": 0.577,
    "days": 30
   }
  ]
