@@ -2,7 +2,7 @@
  "source": "NOAA CPC — RONI (https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt)",
  "threshold": 0.5,
  "automatic": true,
- "generated": "2026-10-25",
+ "generated": "2026-10-26",
  "rule": "≥ 5 consecutive overlapping 3-month seasons above +0.5 °C (El Niño) or below −0.5 °C (La Niña); an ongoing episode with ≥ 3 seasons is also labelled (ongoing) and months not yet published inherit its phase (estimated)",
  "months": [
   {
