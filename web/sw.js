@@ -3,9 +3,9 @@
 // there is signal; the saved copy is used when there is none.
 // Libraries and fonts from CDNs: the saved copy first, refreshed in the background.
 // Map tiles and live NASA POWER downloads are never stored.
-const CACHE = 'iriria-sisu-v5';
+const CACHE = 'iriria-sisu-v6';
 const SHELL = [
-  './', 'index.html', 'css/styles.css', 'js/app.js', 'js/engine.js', 'js/climate.js', 'js/strings.js', 'js/icons.js',
+  './', 'index.html', 'css/styles.css', 'js/app.js', 'js/engine.js', 'js/climate.js', 'js/strings.js', 'js/icons.js', 'js/choices.js',
   'img/logo.png', 'img/isotipo.png', 'img/favicon.png',
   'data/crops.json', 'data/enso.json', 'data/guanacaste/points.json', 'data/guanacaste/summary.json', 'data/guanacaste/soil_reference.json',
 ];
