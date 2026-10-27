@@ -2,7 +2,7 @@
 // The <select> stays the single source of truth: links, the engine and the farm bar keep reading it.
 // Each <option> may carry data-art (a picture key below, or "ic:<icon name>"), data-sub (a short hint)
 // and data-tone (a CSS colour for the card).
-import { icon } from './icons.js';
+import { icon } from './icons.js?v=8';
 
 const slope = (d) => `<svg class="ic slope" viewBox="0 0 32 24" aria-hidden="true"><path d="${d} V24 H0Z" fill="currentColor" opacity=".22"/><path d="${d}" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`;
 const ART = {
@@ -38,6 +38,8 @@ export function choices(select, kind = 'cards') {
     const lab = select.parentElement.querySelector('.flabel');
     if (lab) { lab.id = lab.id || `lab-${select.id}`; box.setAttribute('aria-labelledby', lab.id); }
     select.insertAdjacentElement('afterend', box);
+    // The plain list stays visible until the cards exist, so the page still works if this script fails.
+    select.hidden = true;
     box.addEventListener('click', (e) => {
       const b = e.target.closest('.choice');
       if (b) pick(select, b.dataset.v);

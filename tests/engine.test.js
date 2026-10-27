@@ -212,7 +212,7 @@ test('live download refuses rainfall 24 times too high', () => {
   assert.throws(() => processPowerDaily({ properties: { parameter: par }, geometry: { coordinates: [-85.4, 10.6] } }, 10.6), /implausible/);
 });
 
-import { cropsForCanton } from '../web/js/engine.js';
+import { cropsForCanton, waterBalance } from '../web/js/engine.js';
 
 test('each canton only offers the crops grown there; green manures and fallow fit everywhere', () => {
   const points = loadJSON('../web/data/guanacaste/points.json').points.map((p) => p.id);
@@ -228,4 +228,30 @@ test('each canton only offers the crops grown there; green manures and fallow fi
     const local = cropsForCanton(crops, id);
     for (const p of r.plans) for (const k of p.sequence) assert.ok(allowed.has(local[k].id), `${id}: ${local[k].id}`);
   }
+});
+
+test('plans B and C come from different profiles and differ from plan A', () => {
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm: baseFarm, priorities });
+  assert.equal(r.plans[0].profile, 'mine');
+  const profiles = r.plans.map((p) => p.profile);
+  assert.equal(new Set(profiles).size, profiles.length);
+  for (let a = 0; a < r.plans.length; a++) for (let b = a + 1; b < r.plans.length; b++) {
+    assert.ok(r.plans[a].sequence.filter((k, i) => k !== r.plans[b].sequence[i]).length >= 3);
+  }
+});
+
+test('no plan uses a green manure in more than 2 of the 9 seasons', () => {
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm: baseFarm, priorities: { soil: 5, water: 0, risk: 0, income: 0 } });
+  for (const p of r.plans) assert.ok(p.sequence.filter((k) => crops[k].green_manure).length <= 2);
+});
+
+test('a wetter root zone before the season leaves more water in the soil (NASA POWER GWETROOT)', () => {
+  const maize = crops[idx('maize')];
+  const base = { P: [80, 80, 80, 80], ET0: [150, 150, 150, 150], T: [27, 27, 27, 27] };
+  const dry = waterBalance(maize, { ...base, previous: { P: 10, ET0: 150, GWETROOT: 0.42 } }, baseFarm);
+  const wet = waterBalance(maize, { ...base, previous: { P: 10, ET0: 150, GWETROOT: 0.9 } }, baseFarm);
+  const none = waterBalance(maize, { ...base, previous: { P: 10, ET0: 150 } }, baseFarm);
+  assert.equal(dry.carryOver, 0);
+  assert.ok(wet.carryOver > 0 && wet.unmet < dry.unmet);
+  assert.equal(none.carryOver, 0); // without GWETROOT: old rule (the month before was dry)
 });

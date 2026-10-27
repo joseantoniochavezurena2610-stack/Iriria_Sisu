@@ -1,15 +1,16 @@
 // app.js — Iriria Sìsù interface. Loads the data, calls the engine and draws the plans.
 // The visit is a short journey: welcome cover → 4 steps → three plans to tap → the chosen plan and how to keep it.
-import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js';
-import { recommend, cropsForCanton } from './engine.js';
-import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js';
-import { icon, paintIcons } from './icons.js';
-import { choices, syncChoices } from './choices.js';
+import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js?v=8';
+import { recommend, cropsForCanton } from './engine.js?v=8';
+import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js?v=8';
+import { icon, paintIcons } from './icons.js?v=8';
+import { choices, syncChoices } from './choices.js?v=8';
 
 const $ = (id) => document.getElementById(id);
 const pct = (x) => Math.round(x * 100);
 const GROUP_KEYS = ['gram', 'leg', 'cuc', 'cover', 'none'];
 const GROUP_ICON = { gram: 'wheat', leg: 'bean', cuc: 'citrus', cover: 'sprout', none: 'circle-dashed' };
+const PROFILE_ICON = { mine: 'sliders-horizontal', money: 'coins', safe: 'shield-check', soil: 'sprout', alt: 'sparkles' };
 const AXES = [['soil', 'sprout'], ['water', 'droplet'], ['risk', 'shield-check'], ['income', 'coins']];
 const STEPS = 4;
 const PLAN_SCENARIOS = {
@@ -239,7 +240,11 @@ function wire() {
     renderPlans();
     $('plan').firstElementChild?.scrollIntoView({ block: 'start' });
   });
-  $('plan').addEventListener('click', (e) => { if (e.target.closest('[data-choose]')) choose(state.sel); });
+  $('plan').addEventListener('click', (e) => {
+    if (e.target.closest('[data-choose]')) { choose(state.sel); return; }
+    showCellTip(e.target.closest('.cell'));
+  });
+  $('plan').addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.cell')) { e.preventDefault(); showCellTip(e.target.closest('.cell')); } });
   $('locate').addEventListener('click', () => {
     if (!navigator.geolocation) { $('locmsg').textContent = L('loc.unsupported'); return; }
     $('locmsg').textContent = L('loc.locating');
@@ -271,6 +276,16 @@ function wire() {
   window.addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(() => { if (state.lastScenarios) chart(state.lastScenarios); earnChart(); }, 150); });
   window.addEventListener('online', update);
   window.addEventListener('offline', update);
+}
+
+/** Tapping a calendar cell shows its numbers under the calendar (phones have no hover tooltips). */
+function showCellTip(cell) {
+  if (!cell) return;
+  const wrap = cell.closest('.cal-wrap');
+  wrap.querySelectorAll('.cell.on').forEach((c) => c.classList.remove('on'));
+  cell.classList.add('on');
+  wrap.querySelector('.celltip span').textContent = cell.dataset.tip;
+  wrap.querySelector('.celltip').classList.add('on');
 }
 
 /** The plan object for a selection: 0-2 for plans A-C, 'base' for "what you plant today". */
@@ -451,7 +466,7 @@ function calendar(plan, crops, year0) {
       // The cell shows only the crop and two small signs; the numbers live in the tooltip.
       const tip = planted ? L('cell.tip', { name, fit: pct(d.suit), irr: d.irrigation > 5 ? Math.round(d.irrigation) : 0, short: short ? `${short}/${d.n}` : '', money: d.margin != null ? crc(d.margin) : '' }) : name;
       const signs = planted ? `${d.irrigation > 5 ? `<i class="sg irr" title="${L('cell.irrigation', { mm: Math.round(d.irrigation) })}">${icon('droplet')}</i>` : ''}${short ? `<i class="sg warn" title="${L('cell.short', { k: short, n: d.n })}">${icon('triangle-alert')}</i>` : ''}` : '';
-      cal += `<div class="cell" style="background:var(--g-${c.group})" title="${tip}"><span class="gi">${icon(GROUP_ICON[c.group] || 'leaf')}</span><b>${name}</b>${signs ? `<span class="signs">${signs}</span>` : ''}</div>`;
+      cal += `<div class="cell" style="background:var(--g-${c.group})" title="${tip}" data-tip="${tip}" tabindex="0" role="button"><span class="gi">${icon(GROUP_ICON[c.group] || 'leaf')}</span><b>${name}</b>${signs ? `<span class="signs">${signs}</span>` : ''}</div>`;
     }
   }
   return `${cal}</div>`;
@@ -479,17 +494,19 @@ function detail(sel, plan, crops, year0, base, { choose: withChoose = true } = {
   const more = rs.length > 3 ? `<details class="more"><summary>${L('why.more', { n: rs.length - 3 })}</summary><ul class="why">${rs.slice(3).map(li).join('')}</ul></details>` : '';
   const why = `<div class="why-box"><h4>${icon('leaf')}${L('why.title')}</h4><ul class="why">${rs.slice(0, 3).map(li).join('')}</ul>${more}</div>`;
   const pick = withChoose ? `<div class="choose"><button type="button" class="btn big" data-choose>${icon('circle-check')}<span>${L(isBase ? 'plan.keep' : 'plan.choose')}</span></button></div>` : '';
-  return `<article class="plan card${isBase ? ' base' : ''}"><header><h3>${planTitle(sel)}</h3><div>${badge}<span class="total"><b>${pct(sc.total)}</b> / 100 · ${L('plan.relative')}</span></div></header>`
+  const sub = !isBase && plan.profile ? `<p class="plan-sub">${icon(PROFILE_ICON[plan.profile] || 'sparkles')}${L(`profile.${plan.profile}.long`)}</p>` : '';
+  return `<article class="plan card${isBase ? ' base' : ''}"><header><div class="ph-title"><h3>${planTitle(sel)}</h3>${sub}</div><div>${badge}<span class="total"><b>${pct(sc.total)}</b> / 100 · ${L('plan.relative')}</span></div></header>`
     + `<div class="side"><div class="axes">${axes}</div>${money}${years}</div>`
-    + `<div class="cal-wrap">${calendar(plan, crops, year0)}${famLegend()}</div>${why}${pick}</article>`;
+    + `<div class="cal-wrap">${calendar(plan, crops, year0)}<p class="celltip" aria-live="polite">${icon('info')}<span>${L('cell.hint')}</span></p>${famLegend()}</div>${why}${pick}</article>`;
 }
 
 function orb(sel, plan) {
   const isBase = sel === 'base', on = state.sel === sel;
-  const cap = isBase ? '' : plan.robust ? `<span class="cap robust">${icon('shield-check')}${L('badge.robustShort')}</span>`
-    : plan.comparison ? `<span class="cap">${icon('thermometer-sun')}${L('badge.sensitiveShort')}</span>` : '';
+  const prof = !isBase && plan.profile ? `<span class="prof">${icon(PROFILE_ICON[plan.profile] || 'sparkles')}${L(`profile.${plan.profile}`)}</span>` : '';
+  const cap = isBase ? '' : plan.robust ? `<span class="cap robust" title="${L('badge.robustRule')}">${icon('shield-check')}${L('badge.robustShort')}</span>`
+    : plan.comparison ? `<span class="cap" title="${L('badge.sensitiveRule')}">${icon('thermometer-sun')}${L('badge.sensitiveShort')}</span>` : '';
   return `<button type="button" class="orb${isBase ? ' base' : ''}" role="tab" aria-selected="${on}" data-sel="${sel}" style="--p:${pct(plan.scores.total)}" aria-label="${planTitle(sel)}, ${pct(plan.scores.total)} / 100">`
-    + `<span class="ring"><span class="face"><span class="letter">${isBase ? L('orb.today') : 'ABC'[sel]}</span><span class="score">${pct(plan.scores.total)}</span></span></span>${cap}</button>`;
+    + `<span class="ring"><span class="face"><span class="letter">${isBase ? L('orb.today') : 'ABC'[sel]}</span><span class="score">${pct(plan.scores.total)}</span></span></span>${prof}${cap}</button>`;
 }
 
 const year0Now = () => { const d = new Date(); return d.getMonth() >= 8 ? d.getFullYear() + 1 : d.getFullYear(); };
