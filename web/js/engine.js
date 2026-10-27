@@ -233,6 +233,14 @@ function search(ctx, allowed) {
   return beam;
 }
 
+/**
+ * Crops grown in a canton (catalog column "cantons", from data/catalog/crop_cantons.csv).
+ * A crop without a list (green manures, fallow) fits every canton.
+ */
+export function cropsForCanton(crops, cantonId) {
+  return crops.filter((c) => !cantonId || !Array.isArray(c.cantons) || c.cantons.includes(cantonId));
+}
+
 const lower = (name) => name.charAt(0).toLowerCase() + name.slice(1);
 
 /** Plain-language reasons, always with the number behind them. Risk is given as a count ("1 of 2 years"). */
@@ -258,7 +266,7 @@ function reasons(plan, base, crops, ctx) {
     }));
   } else r.push(t('r.noShort'));
   if (sc.margin != null) {
-    r.push(t('r.money', { total: sc.margin, perYear: sc.margin / 3, diff: base && base.scores.margin != null ? sc.margin - base.scores.margin : null }));
+    // The margin itself is shown in the money box of each plan; reasons only flag losses and savings.
     let worst = null;
     sc.detail.forEach((d, i) => { if (crops[seq[i]].group !== 'none' && crops[seq[i]].yield_t_ha && d.margin != null && d.margin < 0 && (!worst || d.margin < worst.margin)) worst = { ...d, i }; });
     if (worst) r.push(t('r.loss', { crop: lower(cropName(crops[seq[worst.i]])), season: seasonText(SEASONS[worst.i % 3].id).name, year: Math.floor(worst.i / 3) + 1, crc: -worst.margin }));

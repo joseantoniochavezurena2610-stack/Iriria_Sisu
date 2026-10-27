@@ -176,7 +176,8 @@ test('plans report a margin in colones and the income axis stays between 0 and 1
   for (const p of [...r.plans, r.base]) {
     assert.ok(Number.isFinite(p.scores.margin));
     assert.ok(p.scores.income >= 0 && p.scores.income <= 1);
-    assert.ok(p.reasons.some((x) => x.startsWith('Expected net margin')));
+    // the margin is shown in the plan's money box, so the reasons no longer repeat it
+    assert.ok(!p.reasons.some((x) => x.startsWith('Expected net margin')));
   }
 });
 
@@ -209,4 +210,22 @@ test('live download refuses rainfall 24 times too high', () => {
   const par = { PRECTOTCORR: {}, T2M: {}, T2M_MAX: {}, T2M_MIN: {} };
   for (let d = 1; d <= 30; d++) { const k = `202106${String(d).padStart(2, '0')}`; par.PRECTOTCORR[k] = 16 * 24; par.T2M[k] = 27; par.T2M_MAX[k] = 32; par.T2M_MIN[k] = 23; }
   assert.throws(() => processPowerDaily({ properties: { parameter: par }, geometry: { coordinates: [-85.4, 10.6] } }, 10.6), /implausible/);
+});
+
+import { cropsForCanton } from '../web/js/engine.js';
+
+test('each canton only offers the crops grown there; green manures and fallow fit everywhere', () => {
+  const points = loadJSON('../web/data/guanacaste/points.json').points.map((p) => p.id);
+  for (const c of crops) if (Array.isArray(c.cantons)) for (const id of c.cantons) assert.ok(points.includes(id), `${c.id}: ${id}`);
+  const tilaran = cropsForCanton(crops, 'tilaran').map((c) => c.id);
+  assert.ok(!tilaran.includes('rice') && !tilaran.includes('melon'));
+  assert.ok(['maize', 'mucuna', 'canavalia', 'fallow'].every((id) => tilaran.includes(id)));
+  assert.ok(cropsForCanton(crops, 'canas').some((c) => c.id === 'rice'));
+  assert.equal(cropsForCanton(crops, null).length, crops.length);
+  for (const id of points) {
+    const r = recommend({ crops: cropsForCanton(crops, id), scenarios, planScenarios: normal9, farm: { ...baseFarm, current_crop: 'maize' }, priorities });
+    const allowed = new Set(cropsForCanton(crops, id).map((c) => c.id));
+    const local = cropsForCanton(crops, id);
+    for (const p of r.plans) for (const k of p.sequence) assert.ok(allowed.has(local[k].id), `${id}: ${local[k].id}`);
+  }
 });

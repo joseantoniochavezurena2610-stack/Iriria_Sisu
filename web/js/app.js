@@ -1,9 +1,10 @@
 // app.js — Iriria Sìsù interface. Loads the data, calls the engine and draws the plans.
 // The visit is a short journey: welcome cover → 4 steps → three plans to tap → the chosen plan and how to keep it.
 import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js';
-import { recommend } from './engine.js';
+import { recommend, cropsForCanton } from './engine.js';
 import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js';
 import { icon, paintIcons } from './icons.js';
+import { choices, syncChoices } from './choices.js';
 
 const $ = (id) => document.getElementById(id);
 const pct = (x) => Math.round(x * 100);
@@ -19,7 +20,7 @@ const FIELDS = ['canton', 'current', 'irrigation', 'texture', 'ph', 'slope', 'om
 
 const state = {
   scenario: 'forecast', climate: {}, data: null, map: null, markers: {}, lastScenarios: null, last: null,
-  step: 0, revealed: false, sel: null, chosen: null, chartView: null, climateName: '',
+  step: 0, revealed: false, sel: null, chosen: null, chartView: null, climateName: '', cropCanton: null,
 };
 const L = t;
 const MONTH_FULL = monthFull();
@@ -40,12 +41,32 @@ function setStatus(text, kind = '') { const f = $('status'); f.className = `flag
 // ------------------------------------------------------------------ text
 // Static labels live in strings.js; the HTML carries the same English text so the page reads fine before scripts run.
 function fillLists() {
-  const keep = $('current').value;
-  $('current').innerHTML = state.data.crops.filter((c) => c.group !== 'cover')
-    .map((c) => `<option value="${c.id}">${c.group === 'none' ? L('crop.nothing') : cropName(c)}</option>`).join('');
-  if (keep) $('current').value = keep;
   document.querySelectorAll('[data-html]').forEach((el) => { el.innerHTML = L(el.dataset.html); });
   dataTab();
+}
+
+const cantonName = () => (state.data.points.find((p) => p.id === $('canton').value) || {}).name || '';
+const shortName = (name) => name.replace(/\s*\(.*\)$/, '');
+
+/**
+ * Rebuilds the "what do you plant today" cards with only the crops grown in the chosen canton
+ * (catalog column "cantons"). If today's crop is not grown there, another one is picked and the farmer is told.
+ */
+function refreshCrops(prefer = null) {
+  const canton = $('canton').value;
+  if (state.cropCanton === canton && !prefer) return;
+  const first = state.cropCanton == null;
+  state.cropCanton = canton;
+  const list = cropsForCanton(state.data.crops, canton).filter((c) => c.group !== 'cover');
+  const keep = prefer || $('current').value || 'rice';
+  const keepCrop = state.data.crops.find((c) => c.id === keep);
+  $('current').innerHTML = list.map((c) => `<option value="${c.id}" data-art="ic:${GROUP_ICON[c.group] || 'leaf'}" data-tone="var(--g-${c.group})">${c.group === 'none' ? L('crop.nothing') : shortName(cropName(c))}</option>`).join('');
+  const fits = list.some((c) => c.id === keep);
+  $('current').value = fits ? keep : list[0].id;
+  choices($('current'), 'cards');
+  const name = shortName(cantonName());
+  $('croplabel').textContent = L('crop.inCanton', { canton: name });
+  $('cropnote').textContent = !fits && !first && keepCrop && keepCrop.group !== 'none' ? L('crop.moved', { crop: shortName(cropName(keepCrop)), canton: name }) : '';
 }
 
 // ------------------------------------------------------------------ loading
@@ -60,8 +81,16 @@ async function start() {
     state.data = { points: points.points, crops: crops.crops, enso, summary, soil };
   } catch (e) { setStatus(e.message, 'bad'); $('next').disabled = true; return; }
 
-  $('canton').innerHTML = state.data.points.map((p) => `<option value="${p.id}">${p.name}</option>`).join('');
+  $('canton').innerHTML = state.data.points.map((p) => {
+    const sub = (p.name.match(/\((.*)\)/) || [])[1];
+    return `<option value="${p.id}"${sub ? ` data-sub="${sub}"` : ''}>${shortName(p.name)}</option>`;
+  }).join('');
+  $('canton').value = 'liberia';
   fillLists();
+  choices($('canton'), 'grid');
+  ['irrigation', 'texture', 'slope', 'om'].forEach((id) => choices($(id), 'cards'));
+  choices($('maxloss'), 'pills');
+  refreshCrops();
   const shared = readUrl();
   tabs();
   drawMap();
@@ -74,12 +103,16 @@ async function start() {
 /** Applies a shared link. Returns true when the link carries answers (then the cover is skipped). */
 function readUrl() {
   const q = new URLSearchParams(location.search);
-  FIELDS.forEach((k) => { const v = q.get(k); if (v != null && $(k)) $(k).value = v; });
+  FIELDS.forEach((k) => {
+    const v = q.get(k);
+    if (k === 'current') { refreshCrops(v); return; }
+    if (v != null && $(k)) $(k).value = v;
+  });
   // pH starts as "I don't know" unless the link says otherwise. Older links carried a pH but no flag: that pH was the user's.
   if (q.has('phunknown')) $('phunknown').checked = q.get('phunknown') === '1';
   else if (q.has('ph')) $('phunknown').checked = false;
   if (q.get('scenario') && PLAN_SCENARIOS[q.get('scenario')]) state.scenario = q.get('scenario');
-  if (!q.get('current')) $('current').value = 'rice';
+  syncChoices();
   ['soil', 'water', 'risk', 'income'].forEach((k) => { $(`o-${k}`).textContent = $(k).value; });
   const plan = q.get('plan');
   if (plan === 'base') state.sel = 'base';
@@ -185,6 +218,14 @@ function wire() {
     if (state.step < STEPS - 1) { goStep(state.step + 1); $('wizard').scrollIntoView({ block: 'start' }); } else reveal();
   });
   $('back').addEventListener('click', () => goStep(state.step - 1));
+  $('phbox').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-ph]');
+    if (!b) return;
+    const v = Math.min(9.5, Math.max(3.5, (parseFloat($('ph').value) || 6) + +b.dataset.ph));
+    $('phunknown').checked = false;
+    $('ph').value = v.toFixed(1);
+    $('form').dispatchEvent(new Event('input'));
+  });
   document.querySelectorAll('#stepper button').forEach((b) => b.addEventListener('click', () => goStep(+b.dataset.go)));
   $('farmbar').addEventListener('click', (e) => { if (e.target.closest('#edit')) { goStep(0); $('wizard').scrollIntoView({ block: 'start' }); } });
   document.querySelectorAll('#scenario button').forEach((b) => b.addEventListener('click', () => { state.scenario = b.dataset.sc; state.chartView = null; update(); }));
@@ -283,6 +324,15 @@ function farm() {
   };
 }
 
+/** Puts the marker on the acid → alkaline bar and greys out the stepper when the pH is unknown. */
+function phScale() {
+  const unknown = $('phunknown').checked;
+  $('phbox').classList.toggle('off', unknown);
+  const v = parseFloat($('ph').value) || 6;
+  $('phmark').style.left = `${Math.min(100, Math.max(0, ((v - 3.5) / 6) * 100))}%`;
+  $('phmark').hidden = unknown;
+}
+
 // ------------------------------------------------------------------ drawing
 // Which year the climate chart shows follows the scenario buttons until the farmer picks one on the chart itself.
 const CHART_OF = { forecast: 'el_nino', normal: 'normal', el_nino: 'el_nino', worst: 'worst' };
@@ -302,7 +352,6 @@ function chart(sc) {
   const worst = ms.reduce((w, m, i) => (m.P - m.ET0 < ms[w].P - ms[w].ET0 ? i : w), 0);
   const change = view === 'normal' ? null : Math.round(((total - totalN) / totalN) * 100);
 
-  $('climhead').innerHTML = L('ch.head', { name, view: L(`ch.view.${view}`), mm: fmt(total), change, short: nShort });
   $('climtiles').innerHTML = `<div class="tile"><small>${icon('cloud-rain')}${L('ch.tileRain')}</small><b>${fmt(total)} <span>mm</span></b>${change != null ? `<span class="delta">${L('ch.vsNormal', { change })}</span>` : `<span class="delta">${L('ch.normalNote')}</span>`}</div>`
     + `<div class="tile"><small>${icon('sun')}${L('ch.tileDry')}</small><b>${nShort} <span>${L('ch.of12')}</span></b><div class="dots" aria-hidden="true">${short.map((s) => `<i class="${s ? 'short' : ''}"></i>`).join('')}</div></div>`
     + `<div class="tile"><small>${icon('triangle-alert')}${L('ch.tileHard')}</small><b>${full[worst]}</b><span class="delta">${L('ch.hardNote', { p: fmt(ms[worst].P), e: fmt(ms[worst].ET0) })}</span></div>`;
@@ -379,11 +428,11 @@ function earnChart() {
 }
 
 function reasonIcon(r) {
-  if (/^Weak spot|^Repeats| loses about /.test(r)) return 'triangle-alert';
+  if (/^Weak spot|^Same crop family| loses about /.test(r)) return 'triangle-alert';
   if (/legume|Nitrogen/i.test(r)) return 'bean';
   if (/irrigation/i.test(r)) return 'droplet';
   if (/ran out of water/.test(r)) return 'shield-check';
-  if (/margin/.test(r)) return 'coins';
+  if (/urea/.test(r)) return 'coins';
   if (/points above/.test(r)) return 'sparkles';
   return 'leaf';
 }
@@ -398,11 +447,11 @@ function calendar(plan, crops, year0) {
       const i = a * 3 + e, c = crops[plan.sequence[i]], d = sc.detail[i];
       const name = c.group === 'none' ? L('cell.fallow') : cropName(c);
       const short = d.prob != null && d.n ? Math.round(d.prob * d.n) : null;
-      const bits = c.group === 'none' ? ['—'] : [L('cell.fit', { p: pct(d.suit) })];
-      if (c.group !== 'none' && d.irrigation > 5) bits.push(L('cell.irrigation', { mm: Math.round(d.irrigation) }));
-      if (short) bits.push(L('cell.short', { k: short, n: d.n }));
-      if (c.group !== 'none' && d.margin != null) bits.push(crc(d.margin));
-      cal += `<div class="cell" style="background:var(--g-${c.group})"><span class="gi">${icon(GROUP_ICON[c.group] || 'leaf')}</span><b>${name}</b><span>${bits.join(' · ')}</span></div>`;
+      const planted = c.group !== 'none';
+      // The cell shows only the crop and two small signs; the numbers live in the tooltip.
+      const tip = planted ? L('cell.tip', { name, fit: pct(d.suit), irr: d.irrigation > 5 ? Math.round(d.irrigation) : 0, short: short ? `${short}/${d.n}` : '', money: d.margin != null ? crc(d.margin) : '' }) : name;
+      const signs = planted ? `${d.irrigation > 5 ? `<i class="sg irr" title="${L('cell.irrigation', { mm: Math.round(d.irrigation) })}">${icon('droplet')}</i>` : ''}${short ? `<i class="sg warn" title="${L('cell.short', { k: short, n: d.n })}">${icon('triangle-alert')}</i>` : ''}` : '';
+      cal += `<div class="cell" style="background:var(--g-${c.group})" title="${tip}"><span class="gi">${icon(GROUP_ICON[c.group] || 'leaf')}</span><b>${name}</b>${signs ? `<span class="signs">${signs}</span>` : ''}</div>`;
     }
   }
   return `${cal}</div>`;
@@ -414,16 +463,21 @@ const famLegend = () => `<div class="famleg">${GROUP_KEYS.map((k) => `<span><i s
 function detail(sel, plan, crops, year0, base, { choose: withChoose = true } = {}) {
   const sc = plan.scores, isBase = sel === 'base';
   const axes = AXES.map(([k, ic]) => `<div class="axis"><div class="axis-top"><i class="chip-ic ${k}">${icon(ic)}</i>${L(`axis.${k}`)}<b>${pct(sc[k])}</b></div><div class="meter"><i style="width:${pct(sc[k])}%"></i></div></div>`).join('');
-  let badge = '', rule = '';
-  if (plan.robust) { badge = `<span class="badge">${icon('shield-check')}${L('badge.robust')}</span>`; rule = L('badge.robustRule'); }
-  else if (!isBase && plan.comparison) { badge = `<span class="badge warn">${icon('thermometer-sun')}${L('badge.sensitive')}</span>`; rule = L('badge.sensitiveRule'); }
+  let badge = '';
+  if (plan.robust) badge = `<span class="badge" title="${L('badge.robustRule')}">${icon('shield-check')}${L('badge.robust')}</span>`;
+  else if (!isBase && plan.comparison) badge = `<span class="badge warn" title="${L('badge.sensitiveRule')}">${icon('thermometer-sun')}${L('badge.sensitive')}</span>`;
   let money = '';
   if (sc.margin != null) {
     const diff = !isBase && base && base.scores.margin != null ? sc.margin - base.scores.margin : null;
     money = `<div class="money"><small>${L('money.label')}</small><b>${crc(sc.margin)}</b><span>${L('money.per')}${diff != null ? ` · <span class="${diff >= 0 ? 'up' : 'down'}">${diff >= 0 ? '+' : '−'}${crc(Math.abs(diff))} ${L('money.vsToday')}</span>` : ''}</span></div>`;
   }
   const years = plan.comparison ? `<div class="years"><div>${icon('cloud-rain')}${L('years.normal')}<b>${pct(plan.comparison.normal)}</b></div><div>${icon('thermometer-sun')}${L('years.nino')}<b>${pct(plan.comparison.el_nino)}</b></div></div>` : '';
-  const why = `<div class="why-box"><h4>${icon('leaf')}${L('why.title')}</h4><ul class="why">${plan.reasons.map((r) => `<li>${icon(reasonIcon(r))}<span>${r}</span></li>`).join('')}</ul>${rule ? `<p class="rule">${rule}</p>` : ''}</div>`;
+  // Warnings first, then three reasons in view; the rest wait behind "n more".
+  const warn = (r) => reasonIcon(r) === 'triangle-alert';
+  const rs = [...plan.reasons].sort((a, b) => warn(b) - warn(a));
+  const li = (r) => `<li class="${warn(r) ? 'w' : ''}">${icon(reasonIcon(r))}<span>${r}</span></li>`;
+  const more = rs.length > 3 ? `<details class="more"><summary>${L('why.more', { n: rs.length - 3 })}</summary><ul class="why">${rs.slice(3).map(li).join('')}</ul></details>` : '';
+  const why = `<div class="why-box"><h4>${icon('leaf')}${L('why.title')}</h4><ul class="why">${rs.slice(0, 3).map(li).join('')}</ul>${more}</div>`;
   const pick = withChoose ? `<div class="choose"><button type="button" class="btn big" data-choose>${icon('circle-check')}<span>${L(isBase ? 'plan.keep' : 'plan.choose')}</span></button></div>` : '';
   return `<article class="plan card${isBase ? ' base' : ''}"><header><h3>${planTitle(sel)}</h3><div>${badge}<span class="total"><b>${pct(sc.total)}</b> / 100 · ${L('plan.relative')}</span></div></header>`
     + `<div class="side"><div class="axes">${axes}</div>${money}${years}</div>`
@@ -452,7 +506,7 @@ function renderPlans() {
 
 function renderFarmbar() {
   const opt = (id) => $(id).selectedOptions[0]?.textContent.replace(/\s*\(.*\)$/, '') || '';
-  $('farmbar').innerHTML = [['map-pin', opt('canton')], ['wheat', opt('current')], ['droplet', opt('irrigation')], ['shovel', opt('texture')]]
+  $('farmbar').innerHTML = [['map-pin', opt('canton')], ['wheat', opt('current')], ['droplet', `${L('farm.irr')}: ${opt('irrigation')}`], ['shovel', opt('texture')]]
     .map(([ic, txt]) => `<span class="tag">${icon(ic)}${txt}</span>`).join('')
     + `<button type="button" class="btn ghost" id="edit">${icon('pencil')}<span>${L('farm.edit')}</span></button>`;
 }
@@ -476,6 +530,9 @@ async function update() {
   const mine = ++turn;
   document.querySelectorAll('#scenario button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.sc === state.scenario));
   $('scnote').textContent = L(`sc.note.${state.scenario}`);
+  refreshCrops();
+  syncChoices();
+  phScale();
   highlightMap();
   renderFarmbar();
   const id = $('canton').value;
@@ -497,7 +554,7 @@ async function update() {
   state.climateName = climate.name;
   chart(sc.scenarios);
 
-  const crops = state.data.crops;
+  const crops = cropsForCanton(state.data.crops, id);
   const r = recommend({
     crops, scenarios: sc.scenarios, planScenarios: PLAN_SCENARIOS[state.scenario], farm: farm(),
     priorities: { soil: +$('soil').value, water: +$('water').value, risk: +$('risk').value, income: +$('income').value },
@@ -521,10 +578,11 @@ function dataTab() {
     [L('data.ranges'), L('data.rangesSrc'), L('data.rangesStatus')],
   ];
   $('datainfo').innerHTML = `<div class="table"><table><thead><tr><th>${L('data.what')}</th><th>${L('data.source')}</th><th>${L('data.status')}</th></tr></thead><tbody>${rows.map((f) => `<tr>${f.map((x) => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-  const cols = ['name', 'seasons', 'cycle_days', 'ph_min', 'ph_max', 'kc_season', 'drought_tolerance', 'n_supply_kg_ha', 'yield_t_ha', 'price_crc_kg', 'production_cost_crc_ha', 'economic_confidence'];
+  const cols = ['name', 'cantons', 'seasons', 'cycle_days', 'ph_min', 'ph_max', 'kc_season', 'drought_tolerance', 'n_supply_kg_ha', 'yield_t_ha', 'price_crc_kg', 'production_cost_crc_ha', 'economic_confidence'];
   const heads = L('data.heads');
   const cellOf = (c, k) => {
     if (k === 'name') return cropName(c);
+    if (k === 'cantons') return Array.isArray(c.cantons) ? c.cantons.map((id) => shortName((state.data.points.find((p) => p.id === id) || {}).name || id)).join(', ') : L('data.allCantons');
     if (k === 'seasons' && Array.isArray(c.seasons)) return c.seasons.map((s) => seasonText(s)?.name || s).join(', ');
     if (k === 'production_cost_crc_ha' && c[k] != null) return crc(c[k]);
     return Array.isArray(c[k]) ? c[k].join(', ') : c[k] ?? '—';
