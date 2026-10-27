@@ -7,6 +7,8 @@
   --accent: #0a4a46; --accent-ink: #f3ebd6; --accent-soft: #dde9e4; --hi: #d0d959;
   --warn: #9a4f0c; --good: #0a4a46; --bad: #b42318;
   --rain: #0a4a46; --rain-nino: #c8792b; --et: #3c1d0a;
+  /* chart colours, validated for colour-blind separation and contrast (dataviz validator) */
+  --water-ok: #009184; --water-short: #d4782a;
   --g-gram: #eed98f; --g-leg: #d0d959; --g-cuc: #f4c18e; --g-cover: #a8cfc3; --g-none: #eae2cf;
   --c-soil: #e5eab0; --c-water: #cfe3de; --c-risk: #f1dfc0; --c-income: #f6e3a6;
   --cover-photo: none; /* to use a farm photo on the welcome screen: url("../img/cover.jpg") */
@@ -22,7 +24,7 @@
     --bg: #0b1d1b; --surface: #11302c; --sunk: #173a36; --ink: #f3ebd6; --muted: #b9ae98; --line: #28504a;
     --accent: #d0d959; --accent-ink: #0b1d1b; --accent-soft: #1d4440; --hi: #d0d959;
     --warn: #f0b062; --good: #d0d959; --bad: #ff8a80;
-    --rain: #7fc4bc; --rain-nino: #e8a25a; --et: #f3ebd6;
+    --rain: #7fc4bc; --rain-nino: #e8a25a; --et: #f3ebd6; --water-ok: #1fa294; --water-short: #d47a28;
     --g-gram: #6b5a1e; --g-leg: #59621d; --g-cuc: #7a4a1c; --g-cover: #24564e; --g-none: #263b37;
     --c-soil: #3f4718; --c-water: #1d4a45; --c-risk: #4f3a1c; --c-income: #554614;
     --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 28px -14px rgb(0 0 0 / .6);
@@ -33,7 +35,7 @@
   --bg: #0b1d1b; --surface: #11302c; --sunk: #173a36; --ink: #f3ebd6; --muted: #b9ae98; --line: #28504a;
   --accent: #d0d959; --accent-ink: #0b1d1b; --accent-soft: #1d4440; --hi: #d0d959;
   --warn: #f0b062; --good: #d0d959; --bad: #ff8a80;
-  --rain: #7fc4bc; --rain-nino: #e8a25a; --et: #f3ebd6;
+  --rain: #7fc4bc; --rain-nino: #e8a25a; --et: #f3ebd6; --water-ok: #1fa294; --water-short: #d47a28;
   --g-gram: #6b5a1e; --g-leg: #59621d; --g-cuc: #7a4a1c; --g-cover: #24564e; --g-none: #263b37;
   --c-soil: #3f4718; --c-water: #1d4a45; --c-risk: #4f3a1c; --c-income: #554614;
   --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 28px -14px rgb(0 0 0 / .6);
@@ -323,4 +325,60 @@ th { font: 500 12px var(--mono); color: var(--muted); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .printout .plan { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); padding: 14px; gap: 14px; }
   .printout .why { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------------------------------------------------------------- charts */
+.seg.small button { min-height: 36px; padding: 6px 12px; font-size: 13px; }
+.clim-head { font: 600 17px/1.4 var(--display); color: var(--ink); max-width: 60ch; }
+.clim-head b { font-weight: 800; }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .tiles { grid-template-columns: 1fr; } }
+.tile { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); min-width: 0; }
+.tile small { font-size: 12px; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.tile b { font: 700 26px/1.1 var(--display); color: var(--ink); }
+.tile b span { font-size: 15px; font-weight: 600; color: var(--muted); }
+.tile .delta { font-size: 13px; font-weight: 600; color: var(--muted); }
+.dots { display: flex; gap: 3px; margin-top: 4px; }
+.dots i { flex: 1; height: 10px; border-radius: 3px; background: var(--water-ok); }
+.dots i.short { background: var(--water-short); }
+.chartbox { position: relative; }
+.chartbox .hit { fill: transparent; cursor: pointer; outline: none; }
+.chartbox .hit:hover, .chartbox .hit:focus-visible { fill: color-mix(in srgb, var(--ink) 6%, transparent); }
+.chartbox .need { stroke: var(--et); stroke-width: 2.5; stroke-linecap: round; }
+.chartbox .season { font: 600 11px var(--body); fill: var(--muted); }
+.chartbox .val { font: 600 10px var(--mono); fill: var(--ink); }
+.tip { position: absolute; z-index: 5; pointer-events: none; min-width: 170px; padding: 10px 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 13px; display: none; }
+.tip.on { display: block; }
+.tip .t-h { font-weight: 700; margin-bottom: 4px; }
+.tip .t-r { display: flex; align-items: center; gap: 8px; }
+.tip .t-r b { margin-left: auto; font-family: var(--mono); }
+.tip .k { width: 12px; height: 3px; border-radius: 2px; }
+.tip .t-v { margin-top: 6px; font-weight: 600; }
+.sw.tick { width: 16px; height: 0; border-top: 3px solid var(--et); border-radius: 2px; }
+.tableview summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--accent); }
+.tableview table { min-width: 0; margin-top: 8px; }
+.tableview td:not(:first-child), .tableview th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+.earn { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.earn h3 { display: flex; align-items: center; gap: 8px; }
+.ebar { display: grid; grid-template-columns: 92px minmax(0, 1fr); align-items: center; gap: 10px; width: 100%; background: none; border: 0; padding: 6px 4px; border-radius: 10px; cursor: pointer; font: inherit; color: var(--ink); text-align: left; }
+.ebar:hover, .ebar:focus-visible { background: var(--bg); }
+.ebar[aria-pressed="true"] { background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+.ebar .nm { font-weight: 700; font-size: 14px; }
+.ebar[aria-pressed="true"] .nm { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.track { position: relative; height: 26px; }
+.track .zero { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--muted); }
+.track .bar { position: absolute; top: 3px; height: 20px; }
+.track .bar.pos { background: var(--water-ok); border-radius: 0 4px 4px 0; }
+.track .bar.neg { background: var(--water-short); border-radius: 4px 0 0 4px; }
+.track .amt { position: absolute; top: 3px; font: 600 13px/20px var(--mono); white-space: nowrap; color: var(--ink); }
+.earn-axis { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); padding-left: 102px; }
+.ebar .amt2 { display: none; }
+@media (max-width: 560px) {
+  .tiles { grid-template-columns: 1fr 1fr; }
+  .tiles .tile:last-child { grid-column: 1 / -1; }
+  .tile b { font-size: 22px; }
+  .ebar { grid-template-columns: 1fr auto; grid-template-areas: "nm amt" "tr tr"; row-gap: 4px; }
+  .ebar .nm { grid-area: nm; } .ebar .amt2 { display: block; grid-area: amt; font: 600 13px var(--mono); }
+  .ebar .track { grid-area: tr; } .ebar .track .amt { display: none; }
+  .earn-axis { padding-left: 0; }
 }

@@ -2,7 +2,7 @@
 // The visit is a short journey: welcome cover → 4 steps → three plans to tap → the chosen plan and how to keep it.
 import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js';
 import { recommend } from './engine.js';
-import { t, cropName, seasonText, monthNames, crc } from './strings.js';
+import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js';
 import { icon, paintIcons } from './icons.js';
 
 const $ = (id) => document.getElementById(id);
@@ -19,9 +19,10 @@ const FIELDS = ['canton', 'current', 'irrigation', 'texture', 'ph', 'slope', 'om
 
 const state = {
   scenario: 'forecast', climate: {}, data: null, map: null, markers: {}, lastScenarios: null, last: null,
-  step: 0, revealed: false, sel: null, chosen: null,
+  step: 0, revealed: false, sel: null, chosen: null, chartView: null, climateName: '',
 };
 const L = t;
+const MONTH_FULL = monthFull();
 
 async function json(path, optional = false) {
   try {
@@ -186,7 +187,9 @@ function wire() {
   $('back').addEventListener('click', () => goStep(state.step - 1));
   document.querySelectorAll('#stepper button').forEach((b) => b.addEventListener('click', () => goStep(+b.dataset.go)));
   $('farmbar').addEventListener('click', (e) => { if (e.target.closest('#edit')) { goStep(0); $('wizard').scrollIntoView({ block: 'start' }); } });
-  document.querySelectorAll('#scenario button').forEach((b) => b.addEventListener('click', () => { state.scenario = b.dataset.sc; update(); }));
+  document.querySelectorAll('#scenario button').forEach((b) => b.addEventListener('click', () => { state.scenario = b.dataset.sc; state.chartView = null; update(); }));
+  document.querySelectorAll('#chartview button').forEach((b) => b.addEventListener('click', () => { state.chartView = b.dataset.cv; if (state.lastScenarios) chart(state.lastScenarios); }));
+  $('earnchart').addEventListener('click', (e) => { const b = e.target.closest('[data-sel]'); if (!b) return; state.sel = b.dataset.sel === 'base' ? 'base' : +b.dataset.sel; renderPlans(); $('plan').firstElementChild?.scrollIntoView({ block: 'start' }); });
   $('climate').addEventListener('toggle', () => { if ($('climate').open && state.lastScenarios) chart(state.lastScenarios); });
   $('picker').addEventListener('click', (e) => {
     const b = e.target.closest('[data-sel]');
@@ -224,7 +227,7 @@ function wire() {
     showTab('tool'); goStep(0); window.scrollTo(0, 0); renderPlans();
   });
   let timer = null;
-  window.addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(() => { if (state.lastScenarios) chart(state.lastScenarios); }, 150); });
+  window.addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(() => { if (state.lastScenarios) chart(state.lastScenarios); earnChart(); }, 150); });
   window.addEventListener('online', update);
   window.addEventListener('offline', update);
 }
@@ -281,30 +284,98 @@ function farm() {
 }
 
 // ------------------------------------------------------------------ drawing
+// Which year the climate chart shows follows the scenario buttons until the farmer picks one on the chart itself.
+const CHART_OF = { forecast: 'el_nino', normal: 'normal', el_nino: 'el_nino', worst: 'worst' };
+const fmt = (x) => Math.round(x).toLocaleString('en-US');
+
+/** "Water in vs water out": one column of rain per month, coloured by whether it covers what crops need (ET0). */
 function chart(sc) {
   state.lastScenarios = sc;
+  const view = state.chartView || CHART_OF[state.scenario];
+  document.querySelectorAll('#chartview button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.cv === view));
+  const ms = sc[view].monthly, normal = sc.normal.monthly;
+  const months = monthNames(), full = MONTH_FULL;
+  const name = state.climateName || '';
+  const total = ms.reduce((s, m) => s + m.P, 0), totalN = normal.reduce((s, m) => s + m.P, 0);
+  const short = ms.map((m) => m.P < m.ET0);
+  const nShort = short.filter(Boolean).length;
+  const worst = ms.reduce((w, m, i) => (m.P - m.ET0 < ms[w].P - ms[w].ET0 ? i : w), 0);
+  const change = view === 'normal' ? null : Math.round(((total - totalN) / totalN) * 100);
+
+  $('climhead').innerHTML = L('ch.head', { name, view: L(`ch.view.${view}`), mm: fmt(total), change, short: nShort });
+  $('climtiles').innerHTML = `<div class="tile"><small>${icon('cloud-rain')}${L('ch.tileRain')}</small><b>${fmt(total)} <span>mm</span></b>${change != null ? `<span class="delta">${L('ch.vsNormal', { change })}</span>` : `<span class="delta">${L('ch.normalNote')}</span>`}</div>`
+    + `<div class="tile"><small>${icon('sun')}${L('ch.tileDry')}</small><b>${nShort} <span>${L('ch.of12')}</span></b><div class="dots" aria-hidden="true">${short.map((s) => `<i class="${s ? 'short' : ''}"></i>`).join('')}</div></div>`
+    + `<div class="tile"><small>${icon('triangle-alert')}${L('ch.tileHard')}</small><b>${full[worst]}</b><span class="delta">${L('ch.hardNote', { p: fmt(ms[worst].P), e: fmt(ms[worst].ET0) })}</span></div>`;
+
   const box = $('chart');
-  const n = sc.normal.monthly, ni = sc.el_nino.monthly;
-  const months = monthNames();
-  // Draw at the width available, so text keeps its size on a phone.
-  const W = Math.round(Math.max(300, Math.min(760, box.clientWidth || 680)));
-  const H = W < 480 ? 220 : 250, Lm = 40, R = 10, T = 24, B = 44, pw = W - Lm - R, ph = H - T - B;
-  const max = Math.max(100, Math.ceil(Math.max(...n.map((m) => Math.max(m.P, m.ET0)), ...ni.map((m) => m.P)) / 100) * 100);
-  const y = (v) => T + ph - (v / max) * ph, bw = pw / 12;
+  const W = Math.round(Math.max(300, Math.min(900, box.clientWidth || 680)));
+  const H = W < 480 ? 240 : 270, Lm = 40, R = 8, T = 30, B = 26, pw = W - Lm - R, ph = H - T - B;
+  const top = Math.max(100, Math.ceil(Math.max(...ms.map((m) => Math.max(m.P, m.ET0)), ...normal.map((m) => m.P)) / 100) * 100);
+  const y = (v) => T + ph - (v / top) * ph, bw = pw / 12, cw = Math.min(24, bw - 8);
   const label = (m) => (bw < 34 ? m.charAt(0) : m);
-  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px" role="img" aria-label="${L('chart.aria')}">`;
-  for (let k = 0; k <= 4; k++) { const v = (max * k) / 4; s += `<line x1="${Lm}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${Lm - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`; }
-  n.forEach((m, i) => {
-    const x = Lm + i * bw, w = (bw - 6) / 2;
-    s += `<rect x="${x + 3}" y="${y(m.P)}" width="${w}" height="${T + ph - y(m.P)}" rx="3" fill="var(--rain)"><title>${L('chart.normalTip', { m: months[i], mm: Math.round(m.P), n: m.n })}</title></rect>`;
-    const q = ni[i];
-    s += `<rect x="${x + 3 + w}" y="${y(q.P)}" width="${w}" height="${T + ph - y(q.P)}" rx="3" fill="var(--rain-nino)" ${q.filled ? 'opacity=".35"' : ''}><title>${L('chart.ninoTip', { m: months[i], mm: Math.round(q.P), filled: q.filled, n: q.n })}</title></rect>`;
-    s += `<text x="${x + bw / 2}" y="${H - B + 14}" text-anchor="middle">${label(months[i])}</text>`;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px" role="img" aria-label="${L('ch.aria', { view: L(`ch.view.${view}`), name })}">`;
+  // the dry season gets a faint band so the two rainy seasons stand out
+  s += `<rect x="${Lm}" y="${T}" width="${bw * 4}" height="${ph}" fill="var(--sunk)" opacity=".6"/>`;
+  SEASONS.forEach((se, i) => { s += `<text class="season" x="${Lm + i * 4 * bw + 2 * bw}" y="${T - 12}" text-anchor="middle">${bw * 4 < 150 ? seasonText(se.id).name : `${seasonText(se.id).name} · ${seasonText(se.id).range}`}</text>`; });
+  for (let k = 0; k <= 4; k++) { const v = (top * k) / 4; s += `<line x1="${Lm}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${Lm - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`; }
+  s += `<text x="${Lm - 6}" y="${T - 12}" text-anchor="end">mm</text>`;
+  ms.forEach((m, i) => {
+    const cx = Lm + i * bw + bw / 2, x = cx - cw / 2, h = Math.max(0, T + ph - y(m.P)), r = Math.min(4, h);
+    const col = short[i] ? 'var(--water-short)' : 'var(--water-ok)';
+    // column with a 4px rounded top, square at the baseline
+    if (h > 0) s += `<path d="M${x},${T + ph} V${T + ph - h + r} Q${x},${T + ph - h} ${x + r},${T + ph - h} H${x + cw - r} Q${x + cw},${T + ph - h} ${x + cw},${T + ph - h + r} V${T + ph} Z" fill="${col}" ${m.filled ? 'opacity=".45"' : ''}/>`;
+    s += `<line class="need" x1="${cx - cw / 2 - 4}" x2="${cx + cw / 2 + 4}" y1="${y(m.ET0)}" y2="${y(m.ET0)}"/>`;
+    s += `<text x="${cx}" y="${H - 8}" text-anchor="middle">${label(months[i])}</text>`;
+    s += `<rect class="hit" data-i="${i}" x="${Lm + i * bw}" y="${T}" width="${bw}" height="${ph}" tabindex="0" role="img" aria-label="${L('ch.tipAria', { m: full[i], p: fmt(m.P), e: fmt(m.ET0), ok: !short[i] })}"/>`;
   });
-  s += `<polyline fill="none" stroke="var(--et)" stroke-width="2" stroke-dasharray="4 3" points="${n.map((m, i) => `${Lm + i * bw + bw / 2},${y(m.ET0)}`).join(' ')}"/>`;
-  SEASONS.forEach((se, i) => { const x = Lm + i * 4 * bw; s += `<line x1="${x + 3}" x2="${x + 4 * bw - 3}" y1="${H - 18}" y2="${H - 18}" stroke="var(--muted)" stroke-width="1.5"/><text x="${x + 2 * bw}" y="${H - 5}" text-anchor="middle">${seasonText(se.id).name}</text>`; });
-  s += `<text x="${Lm - 6}" y="10" text-anchor="end">mm</text></svg>`;
+  s += `<line x1="${Lm}" x2="${W - R}" y1="${T + ph}" y2="${T + ph}" stroke="var(--muted)" stroke-width="1"/></svg><div class="tip" id="tip" role="presentation"></div>`;
   box.innerHTML = s;
+  $('chartnote').textContent = ms.some((m) => m.filled) ? L('ch.fadedNote') : '';
+
+  const tip = $('tip');
+  const showTip = (el) => {
+    const i = +el.dataset.i, m = ms[i];
+    tip.innerHTML = '';
+    const row = (k, txt, val) => { const d = document.createElement('div'); d.className = 't-r'; const key = document.createElement('i'); key.className = 'k'; key.style.background = k; const sp = document.createElement('span'); sp.textContent = txt; const b = document.createElement('b'); b.textContent = val; d.append(key, sp, b); return d; };
+    const h = document.createElement('div'); h.className = 't-h'; h.textContent = full[i];
+    const v = document.createElement('div'); v.className = 't-v';
+    v.textContent = short[i] ? L('ch.tipShort', { mm: fmt(m.ET0 - m.P) }) : L('ch.tipOk', { mm: fmt(m.P - m.ET0) });
+    tip.append(h, row(short[i] ? 'var(--water-short)' : 'var(--water-ok)', L('ch.rain'), `${fmt(m.P)} mm`), row('var(--et)', L('ch.need'), `${fmt(m.ET0)} mm`), v);
+    if (m.filled) { const f = document.createElement('div'); f.className = 'note'; f.textContent = L('ch.filled'); tip.append(f); }
+    tip.classList.add('on');
+    const bx = box.getBoundingClientRect(), r = el.getBoundingClientRect();
+    const left = Math.min(Math.max(0, r.left - bx.left + r.width / 2 - tip.offsetWidth / 2), box.clientWidth - tip.offsetWidth);
+    tip.style.left = `${left}px`; tip.style.top = `${Math.max(0, r.top - bx.top + 8)}px`;
+  };
+  box.querySelectorAll('.hit').forEach((el) => {
+    el.addEventListener('pointerenter', () => showTip(el)); el.addEventListener('focus', () => showTip(el));
+    el.addEventListener('click', () => showTip(el));
+    el.addEventListener('pointerleave', () => tip.classList.remove('on')); el.addEventListener('blur', () => tip.classList.remove('on'));
+  });
+
+  $('climtable').innerHTML = `<table><thead><tr><th>${L('ch.month')}</th><th>${L('ch.rain')} (mm)</th><th>${L('ch.need')} (mm)</th><th>${L('ch.enough')}</th></tr></thead><tbody>${ms.map((m, i) => `<tr><td>${full[i]}</td><td>${fmt(m.P)}</td><td>${fmt(m.ET0)}</td><td>${short[i] ? L('ch.no') : L('ch.yes')}</td></tr>`).join('')}</tbody></table>`;
+}
+
+/** Horizontal bars of the 3-year margin of each plan and of "today", with a zero line. */
+function earnChart() {
+  const box = $('earnchart');
+  if (!state.last || !state.last.money) { $('earn').hidden = true; return; }
+  const { plans, base } = state.last;
+  const rows = [...plans.map((p, i) => [i, p]), ['base', base]].filter(([, p]) => p.scores.margin != null);
+  if (!rows.length) { $('earn').hidden = true; return; }
+  $('earn').hidden = false;
+  const vals = rows.map(([, p]) => p.scores.margin);
+  const lo = Math.min(0, ...vals), hi = Math.max(0, ...vals), span = hi - lo || 1;
+  // leave room for the amount label beyond each bar end
+  const pad = window.matchMedia('(max-width: 560px)').matches ? 0.02 : 0.28, x = (v) => ((v - lo) / span) * (1 - pad) * 100 + (lo < 0 ? pad * 50 : 0);
+  const z = x(0);
+  box.innerHTML = rows.map(([sel, p]) => {
+    const v = p.scores.margin, a = x(Math.min(0, v)), b = x(Math.max(0, v));
+    const pos = v >= 0;
+    const amt = pos ? `left:calc(${b}% + 6px)` : `right:calc(${100 - a}% + 6px)`;
+    return `<button type="button" class="ebar" data-sel="${sel}" aria-pressed="${state.sel === sel}"><span class="nm">${sel === 'base' ? L('orb.today') : planTitle(sel)}</span>`
+      + `<span class="track"><span class="bar ${pos ? 'pos' : 'neg'}" style="left:${a}%;width:${Math.max(0.5, b - a)}%"></span><span class="zero" style="left:${z}%"></span><span class="amt" style="${amt}">${crc(v)}</span></span><span class="amt2">${crc(v)}</span></button>`;
+  }).join('');
 }
 
 function reasonIcon(r) {
@@ -374,6 +445,7 @@ function renderPlans() {
   const { plans, base, crops } = state.last;
   if (typeof state.sel === 'number' && !plans[state.sel]) state.sel = plans.length ? 0 : 'base';
   $('picker').innerHTML = plans.map((p, i) => orb(i, p)).join('') + orb('base', base);
+  earnChart();
   const p = planOf(state.sel);
   $('plan').innerHTML = p ? detail(state.sel, p, crops, year0Now(), base) : (plans.length ? '' : `<p class="flag bad">${L('plan.none')}</p>`);
 }
@@ -422,6 +494,7 @@ async function update() {
   const offline = navigator.onLine === false ? ` ${L('status.offline')}` : '';
   setStatus(L('status.ok', { live: climate.origin === 'live', from: m.from, to: m.to, n: m.completeMonths, shares: shares ? shares.filter((x) => x !== climate.name).join(', ') : '' }) + offline, 'ok');
   $('climtitle').textContent = L('clim.titleFull', { name: climate.name, mm: Math.round(sc.scenarios.normal.monthly.reduce((s, x) => s + x.P, 0)) });
+  state.climateName = climate.name;
   chart(sc.scenarios);
 
   const crops = state.data.crops;
