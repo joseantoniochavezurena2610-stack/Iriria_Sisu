@@ -175,15 +175,24 @@
         <p class="note" id="scnote"></p>
       </div>
 
-      <details class="card climate" id="climate">
-        <summary><span class="sum-ic"><i data-icon="cloud-rain"></i></span><span class="sum-txt"><b id="climtitle">Climate of your canton</b><small>NASA POWER rainfall since 2021 · tap to see the chart</small></span><i class="chev" data-icon="chevron-down"></i></summary>
+      <details class="card climate" id="climate" open>
+        <summary><span class="sum-ic"><i data-icon="cloud-rain"></i></span><span class="sum-txt"><b id="climtitle">Climate of your canton</b><small>Rain compared with the water crops need, month by month</small></span><i class="chev" data-icon="chevron-down"></i></summary>
         <div class="climate-body">
+          <div class="seg small" id="chartview" role="group" aria-label="Which year to show">
+            <button type="button" data-cv="normal" aria-pressed="true"><i data-icon="cloud-rain"></i><span>Normal year</span></button>
+            <button type="button" data-cv="el_nino" aria-pressed="false"><i data-icon="thermometer-sun"></i><span>El Niño year</span></button>
+            <button type="button" data-cv="worst" aria-pressed="false"><i data-icon="triangle-alert"></i><span>Driest year</span></button>
+          </div>
+          <p class="clim-head" id="climhead"></p>
+          <div class="tiles" id="climtiles"></div>
           <div class="chartbox" id="chart"></div>
           <div class="legend">
-            <span><i class="sw" style="background:var(--rain)"></i>Rainfall, years without El Niño</span>
-            <span><i class="sw" style="background:var(--rain-nino)"></i>Rainfall, El Niño years</span>
-            <span><i class="sw line"></i>Water the air demands (ET0)</span>
+            <span><i class="sw" style="background:var(--water-ok)"></i>Enough rain</span>
+            <span><i class="sw" style="background:var(--water-short)"></i>Too dry: crops need irrigation</span>
+            <span><i class="sw tick"></i>Water crops need (ET0)</span>
           </div>
+          <p class="note" id="chartnote"></p>
+          <details class="tableview"><summary>See the numbers</summary><div class="table" id="climtable"></div></details>
           <p id="status" class="flag">Loading data…</p>
         </div>
       </details>
@@ -192,6 +201,12 @@
         <h2 class="pick-title">Look at these plans!</h2>
         <p class="note">Tap a plan to open it. Scores from 0 to 100 compare the plans with each other; they are not a harvest forecast.</p>
         <div class="picker" id="picker" role="tablist" aria-label="Plans"></div>
+      </div>
+
+      <div class="card earn" id="earn" hidden>
+        <h3><i data-icon="coins"></i>How much each plan earns</h3>
+        <p class="note">Expected net margin per hectare over 3 years, at current Costa Rican prices and costs. Tap a bar to open that plan.</p>
+        <div id="earnchart"></div>
       </div>
 
       <ul class="notices" id="notices"></ul>
