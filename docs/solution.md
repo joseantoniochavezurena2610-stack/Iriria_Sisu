@@ -41,6 +41,12 @@ Rainfed rice, maize, sorghum, common bean, cowpea, peanut, melon, watermelon, mu
 ## Path to impact
 After the event (nothing here is needed to compete, D22): MAG/INTA extension agencies and Guanacaste cooperatives, where the extension agent opens the link during the visit, fills in the form with the grower and prints the plan. The same engine works for other regions of the Central American Dry Corridor by changing the catalog and the points.
 
+## Market and scale (for the judges' "Impact" criterion)
+- **Who uses it:** grain and horticulture smallholders on rainfed land. First Guanacaste (11 cantons), then the rest of the Central American Dry Corridor: the engine is the same, only the crop catalog, the crop-by-canton list and the points change.
+- **Who pays (after the event):** nothing for the farmer. Possible adopters and payers: MAG/INTA extension services and cooperatives (planning visits), agricultural insurers and banks that lend to farmers (they need a farm-level view of climate risk), and development programmes working on El Niño adaptation.
+- **Why it can scale cheaply:** static website, $0 hosting, data refreshed weekly by GitHub Actions, transparent rules instead of a black box, every number with a source.
+- **Proof so far:** the 2026 backtest ([`research/backtest-2026.md`](research/backtest-2026.md)) — with data only up to April 2026, none of the plans put rainfed rice in the Primera of the 4 cantons where it later ran short of water. Caveat: at published prices rice also loses money, so part of that is a price signal, not only a water signal.
+
 ## What we do NOT promise
 - We do not predict the harvest; we compare plans.
 - We took no measurements on any farm: the challenge is theoretical (D23). The inputs are NASA/NOAA/FAO/ISRIC data and what the farmer enters.

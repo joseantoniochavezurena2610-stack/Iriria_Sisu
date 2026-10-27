@@ -10,7 +10,7 @@
 // The result is printed as it comes out, and written to docs/research/backtest-2026.md.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { buildScenarios, SEASONS, seasonClimate } from '../web/js/climate.js';
-import { recommend, waterBalance, PARAMETERS } from '../web/js/engine.js';
+import { recommend, waterBalance, PARAMETERS, cropsForCanton } from '../web/js/engine.js';
 
 const load = (p) => JSON.parse(readFileSync(new URL(`../web/data/${p}`, import.meta.url)));
 const crops = load('crops.json').crops;
@@ -39,15 +39,16 @@ for (const id of ids) {
   // B. Advice with data up to April 2026 only
   const before = { ...clim, months: clim.months.filter((m) => m.year < 2026 || (m.year === 2026 && m.month <= 4)) };
   const sc = buildScenarios(before, enso).scenarios;
-  const r = recommend({ crops, scenarios: sc, planScenarios: Array(9).fill('el_nino'), farm, priorities });
-  const primeraY1 = r.plans.map((p) => crops[p.sequence[1]].id);
+  const local = cropsForCanton(crops, id);
+  const r = recommend({ crops: local, scenarios: sc, planScenarios: Array(9).fill('el_nino'), farm, priorities });
+  const primeraY1 = r.plans.map((p) => `${local[p.sequence[1]].id} (${p.profile})`);
   const riceEv = seasonClimate(sc.el_nino, SEASONS[1]);
   const riceWb = waterBalance(rice, riceEv, farm);
 
   rows.push({
     id, name: clim.name, ph,
     rain2026, coverage2026: wb ? wb.coverage : null, fails2026: wb ? wb.coverage < threshold : null,
-    primeraY1, riceInPlans: primeraY1.includes('rice'), riceCoverageElNino: riceWb.coverage,
+    primeraY1, riceInPlans: r.plans.some((p) => local[p.sequence[1]].id === 'rice'), riceCoverageElNino: riceWb.coverage,
   });
 }
 

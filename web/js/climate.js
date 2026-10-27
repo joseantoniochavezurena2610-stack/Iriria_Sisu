@@ -89,7 +89,7 @@ export function buildScenarios(climate, enso) {
       const nino = ms.filter((m) => m.phase === 'el_nino').length;
       samples.push({
         year: y, P: ms.map((m) => m.P), ET0: ms.map((m) => m.ET0), T: ms.map((m) => m.T),
-        previous: prevMonth ? { P: prevMonth.P, ET0: prevMonth.ET0 } : null,
+        previous: prevMonth ? { P: prevMonth.P, ET0: prevMonth.ET0, GWETROOT: prevMonth.GWETROOT ?? null } : null,
         phase: nino >= 2 ? 'el_nino' : 'other',
       });
     }
@@ -115,7 +115,7 @@ export function seasonClimate(scenario, season) {
   const prev = season.months[0] === 1 ? m(12) : m(season.months[0] - 1);
   return {
     P: season.months.map((k) => m(k).P), ET0: season.months.map((k) => m(k).ET0), T: season.months.map((k) => m(k).T),
-    previous: { P: prev.P, ET0: prev.ET0 },
+    previous: { P: prev.P, ET0: prev.ET0, GWETROOT: prev.GWETROOT ?? null },
     filled: season.months.some((k) => m(k).filled),
   };
 }
