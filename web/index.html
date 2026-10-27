@@ -5,142 +5,223 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Iriria Sìsù — Crop rotations for Guanacaste</title>
 <meta name="description" content="Compare 3-year crop-rotation plans for your farm in Guanacaste, Costa Rica, using NASA data and what you know about your soil.">
-<meta name="theme-color" content="#1d7044">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%231d7044'/%3E%3Cpath d='M16 25V12M16 16c-4 0-7-3-7-7 4 0 7 3 7 7zm0 2c4 0 7-3 7-7-4 0-7 3-7 7z' stroke='%23fff' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a4a46">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
-<div class="wrap">
-  <header class="head">
-    <span class="eyebrow">NASA Space Apps 2026 · Change of Course</span>
-    <h1>Iriria Sìsù</h1>
-    <p class="lede">Compare 3-year crop-rotation plans for your farm in Guanacaste, Costa Rica. We use NASA rainfall and temperature data since 2021, plus what you know about your land. The decision is always yours.</p>
-  </header>
 
-  <nav class="tabs" role="tablist" aria-label="Sections">
-    <button role="tab" data-tab="tool" aria-selected="true">Tool</button>
-    <button role="tab" data-tab="how" aria-selected="false">How it works</button>
-    <button role="tab" data-tab="data" aria-selected="false">Data and sources</button>
-  </nav>
+<!-- ===================== COVER (welcome) ===================== -->
+<section id="cover" class="cover" aria-labelledby="cover-title">
+  <div class="cover-art" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="rows" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(-8)"><path d="M0 11h22" stroke="currentColor" stroke-width="3"/></pattern>
+      </defs>
+      <circle cx="1130" cy="230" r="90" fill="var(--lime)" opacity=".35"/>
+      <path d="M0 470 C 240 380 470 420 720 470 S 1180 520 1440 420 V900 H0Z" fill="var(--teal)" opacity=".18"/>
+      <path d="M0 560 C 300 480 560 520 820 580 S 1250 640 1440 560 V900 H0Z" fill="var(--lime)" opacity=".35"/>
+      <path d="M0 560 C 300 480 560 520 820 580 S 1250 640 1440 560 V900 H0Z" fill="url(#rows)" style="color:var(--teal)" opacity=".18"/>
+      <path d="M0 690 C 380 620 760 660 1060 720 S 1360 760 1440 730 V900 H0Z" fill="var(--soil)" opacity=".14"/>
+      <g stroke="var(--teal)" stroke-width="3" fill="none" opacity=".35" stroke-linecap="round">
+        <path d="M150 560v-70m0 22c-14 0-24-10-24-24 14 0 24 10 24 24zm0 16c14 0 24-10 24-24-14 0-24 10-24 24z"/>
+        <path d="M290 540v-60m0 18c-12 0-20-8-20-20 12 0 20 8 20 20zm0 14c12 0 20-8 20-20-12 0-20 8-20 20z"/>
+        <path d="M1240 620v-70m0 22c-14 0-24-10-24-24 14 0 24 10 24 24zm0 16c14 0 24-10 24-24-14 0-24 10-24 24z"/>
+      </g>
+    </svg>
+  </div>
+  <div class="cover-in">
+    <span class="eyebrow">NASA Space Apps 2026 · Change of Course</span>
+    <img class="cover-logo" src="img/logo.png" width="640" height="674" alt="Iriria Sìsù">
+    <h1 id="cover-title" class="cover-phrase">Plan the next three years of your farm with data from space.</h1>
+    <p class="cover-sub">NASA rainfall for your canton, your knowledge of your land. The decision is always yours.</p>
+    <button type="button" class="btn big" id="start"><span>Start planting</span><i data-icon="arrow-right"></i></button>
+    <p class="cover-foot">Guanacaste, Costa Rica · 4 short steps · about 2 minutes</p>
+  </div>
+</section>
+
+<!-- ===================== APP ===================== -->
+<div id="app" class="app" hidden>
+  <header class="topbar">
+    <button type="button" class="brand" id="home" aria-label="Iriria Sìsù — back to the welcome screen"><img src="img/isotipo.png" width="360" height="340" alt=""><span>Iriria Sìsù</span></button>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" data-tab="tool" aria-selected="true"><i data-icon="sprout"></i><span>Plan</span></button>
+      <button role="tab" data-tab="how" aria-selected="false"><i data-icon="info"></i><span>How it works</span></button>
+      <button role="tab" data-tab="data" aria-selected="false"><i data-icon="satellite"></i><span>Data</span></button>
+    </nav>
+  </header>
 
   <main id="content">
   <!-- ===================== TOOL ===================== -->
   <section id="p-tool" role="tabpanel" class="tool">
-    <form id="form" class="panel" autocomplete="off" onsubmit="return false">
-      <fieldset>
-        <legend>1 · Where is your farm?</legend>
-        <label><span>Canton</span>
-          <select id="canton"></select>
-        </label>
-        <div id="map" class="map" aria-label="Map of Guanacaste: tap your canton"></div>
-        <button type="button" class="btn sec" id="locate">Use my location</button>
-        <p class="note" id="locmsg" aria-live="polite"></p>
-      </fieldset>
 
-      <fieldset>
-        <legend>2 · What do you plant today?</legend>
-        <label><span>Main crop</span>
-          <select id="current"></select>
-        </label>
-        <label><span>Do you have irrigation?</span>
-          <select id="irrigation">
-            <option value="none">No, rain only</option>
-            <option value="limited">A little (well, small reservoir)</option>
-            <option value="full">Yes, enough irrigation</option>
-          </select>
-        </label>
-      </fieldset>
+    <div class="wizard" id="wizard">
+      <ol class="stepper" id="stepper" aria-label="Steps">
+        <li><button type="button" data-go="0"><i data-icon="map-pin"></i><span>Farm</span></button></li>
+        <li><button type="button" data-go="1"><i data-icon="wheat"></i><span>Crop</span></button></li>
+        <li><button type="button" data-go="2"><i data-icon="shovel"></i><span>Soil</span></button></li>
+        <li><button type="button" data-go="3"><i data-icon="sliders-horizontal"></i><span>Priorities</span></button></li>
+      </ol>
 
-      <fieldset>
-        <legend>3 · Your soil</legend>
-        <label><span>Texture</span>
-          <select id="texture">
-            <option value="loam">Loam (neither loose nor sticky)</option>
-            <option value="sandy">Sandy (loose, does not form a ball)</option>
-            <option value="clay">Clay (sticky, forms a long ribbon)</option>
-          </select>
-        </label>
-        <details class="help"><summary>How do I know my texture?</summary>
-          <div><p data-html="f3.helpBody">Ribbon test: wet a handful of soil and squeeze it between your thumb and index finger. If it does not form a ribbon, it is <b>sandy</b>. If it forms a short ribbon that breaks (less than 2.5 cm), it is <b>loam</b>. If it forms a long, shiny ribbon, it is <b>clay</b>.</p></div>
-        </details>
-        <div class="row2">
-          <label><span>Soil pH</span>
-            <input type="number" id="ph" min="3.5" max="9.5" step="0.1" value="6.0" inputmode="decimal" disabled>
+      <form id="form" class="card" autocomplete="off" onsubmit="return false">
+        <fieldset class="step" data-step="0">
+          <legend>Where is your farm?</legend>
+          <label><span>Canton</span>
+            <select id="canton"></select>
           </label>
-          <label class="check"><input type="checkbox" id="phunknown" checked> <span>I don't know my pH</span></label>
-        </div>
-        <p class="note" id="phnote"></p>
-        <div class="row2">
-          <label><span>Land</span>
-            <select id="slope">
-              <option value="flat">Flat</option>
-              <option value="moderate">Somewhat sloped</option>
-              <option value="steep">Very steep</option>
+          <div id="map" class="map" aria-label="Map of Guanacaste: tap your canton"></div>
+          <button type="button" class="btn sec" id="locate"><i data-icon="locate-fixed"></i><span>Use my location</span></button>
+          <p class="note" id="locmsg" aria-live="polite"></p>
+        </fieldset>
+
+        <fieldset class="step" data-step="1" hidden>
+          <legend>What do you plant today?</legend>
+          <label><span>Main crop</span>
+            <select id="current"></select>
+          </label>
+          <label><span>Do you have irrigation?</span>
+            <select id="irrigation">
+              <option value="none">No, rain only</option>
+              <option value="limited">A little (well, small reservoir)</option>
+              <option value="full">Yes, enough irrigation</option>
             </select>
           </label>
-          <label><span>Organic matter</span>
-            <select id="om">
-              <option value="">I don't know</option>
-              <option value="low">Low (light-coloured soil)</option>
-              <option value="medium">Medium</option>
-              <option value="high">High (dark soil)</option>
+        </fieldset>
+
+        <fieldset class="step" data-step="2" hidden>
+          <legend>Your soil</legend>
+          <label><span>Texture</span>
+            <select id="texture">
+              <option value="loam">Loam (neither loose nor sticky)</option>
+              <option value="sandy">Sandy (loose, does not form a ball)</option>
+              <option value="clay">Clay (sticky, forms a long ribbon)</option>
             </select>
           </label>
+          <details class="help"><summary><i data-icon="info"></i>How do I know my texture?</summary>
+            <div><p data-html="f3.helpBody">Ribbon test: wet a handful of soil and squeeze it between your thumb and index finger. If it does not form a ribbon, it is <b>sandy</b>. If it forms a short ribbon that breaks (less than 2.5 cm), it is <b>loam</b>. If it forms a long, shiny ribbon, it is <b>clay</b>.</p></div>
+          </details>
+          <div class="row2">
+            <label><span>Soil pH</span>
+              <input type="number" id="ph" min="3.5" max="9.5" step="0.1" value="6.0" inputmode="decimal" disabled>
+            </label>
+            <label class="check"><input type="checkbox" id="phunknown" checked> <span>I don't know my pH</span></label>
+          </div>
+          <p class="note" id="phnote"></p>
+          <div class="row2">
+            <label><span>Land</span>
+              <select id="slope">
+                <option value="flat">Flat</option>
+                <option value="moderate">Somewhat sloped</option>
+                <option value="steep">Very steep</option>
+              </select>
+            </label>
+            <label><span>Organic matter</span>
+              <select id="om">
+                <option value="">I don't know</option>
+                <option value="low">Low (light-coloured soil)</option>
+                <option value="medium">Medium</option>
+                <option value="high">High (dark soil)</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="step" data-step="3" hidden>
+          <legend>What matters most to you?</legend>
+          <label class="slider"><span class="lab"><i class="chip-ic soil" data-icon="sprout"></i>Soil<small>take care of the soil</small></span> <output id="o-soil">3</output><input type="range" id="soil" min="0" max="5" value="3"></label>
+          <label class="slider"><span class="lab"><i class="chip-ic water" data-icon="droplet"></i>Water<small>save water</small></span> <output id="o-water">3</output><input type="range" id="water" min="0" max="5" value="3"></label>
+          <label class="slider"><span class="lab"><i class="chip-ic risk" data-icon="shield-check"></i>Safety<small>lower the risk of losing the harvest</small></span> <output id="o-risk">4</output><input type="range" id="risk" min="0" max="5" value="4"></label>
+          <label class="slider"><span class="lab"><i class="chip-ic income" data-icon="coins"></i>Income<small>earn more</small></span> <output id="o-income">3</output><input type="range" id="income" min="0" max="5" value="3"></label>
+          <details class="help"><summary><i data-icon="info"></i>Why does Safety start at 4?</summary>
+            <div><p>Costa Rica’s weather service (IMN) expects El Niño effects at least until July 2027. Once your plans are shown, move any slider: they update right away.</p></div>
+          </details>
+          <label><span>At most, how much income could you give up compared with today?</span>
+            <select id="maxloss">
+              <option value="">No limit</option>
+              <option value="10">Up to 10 %</option>
+              <option value="25">Up to 25 %</option>
+              <option value="50">Up to 50 %</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <div class="stepnav">
+          <button type="button" class="btn ghost" id="back"><i data-icon="arrow-left"></i><span>Back</span></button>
+          <span class="stepcount" id="stepcount">Step 1 of 4</span>
+          <button type="button" class="btn" id="next"><span>Next</span><i data-icon="arrow-right"></i></button>
         </div>
-      </fieldset>
+      </form>
+    </div>
 
-      <fieldset>
-        <legend>4 · What matters most to you?</legend>
-        <label class="slider"><span>Soil: take care of the soil</span> <output id="o-soil">3</output><input type="range" id="soil" min="0" max="5" value="3"></label>
-        <label class="slider"><span>Water: save water</span> <output id="o-water">3</output><input type="range" id="water" min="0" max="5" value="3"></label>
-        <label class="slider"><span>Safety: lower the risk of losing the harvest</span> <output id="o-risk">4</output><input type="range" id="risk" min="0" max="5" value="4"></label>
-        <label class="slider"><span>Income: earn more</span> <output id="o-income">3</output><input type="range" id="income" min="0" max="5" value="3"></label>
-        <p class="note">Safety starts at 4 because Costa Rica’s weather service (IMN) expects El Niño effects at least until July 2027. Move any slider: the plans update right away.</p>
-        <label><span>At most, how much income could you give up compared with today?</span>
-          <select id="maxloss">
-            <option value="">No limit</option>
-            <option value="10">Up to 10 %</option>
-            <option value="25">Up to 25 %</option>
-            <option value="50">Up to 50 %</option>
-          </select>
-        </label>
-      </fieldset>
-    </form>
-
-    <div class="results" aria-live="polite">
+    <!-- ===================== RESULTS ===================== -->
+    <div class="results" id="results" hidden aria-live="polite">
       <p class="printmeta" id="printmeta"></p>
+
+      <div class="farmbar card" id="farmbar"></div>
+
       <div class="scenario" role="radiogroup" aria-label="Climate scenario">
         <span class="eyebrow">Which climate do we compare against?</span>
         <div class="seg" id="scenario">
-          <button type="button" data-sc="forecast" aria-pressed="true">Current forecast</button>
-          <button type="button" data-sc="normal" aria-pressed="false">Normal year</button>
-          <button type="button" data-sc="el_nino" aria-pressed="false">Average El Niño year</button>
-          <button type="button" data-sc="worst" aria-pressed="false">Worst year seen</button>
+          <button type="button" data-sc="forecast" aria-pressed="true"><i data-icon="calendar-clock"></i><span>Current forecast</span></button>
+          <button type="button" data-sc="normal" aria-pressed="false"><i data-icon="cloud-rain"></i><span>Normal year</span></button>
+          <button type="button" data-sc="el_nino" aria-pressed="false"><i data-icon="thermometer-sun"></i><span>Average El Niño year</span></button>
+          <button type="button" data-sc="worst" aria-pressed="false"><i data-icon="triangle-alert"></i><span>Worst year seen</span></button>
         </div>
         <p class="note" id="scnote"></p>
       </div>
-      <p id="status" class="flag">Loading data…</p>
-      <div>
-        <h2 id="climtitle">Climate of your canton</h2>
-        <div class="chartbox" id="chart"></div>
-        <div class="legend"><span><i style="background:var(--rain)"></i><span>Rainfall, years without El Niño</span></span><span><i style="background:var(--rain-nino)"></i><span>Rainfall, El Niño years</span></span><span><i style="background:var(--et)"></i><span>Water the air demands (evapotranspiration, ET0)</span></span></div>
+
+      <details class="card climate" id="climate">
+        <summary><span class="sum-ic"><i data-icon="cloud-rain"></i></span><span class="sum-txt"><b id="climtitle">Climate of your canton</b><small>NASA POWER rainfall since 2021 · tap to see the chart</small></span><i class="chev" data-icon="chevron-down"></i></summary>
+        <div class="climate-body">
+          <div class="chartbox" id="chart"></div>
+          <div class="legend">
+            <span><i class="sw" style="background:var(--rain)"></i>Rainfall, years without El Niño</span>
+            <span><i class="sw" style="background:var(--rain-nino)"></i>Rainfall, El Niño years</span>
+            <span><i class="sw line"></i>Water the air demands (ET0)</span>
+          </div>
+          <p id="status" class="flag">Loading data…</p>
+        </div>
+      </details>
+
+      <div class="pick">
+        <h2 class="pick-title">Look at these plans!</h2>
+        <p class="note">Tap a plan to open it. Scores from 0 to 100 compare the plans with each other; they are not a harvest forecast.</p>
+        <div class="picker" id="picker" role="tablist" aria-label="Plans"></div>
       </div>
-      <div class="legend" id="famlegend"></div>
+
       <ul class="notices" id="notices"></ul>
-      <p class="note">Scores from 0 to 100 compare these plans with each other. They are not a harvest forecast, and the climate data is regional.</p>
-      <div id="plans"></div>
-      <p class="printonly">Bring this plan to your extension agent (MAG/INTA) or cooperative to discuss it before buying seed.</p>
-      <div class="actions">
-        <button type="button" class="btn" id="print">Print or save as PDF</button>
-        <button type="button" class="btn sec" id="whatsapp">Send by WhatsApp</button>
-        <button type="button" class="btn sec" id="share">Copy link to this plan</button>
-        <span class="note" id="sharemsg" aria-live="polite"></span>
-        <p class="note full">The link includes your answers (canton, crop, soil and priorities).</p>
+      <div id="plan" class="plan-slot"></div>
+      <p class="note" id="marginnote"></p>
+    </div>
+  </section>
+
+  <!-- ===================== GOODBYE (back cover) ===================== -->
+  <section id="p-done" role="tabpanel" class="done" hidden aria-labelledby="done-title">
+    <div class="done-in">
+      <span class="done-check"><i data-icon="circle-check"></i></span>
+      <h2 id="done-title">Your plan is ready</h2>
+      <div class="done-plan card" id="donePlan"></div>
+      <h3 class="done-q">Need to save this information?</h3>
+      <div class="saves">
+        <button type="button" class="save" id="print"><span class="save-ic pdf"><i data-icon="file-down"></i></span><b>PDF</b><small>Print or save</small></button>
+        <button type="button" class="save" id="whatsapp"><span class="save-ic wa"><i data-icon="message-circle"></i></span><b>WhatsApp</b><small>Send the plan</small></button>
+        <button type="button" class="save" id="share"><span class="save-ic ln"><i data-icon="link"></i></span><b>Link</b><small>Copy the link</small></button>
       </div>
+      <p class="note" id="sharemsg" aria-live="polite">The link includes your answers (canton, crop, soil and priorities).</p>
+      <blockquote class="farewell">
+        <p>Iriria is the living earth in the Bribri story of creation. Take care of her soil, and she will keep feeding your family.</p>
+      </blockquote>
+      <p class="note">Bring this plan to your extension agent (MAG/INTA) or cooperative before buying seed. This tool does not replace advice from an agronomist.</p>
+      <div class="done-actions">
+        <button type="button" class="btn ghost" id="again"><i data-icon="arrow-left"></i><span>Back to my plans</span></button>
+        <button type="button" class="btn ghost" id="restart"><i data-icon="rotate-ccw"></i><span>Start over</span></button>
+      </div>
+      <img class="done-iso" src="img/isotipo.png" width="360" height="340" alt="Iriria Sìsù">
     </div>
   </section>
 
@@ -156,6 +237,9 @@
     <div class="table"><table id="croptable"></table></div>
   </section>
   </main>
+
+  <!-- Only printed: the plan the farmer chose. -->
+  <div id="printout" class="printout" aria-hidden="true"></div>
 
   <footer class="foot">
     <p data-html="foot.html">Iriria Sìsù · Costa Rican team at the NASA International Space Apps Challenge 2026. Data: NASA POWER (NASA Langley), NOAA CPC ENSO index, FAO. Open source (MIT) on <a href="https://github.com/joseantoniochavezurena2610-stack/iriria_sisu">GitHub</a>. This tool does not replace advice from an agronomist.</p>
