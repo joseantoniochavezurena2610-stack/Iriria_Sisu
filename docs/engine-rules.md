@@ -26,7 +26,7 @@ Seasons: **Dry** (Jan–Apr), **Primera** (May–Aug, contains the *canícula*),
 3. **Water (FAO-56-style balance)**
    - `ETc = Σ ET0_month × kc_season` over the months of the cycle.
    - `Pe = Σ effective rainfall` (USDA-SCS: if P ≤ 250 mm, `P(125−0.2P)/125`; otherwise `125 + 0.1P`).
-   - `CarryOver = available water(texture) × 0.6 m × 0.5`, only if the month before the season rained more than its ET0.
+   - `CarryOver = available water(texture) × 0.6 m × 0.5 × g`, where `g = clamp((GWETROOT − 0.45) / (0.85 − 0.45))` uses **NASA POWER root-zone soil wetness (GWETROOT)** of the month before the season (Guanacaste 2021-2026: 0.40 at the end of the dry season, 0.99 in October). Without GWETROOT (live download failed): full carry-over only if the month before rained more than its ET0.
    - `Deficit = max(0, ETc − Pe − CarryOver)`; `Irrigation = min(Deficit, max. by answer)` (none: 0 · a little: 150 mm · enough: all of it).
    - `Coverage = (ETc − unmet) / ETc`; **water factor** = `clamp((Coverage − 0.5) / 0.45)`.
 4. **Temperature**: 1 inside the optimal range, falling linearly to 0 at the absolute limits.
@@ -36,8 +36,9 @@ Seasons: **Dry** (Jan–Apr), **Primera** (May–Aug, contains the *canícula*),
 
 ## 4. Building plans
 - 9 slots (3 years × 3 seasons). Beam search with 250 sequences.
-- **Rotation effects** on yield: same family back to back ×0.85; same family in the previous 3 seasons ×0.95; after a legume ×1.10; after a green manure ×1.15 (conservative compared with the +20 % average of Zhao et al. 2022).
-- The **3 best different plans** are returned (they change at least 3 seasons and the crop mix) + "If you keep planting what you plant today".
+- **Rotation effects** on yield: same family back to back ×0.85; same family in the previous 3 seasons ×0.95; after a legume ×1.10; after a green manure ×1.15 (**grasses only** — rice, maize, sorghum — because the evidence comes from cereal studies; melon, watermelon and other crops still get the nitrogen credit) (conservative compared with the +20 % average of Zhao et al. 2022).
+- **Green manure cap:** at most 2 of the 9 seasons with a green manure (mucuna, jack bean). A green manure takes a whole season without anything to sell; without the cap the engine filled every Primera with it, because the yield bonus on the next high-value crop (watermelon) outweighed a season of maize.
+- **Three profiles, three plans** (since 26 Oct): Plan A uses the farmer's weights. Plans B and C come from the first two of these profiles that give a different plan: *More money* (income +5), *Safer* (Safety +5, Water +3), *Better soil* (Soil +5). Each must change at least 3 seasons and, if possible, the crop mix. All three are then **scored with the farmer's own weights**, so the numbers stay comparable. Plus "If you keep planting what you plant today".
 
 ## 5. Axes (0 to 100)
 | Axis | Formula (summary) |

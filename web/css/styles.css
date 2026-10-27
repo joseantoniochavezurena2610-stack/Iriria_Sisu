@@ -459,3 +459,17 @@ th { font: 500 12px var(--mono); color: var(--muted); }
 details.more summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--accent); width: fit-content; }
 details.more .why { margin-top: 8px; }
 .badge { cursor: help; }
+
+/* plan profiles and tap-for-numbers cells */
+.orb .prof { display: inline-flex; align-items: center; gap: 4px; font: 700 13px var(--body); color: var(--ink); }
+.orb .prof .ic { width: 14px; height: 14px; color: var(--accent); }
+.ph-title { display: flex; flex-direction: column; gap: 4px; }
+.plan-sub { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); }
+.plan-sub .ic { color: var(--accent); }
+.cell { cursor: pointer; }
+.cell.on { outline: 3px solid var(--teal); outline-offset: 1px; }
+.celltip { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--muted); padding: 8px 10px; border-radius: 10px; background: var(--bg); border: 1px dashed var(--line); }
+.celltip.on { color: var(--ink); border-style: solid; }
+.celltip .ic { margin-top: 2px; color: var(--accent); }
+@media (max-width: 520px) { .orb .prof { font-size: 11px; } }
+@media print { .celltip { display: none; } }
