@@ -35,7 +35,17 @@
    "relative_margin": 3.0,
    "yield_t_ha": 4.3,
    "price_crc_kg": 275.0,
-   "production_cost_crc_ha": 1330000.0
+   "production_cost_crc_ha": 1330000.0,
+   "cantons": [
+    "liberia",
+    "bagaces",
+    "carrillo",
+    "canas",
+    "abangares",
+    "santa-cruz",
+    "nicoya",
+    "nandayure"
+   ]
   },
   {
    "id": "maize",
@@ -107,7 +117,15 @@
    "relative_margin": 2.0,
    "yield_t_ha": 2.5,
    "price_crc_kg": 245.0,
-   "production_cost_crc_ha": 470000.0
+   "production_cost_crc_ha": 470000.0,
+   "cantons": [
+    "liberia",
+    "bagaces",
+    "carrillo",
+    "canas",
+    "santa-cruz",
+    "nicoya"
+   ]
   },
   {
    "id": "bean",
@@ -143,7 +161,17 @@
    "relative_margin": 3.0,
    "yield_t_ha": 0.828,
    "price_crc_kg": 739.0,
-   "production_cost_crc_ha": 766278.0
+   "production_cost_crc_ha": 766278.0,
+   "cantons": [
+    "la-cruz",
+    "liberia",
+    "tilaran",
+    "abangares",
+    "santa-cruz",
+    "nicoya",
+    "hojancha",
+    "nandayure"
+   ]
   },
   {
    "id": "cowpea",
@@ -179,7 +207,17 @@
    "relative_margin": 2.0,
    "yield_t_ha": 0.9,
    "price_crc_kg": 590.0,
-   "production_cost_crc_ha": 575000.0
+   "production_cost_crc_ha": 575000.0,
+   "cantons": [
+    "la-cruz",
+    "liberia",
+    "tilaran",
+    "abangares",
+    "santa-cruz",
+    "nicoya",
+    "hojancha",
+    "nandayure"
+   ]
   },
   {
    "id": "peanut",
@@ -215,7 +253,15 @@
    "relative_margin": 3.0,
    "yield_t_ha": 2.0,
    "price_crc_kg": 550.0,
-   "production_cost_crc_ha": 900000.0
+   "production_cost_crc_ha": 900000.0,
+   "cantons": [
+    "liberia",
+    "bagaces",
+    "carrillo",
+    "canas",
+    "santa-cruz",
+    "nicoya"
+   ]
   },
   {
    "id": "melon",
@@ -250,7 +296,15 @@
    "relative_margin": 4.0,
    "yield_t_ha": 26.0,
    "price_crc_kg": 180.0,
-   "production_cost_crc_ha": 3389002.0
+   "production_cost_crc_ha": 3389002.0,
+   "cantons": [
+    "liberia",
+    "bagaces",
+    "carrillo",
+    "canas",
+    "abangares",
+    "santa-cruz"
+   ]
   },
   {
    "id": "watermelon",
@@ -286,7 +340,17 @@
    "relative_margin": 4.0,
    "yield_t_ha": 28.0,
    "price_crc_kg": 150.0,
-   "production_cost_crc_ha": 2916811.0
+   "production_cost_crc_ha": 2916811.0,
+   "cantons": [
+    "liberia",
+    "bagaces",
+    "carrillo",
+    "canas",
+    "abangares",
+    "santa-cruz",
+    "nicoya",
+    "nandayure"
+   ]
   },
   {
    "id": "mucuna",
