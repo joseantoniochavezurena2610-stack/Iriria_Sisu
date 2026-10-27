@@ -57,6 +57,13 @@ const S = {
     'plan.relative': 'relative score',
     'plan.margin': (v) => `Expected net margin: <b>${crc(v.total)}</b> per hectare over 3 years${v.diff != null ? ` (${v.diff >= 0 ? '+' : '−'}${crc(Math.abs(v.diff))} compared with today)` : ''}`,
     'plan.marginNote': 'Margins use published Costa Rican prices and costs; values marked “estimate” in the Data tab are the team’s best estimate.',
+    // journey (cover → steps → plans → goodbye)
+    'step.count': (v) => `Step ${v.n} of ${v.of}`, 'step.next': 'Next', 'step.see': 'See my plans', 'step.update': 'Show my plans',
+    'farm.edit': 'Edit answers',
+    'orb.today': 'Today', 'badge.robustShort': 'Robust', 'badge.sensitiveShort': 'El Niño risk',
+    'plan.choose': 'Choose this plan', 'plan.keep': 'Keep what I plant today',
+    'money.label': 'Expected net margin', 'money.per': 'per hectare over 3 years', 'money.vsToday': 'vs. today', 'money.short': 'per ha in 3 years',
+    'years.normal': 'Normal year', 'years.nino': 'El Niño year', 'why.title': 'Why this plan',
     'cell.fallow': 'Fallow', 'cell.fit': (v) => `fit ${v.p} %`, 'cell.irrigation': (v) => `irrigation ${v.mm} mm`,
     'cell.short': (v) => `water short: ${v.k} of ${v.n} years`,
     'axis.soil': 'Soil', 'axis.water': 'Water', 'axis.risk': 'Safety', 'axis.income': 'Income',
