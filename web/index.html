@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin>
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/styles.css?v=7">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
@@ -72,7 +72,7 @@
         <fieldset class="step" data-step="0">
           <legend>Where is your farm?</legend>
           <div class="field"><span class="flabel">Canton</span>
-            <select id="canton" hidden></select>
+            <select id="canton"></select>
           </div>
           <div id="map" class="map" aria-label="Map of Guanacaste: tap your canton"></div>
           <button type="button" class="btn sec" id="locate"><i data-icon="locate-fixed"></i><span>Use my location</span></button>
@@ -82,11 +82,11 @@
         <fieldset class="step" data-step="1" hidden>
           <legend>What do you plant today?</legend>
           <div class="field"><span class="flabel" id="croplabel">Main crop</span>
-            <select id="current" hidden></select>
+            <select id="current"></select>
             <p class="note" id="cropnote" aria-live="polite"></p>
           </div>
           <div class="field"><span class="flabel">Irrigation</span>
-            <select id="irrigation" hidden>
+            <select id="irrigation">
               <option value="none" data-art="drops-0" data-sub="rain only">No</option>
               <option value="limited" data-art="drops-1" data-sub="well or small pond">A little</option>
               <option value="full" data-art="drops-3" data-sub="all I need">Yes</option>
@@ -97,7 +97,7 @@
         <fieldset class="step" data-step="2" hidden>
           <legend>Your soil</legend>
           <div class="field"><span class="flabel">Texture</span>
-            <select id="texture" hidden>
+            <select id="texture">
               <option value="sandy" data-art="tex-sandy" data-sub="loose">Sandy</option>
               <option value="loam" data-art="tex-loam" data-sub="in between" selected>Loam</option>
               <option value="clay" data-art="tex-clay" data-sub="sticky">Clay</option>
@@ -119,14 +119,14 @@
             <p class="note" id="phnote"></p>
           </div>
           <div class="field"><span class="flabel">Land</span>
-            <select id="slope" hidden>
+            <select id="slope">
               <option value="flat" data-art="slope-flat">Flat</option>
               <option value="moderate" data-art="slope-moderate">Sloped</option>
               <option value="steep" data-art="slope-steep">Steep</option>
             </select>
           </div>
           <div class="field"><span class="flabel">Soil colour <small>(organic matter)</small></span>
-            <select id="om" hidden>
+            <select id="om">
               <option value="low" data-art="om-low">Light</option>
               <option value="medium" data-art="om-medium">Medium</option>
               <option value="high" data-art="om-high">Dark</option>
@@ -142,7 +142,7 @@
           <label class="slider"><span class="lab"><i class="chip-ic risk" data-icon="shield-check"></i>Safety</span> <output id="o-risk">4</output><input type="range" id="risk" min="0" max="5" value="4"></label>
           <label class="slider"><span class="lab"><i class="chip-ic income" data-icon="coins"></i>Income</span> <output id="o-income">3</output><input type="range" id="income" min="0" max="5" value="3"></label>
           <div class="field"><span class="flabel">How much income could you give up?</span>
-            <select id="maxloss" hidden>
+            <select id="maxloss">
               <option value="" data-art="none">No limit</option>
               <option value="10">10 %</option>
               <option value="25">25 %</option>
@@ -260,6 +260,6 @@
   </footer>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin defer></script>
-<script type="module" src="js/app.js"></script>
+<script type="module" src="js/app.js?v=7"></script>
 </body>
 </html>
