@@ -1,7 +1,6 @@
 # Publishes the web/ folder to GitHub Pages (free, with HTTPS and a custom domain).
-# OFF until the team decides. To turn it on:
-#   1. Settings → Pages → Source: "GitHub Actions"
-#   2. Settings → Secrets and variables → Actions → Variables → PUBLISH_PAGES = true
+# Runs on every push to main, after each data update and by hand (Actions → publish → Run workflow).
+# Requires Settings → Pages → Source: "GitHub Actions" (already set).
 # Custom domain: see docs/architecture.md (section "Domain").
 name: publish
 
@@ -24,7 +23,6 @@ concurrency:
 
 jobs:
   publish:
-    if: vars.PUBLISH_PAGES == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
