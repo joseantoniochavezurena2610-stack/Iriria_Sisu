@@ -71,9 +71,9 @@
       <form id="form" class="card" autocomplete="off" onsubmit="return false">
         <fieldset class="step" data-step="0">
           <legend>Where is your farm?</legend>
-          <label><span>Canton</span>
-            <select id="canton"></select>
-          </label>
+          <div class="field"><span class="flabel">Canton</span>
+            <select id="canton" hidden></select>
+          </div>
           <div id="map" class="map" aria-label="Map of Guanacaste: tap your canton"></div>
           <button type="button" class="btn sec" id="locate"><i data-icon="locate-fixed"></i><span>Use my location</span></button>
           <p class="note" id="locmsg" aria-live="polite"></p>
@@ -81,73 +81,74 @@
 
         <fieldset class="step" data-step="1" hidden>
           <legend>What do you plant today?</legend>
-          <label><span>Main crop</span>
-            <select id="current"></select>
-          </label>
-          <label><span>Do you have irrigation?</span>
-            <select id="irrigation">
-              <option value="none">No, rain only</option>
-              <option value="limited">A little (well, small reservoir)</option>
-              <option value="full">Yes, enough irrigation</option>
+          <div class="field"><span class="flabel" id="croplabel">Main crop</span>
+            <select id="current" hidden></select>
+            <p class="note" id="cropnote" aria-live="polite"></p>
+          </div>
+          <div class="field"><span class="flabel">Irrigation</span>
+            <select id="irrigation" hidden>
+              <option value="none" data-art="drops-0" data-sub="rain only">No</option>
+              <option value="limited" data-art="drops-1" data-sub="well or small pond">A little</option>
+              <option value="full" data-art="drops-3" data-sub="all I need">Yes</option>
             </select>
-          </label>
+          </div>
         </fieldset>
 
         <fieldset class="step" data-step="2" hidden>
           <legend>Your soil</legend>
-          <label><span>Texture</span>
-            <select id="texture">
-              <option value="loam">Loam (neither loose nor sticky)</option>
-              <option value="sandy">Sandy (loose, does not form a ball)</option>
-              <option value="clay">Clay (sticky, forms a long ribbon)</option>
+          <div class="field"><span class="flabel">Texture</span>
+            <select id="texture" hidden>
+              <option value="sandy" data-art="tex-sandy" data-sub="loose">Sandy</option>
+              <option value="loam" data-art="tex-loam" data-sub="in between" selected>Loam</option>
+              <option value="clay" data-art="tex-clay" data-sub="sticky">Clay</option>
             </select>
-          </label>
-          <details class="help"><summary><i data-icon="info"></i>How do I know my texture?</summary>
-            <div><p data-html="f3.helpBody">Ribbon test: wet a handful of soil and squeeze it between your thumb and index finger. If it does not form a ribbon, it is <b>sandy</b>. If it forms a short ribbon that breaks (less than 2.5 cm), it is <b>loam</b>. If it forms a long, shiny ribbon, it is <b>clay</b>.</p></div>
-          </details>
-          <div class="row2">
-            <label><span>Soil pH</span>
-              <input type="number" id="ph" min="3.5" max="9.5" step="0.1" value="6.0" inputmode="decimal" disabled>
-            </label>
-            <label class="check"><input type="checkbox" id="phunknown" checked> <span>I don't know my pH</span></label>
+            <details class="help"><summary><i data-icon="info"></i>How do I know?</summary>
+              <div><p data-html="f3.helpBody">Wet some soil and squeeze it between thumb and finger. No ribbon: <b>sandy</b>. Short ribbon that breaks: <b>loam</b>. Long, shiny ribbon: <b>clay</b>.</p></div>
+            </details>
           </div>
-          <p class="note" id="phnote"></p>
-          <div class="row2">
-            <label><span>Land</span>
-              <select id="slope">
-                <option value="flat">Flat</option>
-                <option value="moderate">Somewhat sloped</option>
-                <option value="steep">Very steep</option>
-              </select>
-            </label>
-            <label><span>Organic matter</span>
-              <select id="om">
-                <option value="">I don't know</option>
-                <option value="low">Low (light-coloured soil)</option>
-                <option value="medium">Medium</option>
-                <option value="high">High (dark soil)</option>
-              </select>
-            </label>
+          <div class="field"><span class="flabel">Soil pH</span>
+            <div class="phrow">
+              <div class="stepper-num" id="phbox">
+                <button type="button" class="pm" data-ph="-0.5" aria-label="Lower pH">−</button>
+                <input type="number" id="ph" min="3.5" max="9.5" step="0.1" value="6.0" inputmode="decimal" disabled aria-label="Soil pH">
+                <button type="button" class="pm" data-ph="0.5" aria-label="Raise pH">+</button>
+              </div>
+              <label class="toggle"><input type="checkbox" id="phunknown" checked><span>I don't know</span></label>
+            </div>
+            <div class="phscale" aria-hidden="true"><i id="phmark"></i><span>acid</span><span>neutral</span><span>alkaline</span></div>
+            <p class="note" id="phnote"></p>
+          </div>
+          <div class="field"><span class="flabel">Land</span>
+            <select id="slope" hidden>
+              <option value="flat" data-art="slope-flat">Flat</option>
+              <option value="moderate" data-art="slope-moderate">Sloped</option>
+              <option value="steep" data-art="slope-steep">Steep</option>
+            </select>
+          </div>
+          <div class="field"><span class="flabel">Soil colour <small>(organic matter)</small></span>
+            <select id="om" hidden>
+              <option value="low" data-art="om-low">Light</option>
+              <option value="medium" data-art="om-medium">Medium</option>
+              <option value="high" data-art="om-high">Dark</option>
+              <option value="" data-art="unknown" selected>Not sure</option>
+            </select>
           </div>
         </fieldset>
 
         <fieldset class="step" data-step="3" hidden>
           <legend>What matters most to you?</legend>
-          <label class="slider"><span class="lab"><i class="chip-ic soil" data-icon="sprout"></i>Soil<small>take care of the soil</small></span> <output id="o-soil">3</output><input type="range" id="soil" min="0" max="5" value="3"></label>
-          <label class="slider"><span class="lab"><i class="chip-ic water" data-icon="droplet"></i>Water<small>save water</small></span> <output id="o-water">3</output><input type="range" id="water" min="0" max="5" value="3"></label>
-          <label class="slider"><span class="lab"><i class="chip-ic risk" data-icon="shield-check"></i>Safety<small>lower the risk of losing the harvest</small></span> <output id="o-risk">4</output><input type="range" id="risk" min="0" max="5" value="4"></label>
-          <label class="slider"><span class="lab"><i class="chip-ic income" data-icon="coins"></i>Income<small>earn more</small></span> <output id="o-income">3</output><input type="range" id="income" min="0" max="5" value="3"></label>
-          <details class="help"><summary><i data-icon="info"></i>Why does Safety start at 4?</summary>
-            <div><p>Costa Rica’s weather service (IMN) expects El Niño effects at least until July 2027. Once your plans are shown, move any slider: they update right away.</p></div>
-          </details>
-          <label><span>At most, how much income could you give up compared with today?</span>
-            <select id="maxloss">
-              <option value="">No limit</option>
-              <option value="10">Up to 10 %</option>
-              <option value="25">Up to 25 %</option>
-              <option value="50">Up to 50 %</option>
+          <label class="slider"><span class="lab"><i class="chip-ic soil" data-icon="sprout"></i>Soil</span> <output id="o-soil">3</output><input type="range" id="soil" min="0" max="5" value="3"></label>
+          <label class="slider"><span class="lab"><i class="chip-ic water" data-icon="droplet"></i>Water</span> <output id="o-water">3</output><input type="range" id="water" min="0" max="5" value="3"></label>
+          <label class="slider"><span class="lab"><i class="chip-ic risk" data-icon="shield-check"></i>Safety</span> <output id="o-risk">4</output><input type="range" id="risk" min="0" max="5" value="4"></label>
+          <label class="slider"><span class="lab"><i class="chip-ic income" data-icon="coins"></i>Income</span> <output id="o-income">3</output><input type="range" id="income" min="0" max="5" value="3"></label>
+          <div class="field"><span class="flabel">How much income could you give up?</span>
+            <select id="maxloss" hidden>
+              <option value="" data-art="none">No limit</option>
+              <option value="10">10 %</option>
+              <option value="25">25 %</option>
+              <option value="50">50 %</option>
             </select>
-          </label>
+          </div>
         </fieldset>
 
         <div class="stepnav">
@@ -175,15 +176,14 @@
         <p class="note" id="scnote"></p>
       </div>
 
-      <details class="card climate" id="climate" open>
-        <summary><span class="sum-ic"><i data-icon="cloud-rain"></i></span><span class="sum-txt"><b id="climtitle">Climate of your canton</b><small>Rain compared with the water crops need, month by month</small></span><i class="chev" data-icon="chevron-down"></i></summary>
+      <details class="card climate" id="climate">
+        <summary><span class="sum-ic"><i data-icon="cloud-rain"></i></span><span class="sum-txt"><b id="climtitle">Climate of your canton</b><small>Rain vs. what crops need</small></span><i class="chev" data-icon="chevron-down"></i></summary>
         <div class="climate-body">
           <div class="seg small" id="chartview" role="group" aria-label="Which year to show">
             <button type="button" data-cv="normal" aria-pressed="true"><i data-icon="cloud-rain"></i><span>Normal year</span></button>
             <button type="button" data-cv="el_nino" aria-pressed="false"><i data-icon="thermometer-sun"></i><span>El Niño year</span></button>
             <button type="button" data-cv="worst" aria-pressed="false"><i data-icon="triangle-alert"></i><span>Driest year</span></button>
           </div>
-          <p class="clim-head" id="climhead"></p>
           <div class="tiles" id="climtiles"></div>
           <div class="chartbox" id="chart"></div>
           <div class="legend">
@@ -199,13 +199,12 @@
 
       <div class="pick">
         <h2 class="pick-title">Look at these plans!</h2>
-        <p class="note">Tap a plan to open it. Scores from 0 to 100 compare the plans with each other; they are not a harvest forecast.</p>
+        <p class="note">Tap a plan to see it.</p>
         <div class="picker" id="picker" role="tablist" aria-label="Plans"></div>
       </div>
 
       <div class="card earn" id="earn" hidden>
-        <h3><i data-icon="coins"></i>How much each plan earns</h3>
-        <p class="note">Expected net margin per hectare over 3 years, at current Costa Rican prices and costs. Tap a bar to open that plan.</p>
+        <h3><i data-icon="coins"></i>Money per hectare (3 years)</h3>
         <div id="earnchart"></div>
       </div>
 
@@ -227,11 +226,11 @@
         <button type="button" class="save" id="whatsapp"><span class="save-ic wa"><i data-icon="message-circle"></i></span><b>WhatsApp</b><small>Send the plan</small></button>
         <button type="button" class="save" id="share"><span class="save-ic ln"><i data-icon="link"></i></span><b>Link</b><small>Copy the link</small></button>
       </div>
-      <p class="note" id="sharemsg" aria-live="polite">The link includes your answers (canton, crop, soil and priorities).</p>
+      <p class="note" id="sharemsg" aria-live="polite"></p>
       <blockquote class="farewell">
         <p>Iriria is the living earth in the Bribri story of creation. Take care of her soil, and she will keep feeding your family.</p>
       </blockquote>
-      <p class="note">Bring this plan to your extension agent (MAG/INTA) or cooperative before buying seed. This tool does not replace advice from an agronomist.</p>
+      <p class="note">Talk it over with your MAG/INTA extension agent before buying seed.</p>
       <div class="done-actions">
         <button type="button" class="btn ghost" id="again"><i data-icon="arrow-left"></i><span>Back to my plans</span></button>
         <button type="button" class="btn ghost" id="restart"><i data-icon="rotate-ccw"></i><span>Start over</span></button>
