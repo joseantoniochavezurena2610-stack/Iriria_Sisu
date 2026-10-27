@@ -64,6 +64,18 @@ const S = {
     'plan.choose': 'Choose this plan', 'plan.keep': 'Keep what I plant today',
     'money.label': 'Expected net margin', 'money.per': 'per hectare over 3 years', 'money.vsToday': 'vs. today', 'money.short': 'per ha in 3 years',
     'years.normal': 'Normal year', 'years.nino': 'El Niño year', 'why.title': 'Why this plan',
+    // climate chart, in plain words
+    'ch.view.normal': 'a normal year', 'ch.view.el_nino': 'an El Niño year', 'ch.view.worst': 'the driest year seen',
+    'ch.head': (v) => `In ${v.view}, ${v.name} gets <b>${v.mm} mm</b> of rain${v.change != null ? ` (${v.change < 0 ? `<b>${-v.change} % less</b>` : `${v.change} % more`} than a normal year)` : ''}, and <b>${v.short} of 12 months</b> are too dry for crops without irrigation.`,
+    'ch.tileRain': 'Rain in the year', 'ch.vsNormal': (v) => `${v.change < 0 ? '−' : '+'}${Math.abs(v.change)} % vs. a normal year`, 'ch.normalNote': 'Average of the years without El Niño',
+    'ch.tileDry': 'Months too dry', 'ch.of12': 'of 12',
+    'ch.tileHard': 'Hardest month', 'ch.hardNote': (v) => `${v.p} mm of rain; crops need ${v.e} mm`,
+    'ch.rain': 'Rain', 'ch.need': 'Crops need', 'ch.month': 'Month', 'ch.enough': 'Enough rain?', 'ch.yes': 'Yes', 'ch.no': 'No — needs irrigation',
+    'ch.tipOk': (v) => `Enough rain: ${v.mm} mm to spare`, 'ch.tipShort': (v) => `Too dry: ${v.mm} mm short`,
+    'ch.fadedNote': 'Faded columns: no El Niño month has been observed there yet, so the overall average is used.',
+    'ch.filled': 'No El Niño month observed here yet: the overall average is used.',
+    'ch.tipAria': (v) => `${v.m}: ${v.p} mm of rain, crops need ${v.e} mm. ${v.ok ? 'Enough rain.' : 'Too dry.'}`,
+    'ch.aria': (v) => `Monthly rain in ${v.view} in ${v.name}, compared with the water crops need`,
     'cell.fallow': 'Fallow', 'cell.fit': (v) => `fit ${v.p} %`, 'cell.irrigation': (v) => `irrigation ${v.mm} mm`,
     'cell.short': (v) => `water short: ${v.k} of ${v.n} years`,
     'axis.soil': 'Soil', 'axis.water': 'Water', 'axis.risk': 'Safety', 'axis.income': 'Income',
@@ -134,4 +146,5 @@ export function t(key, vars = {}) {
 export const cropName = (crop) => (crop ? crop.name : '');
 export const seasonText = (seasonId) => SEASONS_TEXT[seasonId];
 export const monthNames = () => MONTHS;
+export const monthFull = () => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 export const hasKey = (key) => key in S;
