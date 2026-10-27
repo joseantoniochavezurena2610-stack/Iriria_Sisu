@@ -7,8 +7,8 @@
 //   5. weights them with the farmer's priorities and returns 3 plans + "what you plant today"
 // Formulas are documented in docs/engine-rules.md. Pure functions: no DOM, no network.
 
-import { SEASONS, seasonClimate, effectiveRainfall } from './climate.js?v=7';
-import { t, cropName, seasonText } from './strings.js?v=7';
+import { SEASONS, seasonClimate, effectiveRainfall } from './climate.js?v=8';
+import { t, cropName, seasonText } from './strings.js?v=8';
 
 export const PARAMETERS = {
   // Total available water (mm per metre of soil) by texture — typical FAO-56 ranges (table 19)
@@ -30,6 +30,14 @@ export const PARAMETERS = {
   // (MAG-SEPSA input-price survey, Aug 2026) → ₡1,341 per kg of N.
   nitrogenPriceCrcPerKg: 1341,
   failureYieldLoss: 0.5, // share of the harvest lost in a season where water falls short
+  // Root-zone soil wetness of the month before the season (NASA POWER GWETROOT, 0-1) sets how much
+  // readily available water the soil starts with: none at or below `dry`, all of it at or above `wet`.
+  // Guanacaste ranges 0.40 (end of the dry season) to 0.99 (Oct) in 2021-2026.
+  soilWetness: { dry: 0.45, wet: 0.85 },
+  // A green manure takes a whole season without anything to sell: at most this many in the 9 seasons.
+  maxGreenManureSeasons: 2,
+  // Plans B and C come from these profiles: the farmer's weights plus extra weight on one axis.
+  profiles: [['money', { income: 5 }], ['safe', { risk: 5, water: 3 }], ['soil', { soil: 5 }]],
 };
 const P = PARAMETERS;
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
@@ -47,9 +55,14 @@ export function waterBalance(crop, climate, farm) {
     Pe += effectiveRainfall(climate.P[i]) * f;
     rain += climate.P[i] * f;
   }
-  // If the month before rained more than it evaporated, the soil starts with readily available water.
+  // Water already in the soil when the season starts. With NASA POWER root-zone wetness (GWETROOT) of the
+  // month before, it scales from 0 (dry) to all the readily available water (wet); without it, the old rule:
+  // full if the month before rained more than it evaporated.
   const available = P.availableWaterPerM[farm.texture] ?? P.availableWaterPerM.loam;
-  const carryOver = climate.previous && climate.previous.P > climate.previous.ET0 ? available * P.rootDepth * P.readilyAvailableFraction : 0;
+  const full = available * P.rootDepth * P.readilyAvailableFraction;
+  const prev = climate.previous;
+  const g = prev && prev.GWETROOT != null ? clamp((prev.GWETROOT - P.soilWetness.dry) / (P.soilWetness.wet - P.soilWetness.dry)) : null;
+  const carryOver = !prev ? 0 : g != null ? full * g : (prev.P > prev.ET0 ? full : 0);
   const deficit = Math.max(0, ETc - Pe - carryOver);
   const irrigation = Math.min(deficit, P.maxIrrigationPerSeason[farm.irrigation] ?? 0);
   const unmet = deficit - irrigation;
@@ -145,7 +158,9 @@ function rotationModifier(seq, i, crops) {
   else {
     for (let j = Math.max(0, i - 3); j < i - 1; j++) if (crops[seq[j]].family === c.family) { m *= P.penaltyRecentFamily; break; }
   }
-  if (prev.legume && !c.legume) m *= prev.green_manure ? P.bonusAfterGreenManure : P.bonusAfterLegume;
+  // The yield bonus after a legume comes from cereal studies (Zhao et al. 2022), so it applies to grasses only;
+  // other crops still get the nitrogen the legume leaves (seasonMargin).
+  if (prev.legume && !c.legume && c.group === 'gram') m *= prev.green_manure ? P.bonusAfterGreenManure : P.bonusAfterLegume;
   return m;
 }
 
@@ -224,6 +239,7 @@ function search(ctx, allowed) {
   for (let i = 0; i < ctx.planScenarios.length; i++) {
     const next = [];
     for (const s of beam) for (const k of allowed[i]) {
+      if (ctx.crops[k].green_manure && s.filter((x) => ctx.crops[x].green_manure).length >= P.maxGreenManureSeasons) continue;
       const q = s.concat(k);
       next.push([q, scoreSequence(q, { ...ctx, planScenarios: ctx.planScenarios.slice(0, q.length), ref: ctx.ref.slice(0, q.length) }).total]);
     }
@@ -318,28 +334,42 @@ export function recommend({ crops, scenarios, planScenarios, farm, priorities })
   const baseSeq = planScenarios.map((s, i) => (iCurrent >= 0 && crops[iCurrent].group !== 'none' && table[s][i % 3][iCurrent].suit >= P.minSuitability ? iCurrent : iFallow));
   const base = { sequence: baseSeq, scores: scoreSequence(baseSeq, ctx) };
 
-  let candidates = search(ctx, allowed).map((s) => ({ sequence: s, scores: scoreSequence(s, ctx) }));
-  if (farm.max_loss_pct != null && iCurrent >= 0) {
-    // In colones: a plan may earn at most max_loss_pct % less than today (measured on |today's margin| when today loses money).
-    const key = money ? 'margin' : 'income';
+  // Max-loss filter (in colones): a plan may earn at most max_loss_pct % less than today
+  // (measured on |today's margin| when today loses money).
+  const key = money ? 'margin' : 'income';
+  let lossHit = false;
+  const keepLoss = (list) => {
+    if (farm.max_loss_pct == null || iCurrent < 0) return list;
     const b = base.scores[key];
     const floor = b - Math.abs(b) * (farm.max_loss_pct / 100);
-    const kept = candidates.filter((c) => c.scores[key] >= floor);
-    if (kept.length) candidates = kept;
-    else notices.push(t('n.maxloss', { p: farm.max_loss_pct }));
-  }
+    const kept = list.filter((c) => c.scores[key] >= floor);
+    if (kept.length) return kept;
+    lossHit = true;
+    return list;
+  };
 
-  // Diversity: each plan must change at least 3 seasons AND use a different crop mix.
+  // Plan A follows the farmer's priorities. Plans B and C follow profiles (more money, safer, better soil):
+  // the same weights with extra weight on one axis, so the three plans are real alternatives, not near-copies.
+  const runs = [['mine', weights], ...P.profiles.map(([id, extra]) => [id, Object.fromEntries(Object.entries(weights).map(([k, v]) => [k, v + (extra[k] || 0)]))])];
   const mix = (s) => [...new Set(s)].sort().join(',');
+  const differs = (a, b) => a.sequence.filter((k, i) => k !== b.sequence[i]).length >= 3;
   const plans = [];
-  for (const c of candidates) {
-    if (plans.every((p) => p.sequence.filter((k, i) => k !== c.sequence[i]).length >= 3 && mix(p.sequence) !== mix(c.sequence))) plans.push(c);
+  const pool = [];
+  for (const [profile, w] of runs) {
     if (plans.length === 3) break;
+    const pctx = { ...ctx, weights: w };
+    const found = keepLoss(search(pctx, allowed).map((s) => ({ sequence: s, scores: scoreSequence(s, ctx), profile })));
+    found.sort((x, y) => scoreSequence(y.sequence, pctx).total - scoreSequence(x.sequence, pctx).total);
+    pool.push(...found);
+    const pick = found.find((c) => plans.every((p) => differs(p, c) && mix(p.sequence) !== mix(c.sequence)))
+      || found.find((c) => plans.every((p) => differs(p, c)));
+    if (pick) plans.push(pick);
   }
-  for (const c of candidates) { // if there are not 3 different mixes, fill with the simple rule
+  for (const c of pool.sort((x, y) => y.scores.total - x.scores.total)) { // fewer than 3: fill with the next best
     if (plans.length === 3) break;
-    if (!plans.includes(c) && plans.every((p) => p.sequence.filter((k, i) => k !== c.sequence[i]).length >= 3)) plans.push(c);
+    if (plans.every((p) => differs(p, c))) plans.push({ ...c, profile: 'alt' });
   }
+  if (lossHit) notices.push(t('n.maxloss', { p: farm.max_loss_pct }));
 
   // Robustness: the same plan with all-normal and all-El Niño climate.
   const all = (id) => planScenarios.map(() => id);

@@ -79,7 +79,11 @@ const S = {
     'cell.fallow': 'Fallow', 'cell.fit': (v) => `fit ${v.p} %`, 'cell.irrigation': (v) => `irrigation ${v.mm} mm`,
     'cell.short': (v) => `water short ${v.k} of ${v.n} years`,
     'cell.tip': (v) => `${v.name} · fit ${v.fit} %${v.irr ? ` · irrigation ${v.irr} mm` : ''}${v.short ? ` · water short ${v.short}` : ''}${v.money ? ` · ${v.money}` : ''}`,
-    'pick.note': 'Tap a plan to see it.', 'earn.title': 'Money per hectare (3 years)', 'earn.note': 'Tap a bar to open that plan.',
+    'pick.note': 'Tap a plan to see it.', 'cell.hint': 'Tap a season to see its numbers.',
+    'profile.mine': 'Your mix', 'profile.money': 'More money', 'profile.safe': 'Safer', 'profile.soil': 'Better soil', 'profile.alt': 'Another option',
+    'profile.mine.long': 'Built on your priorities.', 'profile.money.long': 'Your priorities, leaning towards income.',
+    'profile.safe.long': 'Your priorities, leaning towards safety in dry years.', 'profile.soil.long': 'Your priorities, leaning towards soil health.',
+    'profile.alt.long': 'Another good option for your priorities.', 'earn.title': 'Money per hectare (3 years)', 'earn.note': 'Tap a bar to open that plan.',
     'why.more': (v) => `${v.n} more`, 'why.less': 'Show less',
     'crop.inCanton': (v) => `Crops grown in ${v.canton}`,
     'crop.moved': (v) => `${v.crop} is not usually grown in ${v.canton}, so we picked another crop.`,
@@ -103,12 +107,12 @@ const S = {
     'data.catalogNote': 'Agronomic ranges come from FAO-56 and ECOCROP. "Economic data" says how each price and cost was obtained: <b>sourced</b> (published Costa Rican figure), <b>derived</b> (computed from published figures) or <b>estimate</b> (no Costa Rican series found; the team’s best estimate). Sources are in the catalog CSV on GitHub.',
     'how.html': `<h2>How it works</h2>
     <ol class="steps">
-      <li><b>Real climate for your canton.</b> We download daily rainfall and temperature from NASA POWER since January 2021, and compute how much water the air demands (ET0, FAO's Hargreaves method). Root-zone soil moisture is downloaded too, but the engine does not use it yet.</li>
+      <li><b>Real climate for your canton.</b> We download daily rainfall and temperature from NASA POWER since January 2021, and compute how much water the air demands (ET0, FAO's Hargreaves method). We also use NASA POWER root-zone soil wetness: how wet the soil is before each season sets how much water a crop starts with.</li>
       <li><b>We separate the years.</b> Using NOAA's official index we label each month as El Niño, La Niña or neutral. That lets us compare a normal year with an El Niño year using the rain that actually fell, not an invented percentage.</li>
       <li><b>We test every crop in every season.</b> Dry (Jan–Apr), Primera (May–Aug, includes the mid-summer drought or <i>canícula</i>) and Postrera (Sep–Dec). We check whether there is enough water (FAO-56-style balance), whether the temperature suits the crop and whether your pH allows it.</li>
       <li><b>We search the possible 3-year rotations</b>, keeping the 250 best at each step, and discard those that make no sense (pH out of range, crop out of season, same family repeated).</li>
       <li><b>We score from 0 to 100</b> on four things: <b>Soil</b> (nitrogen, ground cover, changing families), <b>Water</b> (how much irrigation or deficit remains), <b>Safety</b> (in how many observed years water fell short) and <b>Income</b> (expected net margin in colones: yield × price − production cost, plus the fertiliser a legume saves the next crop).</li>
-      <li><b>You decide the weight</b> of each one. We show the 3 best plans and how each would do in a normal year and in an El Niño year. If it keeps at least 85 % of its score in an El Niño year and its Safety stays at 50 or more, we label it a <b>robust plan</b>.</li>
+      <li><b>You decide the weight</b> of each one. We show 3 plans (one built on your priorities, the others leaning towards more money, safety or soil) and how each would do in a normal year and in an El Niño year. If it keeps at least 85 % of its score in an El Niño year and its Safety stays at 50 or more, we label it a <b>robust plan</b>.</li>
     </ol>
     <h3>What we do not promise</h3>
     <ul>
