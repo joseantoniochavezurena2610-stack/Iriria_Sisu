@@ -57,10 +57,9 @@ python3 scripts/fetch_data.py                  # download NASA data (needs inter
 > Opening `index.html` with a double click does not work (the browser blocks reading the JSON files). Always use a local server.
 
 ## Publishing
-`publish.yml` workflow (off by default):
-1. Settings → Pages → *Source*: **GitHub Actions**.
-2. Settings → Secrets and variables → Actions → *Variables* tab → `PUBLISH_PAGES` = `true`.
-3. Every push to `main` and every data update republishes the site.
+`publish.yml` workflow (always on since 26 Oct; it no longer depends on the `PUBLISH_PAGES` variable):
+1. Settings → Pages → *Source*: **GitHub Actions** (already set).
+2. Every push to `main` and every data update republishes the site. To republish by hand: Actions → publish → Run workflow.
 
 Equivalent alternatives (all free for static sites): Cloudflare Pages, Netlify, Vercel. Point them at the `web/` folder with no build step.
 
