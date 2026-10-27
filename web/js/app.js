@@ -1,10 +1,10 @@
 // app.js — Iriria Sìsù interface. Loads the data, calls the engine and draws the plans.
 // The visit is a short journey: welcome cover → 4 steps → three plans to tap → the chosen plan and how to keep it.
-import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js';
-import { recommend, cropsForCanton } from './engine.js';
-import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js';
-import { icon, paintIcons } from './icons.js';
-import { choices, syncChoices } from './choices.js';
+import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js?v=7';
+import { recommend, cropsForCanton } from './engine.js?v=7';
+import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js?v=7';
+import { icon, paintIcons } from './icons.js?v=7';
+import { choices, syncChoices } from './choices.js?v=7';
 
 const $ = (id) => document.getElementById(id);
 const pct = (x) => Math.round(x * 100);

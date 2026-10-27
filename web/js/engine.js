@@ -7,8 +7,8 @@
 //   5. weights them with the farmer's priorities and returns 3 plans + "what you plant today"
 // Formulas are documented in docs/engine-rules.md. Pure functions: no DOM, no network.
 
-import { SEASONS, seasonClimate, effectiveRainfall } from './climate.js';
-import { t, cropName, seasonText } from './strings.js';
+import { SEASONS, seasonClimate, effectiveRainfall } from './climate.js?v=7';
+import { t, cropName, seasonText } from './strings.js?v=7';
 
 export const PARAMETERS = {
   // Total available water (mm per metre of soil) by texture — typical FAO-56 ranges (table 19)
