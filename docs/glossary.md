@@ -94,6 +94,8 @@ If you find a word that is not here, add it to the right section in **both versi
 | **Rainy season** | Época lluviosa | Roughly May to November. Split into Primera and Postrera, with the canícula in between. | — |
 | **RONI (Relative ONI)** | RONI | Version of the ONI that subtracts overall tropical warming; NOAA now uses it as the official index. | First choice in the data script. |
 | **Scenario** | Escenario | The version of the climate the engine runs with: normal, El Niño, worst year or forecast. | "Which climate do we compare against?" buttons. |
+| **Frost risk** | Riesgo de helada | Chance that night temperature falls to about 0 °C and damages crops. | **Not applicable in Guanacaste**: the coldest monthly-average minimum in 2021 → today is 19.7 °C. The app says so instead of modelling it. |
+| **Soil moisture anomaly** | Anomalía de humedad del suelo | How much wetter or drier the soil is than its usual value for that month. | Possible cross-check with SMAP during the event; today we use POWER GWETROOT. |
 
 ## 5. Satellites and NASA data
 
@@ -122,6 +124,9 @@ If you find a word that is not here, add it to the right section in **both versi
 | **SMAP** | SMAP | NASA mission that measures soil moisture from space with microwaves (sees through clouds). L4 at 9 km. | Future improvement; needs Earthdata. |
 | **T2M / T2M_MAX / T2M_MIN** | T2M / T2M_MAX / T2M_MIN | Air temperature at 2 m: daily mean, maximum and minimum (°C). | Temperature and ET0 calculation. |
 | **VIIRS** | VIIRS | MODIS successor sensor (Suomi NPP, NOAA-20/21 satellites). Has vegetation products (VNP13). | MODIS replacement for NDVI. |
+| **Astronaut photography (ISS)** | Fotografía de astronautas (EEI) | Photos of Earth taken by crews on the International Space Station; catalogue *Gateway to Astronaut Photography of Earth* (NASA JSC). Two of the challenge's experts work with it. | Optional: an ISS photo of Guanacaste in the video or map. |
+| **GRACE / GRACE-FO** | GRACE / GRACE-FO | Twin satellites that measure tiny changes in gravity to estimate how much water (including groundwater) a region gains or loses. Very coarse (~300 km). | Regional context of long-term water storage; not farm-level. |
+| **SRTM** | SRTM | *Shuttle Radar Topography Mission*: near-global elevation map (30 m). Slope is computed from it. | Candidate to give a reference slope per canton (erosion), next to the farmer's answer. |
 
 ## 6. Data formats and tools
 
@@ -160,6 +165,9 @@ If you find a word that is not here, add it to the right section in **both versi
 | **Sensitivity analysis** | Análisis de sensibilidad | Moving the uncertain parameters (±20 %) and checking whether the results change. | Validation: if the top 3 does not change, the result is robust. |
 | **Unit test** | Prueba unitaria | A small program that checks a function does what it should. | `tests/engine.test.js` (`npm test`). |
 | **Weighted average** | Promedio ponderado | An average where each value carries a different weight. | Total score with the 0–5 weights. |
+| **Existing rotation (baseline)** | Rotación actual (línea base) | What the farmer plants today, season by season. The challenge asks to compare every strategy with it. | The "Today" card; the farmer can give one crop or one per season. |
+| **Information gap** | Vacío de información | Something the plan depends on that we do not know well (no pH test, estimated price, few years of data). | Listed under every plan in "What we do not know yet". |
+| **Uncertainty** | Incertidumbre | How far the real result could be from the number shown. The video asks to "make uncertainty visible". | Margin range across climates, risk as counts, information gaps per plan. |
 
 ## 8. Web, domain and deployment
 

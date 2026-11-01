@@ -96,6 +96,8 @@ Si encuentran una palabra que no está aquí, agréguenla en la sección que le 
 | **Postrera** | Postrera | Segunda siembra de la época lluviosa (septiembre–diciembre en el motor). | Época 3 del calendario. |
 | **RONI (Relative ONI)** | ONI (Oceanic Niño Index) | Versión del ONI que resta el calentamiento general del trópico; NOAA lo usa ahora como índice oficial. | Primera opción del script de datos. |
 | **Sequía meteorológica** | Meteorological drought | Período con lluvia muy por debajo de lo normal. Declarada por el IMN en la vertiente Pacífica en 2026. | Contexto del pitch. |
+| **Riesgo de helada** | Frost risk | Probabilidad de que la temperatura nocturna baje a unos 0 °C y dañe cultivos. | **No aplica en Guanacaste**: la mínima media mensual más fría de 2021 a hoy es 19,7 °C. La app lo dice en vez de modelarlo. |
+| **Anomalía de humedad del suelo** | Soil moisture anomaly | Cuánto más húmedo o seco está el suelo respecto a lo normal para ese mes. | Posible contraste con SMAP durante el evento; hoy usamos GWETROOT de POWER. |
 
 ## 5. Satélites y datos NASA
 
@@ -124,6 +126,9 @@ Si encuentran una palabra que no está aquí, agréguenla en la sección que le 
 | **SMAP** | SMAP | Misión de NASA que mide humedad del suelo desde el espacio con microondas (atraviesa nubes). L4 a 9 km. | Mejora futura; requiere Earthdata. |
 | **T2M / T2M_MAX / T2M_MIN** | T2M / T2M_MAX / T2M_MIN | Temperatura del aire a 2 m: media, máxima y mínima diaria (°C). | Temperatura y cálculo de ET0. |
 | **VIIRS** | VIIRS | Sensor sucesor de MODIS (satélites Suomi NPP, NOAA-20/21). Tiene productos de vegetación (VNP13). | Reemplazo de MODIS para NDVI. |
+| **Fotografía de astronautas (EEI)** | Astronaut photography (ISS) | Fotos de la Tierra tomadas por las tripulaciones de la Estación Espacial Internacional; catálogo *Gateway to Astronaut Photography of Earth* (NASA JSC). Dos expertos del reto trabajan con ellas. | Opcional: una foto de Guanacaste desde la EEI en el video o el mapa. |
+| **GRACE / GRACE-FO** | GRACE / GRACE-FO | Satélites gemelos que miden cambios mínimos de gravedad para estimar cuánta agua (incluida la subterránea) gana o pierde una región. Muy gruesos (~300 km). | Contexto regional del almacenamiento de agua a largo plazo; no a nivel de finca. |
+| **SRTM** | SRTM | *Shuttle Radar Topography Mission*: mapa de elevación casi global (30 m). De él se calcula la pendiente. | Candidato para dar una pendiente de referencia por cantón (erosión), junto a la respuesta del agricultor. |
 
 ## 6. Formatos y herramientas de datos
 
@@ -162,6 +167,9 @@ Si encuentran una palabra que no está aquí, agréguenla en la sección que le 
 | **Regla dura** | Hard rule | Condición que descarta una opción sin importar el puntaje. | pH fuera de rango, cultivo fuera de época. |
 | **Riesgo (eje Seguridad)** | Risk (Safety axis) | 1 − fracción de años observados en que el agua no alcanzó. | Viene de los datos 2021→hoy, año por año. |
 | **Validación experta** | Expert validation | Que un agrónomo/extensionista revise si los planes tienen sentido. | No es requisito para el reto (D22); después del evento. |
+| **Rotación actual (línea base)** | Existing rotation (baseline) | Lo que el agricultor siembra hoy, temporada por temporada. El reto pide comparar cada estrategia con ella. | La tarjeta "Today"; el agricultor puede dar un cultivo o uno por temporada. |
+| **Vacío de información** | Information gap | Algo de lo que depende el plan y que no conocemos bien (sin prueba de pH, precio estimado, pocos años de datos). | Se lista bajo cada plan en "What we do not know yet". |
+| **Incertidumbre** | Uncertainty | Qué tan lejos podría estar el resultado real del número mostrado. El video pide "hacer visible la incertidumbre". | Rango del margen entre climas, riesgo como conteos, vacíos de información por plan. |
 
 ## 8. Web, dominio y despliegue
 
