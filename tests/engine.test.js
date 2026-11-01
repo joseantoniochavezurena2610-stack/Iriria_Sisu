@@ -255,3 +255,47 @@ test('a wetter root zone before the season leaves more water in the soil (NASA P
   assert.ok(wet.carryOver > 0 && wet.unmet < dry.unmet);
   assert.equal(none.carryOver, 0); // without GWETROOT: old rule (the month before was dry)
 });
+
+// ---- D27: existing rotation, crops the farmer cannot grow, the five blocks per plan
+test('the baseline follows the farmer’s rotation season by season', () => {
+  const farm = { ...baseFarm, irrigation: 'limited', rotation: { dry: null, primera: 'maize', postrera: 'bean' } };
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm, priorities });
+  const seq = r.base.sequence.map((k) => crops[k].id);
+  for (let y = 0; y < 3; y++) {
+    assert.ok(['maize', 'fallow'].includes(seq[y * 3 + 1]), `primera ${seq[y * 3 + 1]}`);
+    assert.ok(['bean', 'fallow'].includes(seq[y * 3 + 2]), `postrera ${seq[y * 3 + 2]}`);
+  }
+  assert.ok(seq.includes('maize') && seq.includes('bean'));
+});
+
+test('crops the farmer cannot grow never appear in a plan, and the app says so', () => {
+  const farm = { ...baseFarm, exclude: ['maize', 'rice', 'fallow'] };
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm, priorities });
+  for (const p of r.plans) for (const k of p.sequence) assert.ok(!['maize', 'rice'].includes(crops[k].id));
+  assert.ok(r.notices.some((n) => /cannot grow/.test(n) && /Maize/.test(n)));
+});
+
+test('every plan carries evidence, gaps, local checks, bare seasons and a margin range', () => {
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm: { ...baseFarm, ph: null, ph_source: 'none' }, priorities });
+  for (const p of [...r.plans, r.base]) {
+    const ins = p.insights;
+    assert.ok(ins.evidence.length >= 1, 'evidence');
+    assert.ok(ins.gaps.some((g) => /No pH/.test(g)), 'pH gap');
+    assert.ok(ins.gaps.some((g) => /regional/.test(g)), 'regional gap');
+    assert.equal(ins.bare.of, 9);
+    assert.equal(ins.bare.count, ins.bare.slots.length);
+    assert.ok(ins.range && ins.range.low <= ins.range.high, 'range');
+  }
+  assert.ok(Array.isArray(r.vulnerable));
+});
+
+test('a plan with crops new to the farm asks for a local check; the baseline does not', () => {
+  const r = recommend({ crops, scenarios, planScenarios: normal9, farm: baseFarm, priorities });
+  assert.ok(r.plans.some((p) => p.insights.checks.some((c) => /New to your farm/.test(c))));
+  assert.ok(!r.base.insights.checks.some((c) => /New to your farm/.test(c)));
+});
+
+test('insight texts never invent a percentage risk', () => {
+  const r = recommend({ crops, scenarios, planScenarios: Array(9).fill('el_nino'), farm: baseFarm, priorities });
+  for (const p of r.plans) for (const x of [...p.insights.checks, ...p.insights.gaps]) assert.ok(!/\d+ ?% (risk|chance|probability)/i.test(x), x);
+});

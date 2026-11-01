@@ -8,7 +8,7 @@ Implementation: [`web/js/engine.js`](../web/js/engine.js) and [`web/js/climate.j
 | Monthly climate 2021 → today: rainfall `P`, temperature `T`, ET0 | NASA POWER (precomputed per canton) |
 | ENSO phase of each month | NOAA CPC (RONI/ONI) |
 | Crop catalog | `data/catalog/crops_guanacaste.csv` |
-| Farm: pH (optional), texture, slope, irrigation, current crop, organic matter (optional), maximum loss (optional) | The farmer |
+| Farm: pH (optional), texture, slope, irrigation, current crop, **current rotation per season (optional)**, **crops they cannot grow (optional)**, organic matter (optional), maximum loss (optional) | The farmer |
 | Priorities Soil / Water / Risk / Income (0–5) | The farmer |
 
 ## 2. Scenarios (climate.js)
@@ -56,6 +56,26 @@ Seasons: **Dry** (Jan–Apr), **Primera** (May–Aug, contains the *canícula*),
 **How risk is shown**: as a count of observed years ("water short: 1 of 2 years"), from the same `failureProbability` result (`round(prob × n)` of `n`). Percentages are not shown because `n` is 2–6 years.
 
 **Text**: reason and notice templates live in `web/js/strings.js`.
+
+
+## 5b. The five blocks of each plan (D27, 1 Nov)
+The challenge asks, for every strategy, why it was suggested, what evidence supports it, its benefits, its information gaps and the risks that need local review. `planInsights()` builds them from engine numbers only:
+
+| Block | Source in the engine |
+|---|---|
+| Why suggested | Profile (*Your mix / More money / Safer / Better soil*) + `reasons()` |
+| Benefits | The four axes, margin vs today |
+| **Evidence** | Legume → grass bonus (Zhao et al. 2022), FAO-56 water balance with NASA POWER, number of observed years behind Safety, family changes, how many crops have published prices |
+| **Information gaps** | pH from SoilGrids or missing, organic matter unknown, crops with `economic_confidence = estimate`, crops with `verified_by = pending`, ≤ 3 observed years, El Niño months filled with the overall average, regional grid |
+| **Local review** | Crops new to the farm, green-manure seed, buyer for melon / watermelon, irrigation use, seasons where water fell short (sowing dates), same-family repeats |
+
+Also per plan: **bare-field seasons** (`cover ≤ 1`) and a **margin range** = min / max of the plan's margin with all-normal, all-El Niño and all-driest-year climate.
+
+**Baseline = existing rotation.** If `farm.rotation` gives a crop for a season, that crop is used there; otherwise the main crop. Wherever it does not fit (suitability < 0.35) the slot is fallow. `vulnerableSeasons()` lists, for year 1 of the baseline, the seasons left bare and the seasons where water fell short.
+
+**Crops the farmer cannot grow** (`farm.exclude`) never enter a plan; fallow can never be excluded. The app says which crops were left out.
+
+**Frost** is not modelled: the coldest monthly-average minimum temperature in the 11 cantons, 2021 → today, is 19.7 °C (NASA POWER `T2M_MIN`).
 
 ## 6. To do for the science lead and Economics
 - [ ] Verify every catalog value with a source (FAO-56, ECOCROP, INTA/MAG) and fill in `verified_by`.

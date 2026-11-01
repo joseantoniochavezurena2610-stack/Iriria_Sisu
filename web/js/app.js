@@ -1,10 +1,10 @@
 // app.js — Iriria Sìsù interface. Loads the data, calls the engine and draws the plans.
 // The visit is a short journey: welcome cover → 4 steps → three plans to tap → the chosen plan and how to keep it.
-import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js?v=8';
-import { recommend, cropsForCanton } from './engine.js?v=8';
-import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js?v=8';
-import { icon, paintIcons } from './icons.js?v=8';
-import { choices, syncChoices } from './choices.js?v=8';
+import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js?v=9';
+import { recommend, cropsForCanton } from './engine.js?v=9';
+import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js?v=9';
+import { icon, paintIcons } from './icons.js?v=9';
+import { choices, syncChoices } from './choices.js?v=9';
 
 const $ = (id) => document.getElementById(id);
 const pct = (x) => Math.round(x * 100);
@@ -17,7 +17,8 @@ const PLAN_SCENARIOS = {
   forecast: ['el_nino', 'el_nino', ...Array(7).fill('normal')],
   normal: Array(9).fill('normal'), el_nino: Array(9).fill('el_nino'), worst: Array(9).fill('worst'),
 };
-const FIELDS = ['canton', 'current', 'irrigation', 'texture', 'ph', 'slope', 'om', 'soil', 'water', 'risk', 'income', 'maxloss'];
+const FIELDS = ['canton', 'current', 'irrigation', 'texture', 'ph', 'slope', 'om', 'soil', 'water', 'risk', 'income', 'maxloss', 'rot-dry', 'rot-primera', 'rot-postrera'];
+const ROT = ['dry', 'primera', 'postrera'];
 
 const state = {
   scenario: 'forecast', climate: {}, data: null, map: null, markers: {}, lastScenarios: null, last: null,
@@ -46,6 +47,7 @@ function fillLists() {
   dataTab();
 }
 
+const excluded = () => [...document.querySelectorAll('#exclude input:checked')].map((i) => i.value);
 const cantonName = () => (state.data.points.find((p) => p.id === $('canton').value) || {}).name || '';
 const shortName = (name) => name.replace(/\s*\(.*\)$/, '');
 
@@ -65,6 +67,16 @@ function refreshCrops(prefer = null) {
   const fits = list.some((c) => c.id === keep);
   $('current').value = fits ? keep : list[0].id;
   choices($('current'), 'cards');
+  // Existing rotation (one crop per season) and the crops the farmer cannot grow, for this canton's crops.
+  const opts = list.map((c) => `<option value="${c.id}">${c.group === 'none' ? L('cell.fallow') : shortName(cropName(c))}</option>`).join('');
+  ROT.forEach((s) => {
+    const el = $(`rot-${s}`), was = el.value;
+    el.innerHTML = `<option value="">${L('rot.same')}</option>${opts}`;
+    el.value = list.some((c) => c.id === was) ? was : '';
+  });
+  const wasOut = new Set(excluded());
+  $('exclude').innerHTML = list.filter((c) => c.group !== 'none').concat(cropsForCanton(state.data.crops, canton).filter((c) => c.group === 'cover'))
+    .map((c) => `<label><input type="checkbox" value="${c.id}"${wasOut.has(c.id) ? ' checked' : ''}>${shortName(cropName(c))}</label>`).join('');
   const name = shortName(cantonName());
   $('croplabel').textContent = L('crop.inCanton', { canton: name });
   $('cropnote').textContent = !fits && !first && keepCrop && keepCrop.group !== 'none' ? L('crop.moved', { crop: shortName(cropName(keepCrop)), canton: name }) : '';
@@ -113,6 +125,9 @@ function readUrl() {
   if (q.has('phunknown')) $('phunknown').checked = q.get('phunknown') === '1';
   else if (q.has('ph')) $('phunknown').checked = false;
   if (q.get('scenario') && PLAN_SCENARIOS[q.get('scenario')]) state.scenario = q.get('scenario');
+  const out = new Set((q.get('exclude') || '').split(',').filter(Boolean));
+  document.querySelectorAll('#exclude input').forEach((i) => { i.checked = out.has(i.value); });
+  if (ROT.some((s) => q.get(`rot-${s}`))) $('rotbox').open = true;
   syncChoices();
   ['soil', 'water', 'risk', 'income'].forEach((k) => { $(`o-${k}`).textContent = $(k).value; });
   const plan = q.get('plan');
@@ -125,6 +140,7 @@ function currentLink() {
   const q = new URLSearchParams();
   FIELDS.forEach((k) => q.set(k, $(k).value));
   q.set('phunknown', $('phunknown').checked ? '1' : '0');
+  if (excluded().length) q.set('exclude', excluded().join(','));
   q.set('scenario', state.scenario);
   const sel = state.chosen ?? state.sel;
   if (sel != null) q.set('plan', sel === 'base' ? 'base' : 'ABC'[sel]);
@@ -328,13 +344,14 @@ function farm() {
   const ref = state.data.soil && state.data.soil.points[id];
   let ph = $('phunknown').checked ? null : (parseFloat($('ph').value) || null);
   $('ph').disabled = $('phunknown').checked;
-  let note = '';
-  if ($('phunknown').checked && ref && ref.phh2o) { ph = ref.phh2o; note = L('ph.soilgrids', { ph: ref.phh2o }); }
+  let note = '', phSource = ph == null ? 'none' : 'farmer';
+  if ($('phunknown').checked && ref && ref.phh2o) { ph = ref.phh2o; phSource = 'soilgrids'; note = L('ph.soilgrids', { ph: ref.phh2o }); }
   else if ($('phunknown').checked) note = L('ph.none');
   $('phnote').textContent = note;
   return {
     ph, texture: $('texture').value, slope: $('slope').value, irrigation: $('irrigation').value,
-    current_crop: $('current').value, organic_matter: $('om').value || null,
+    current_crop: $('current').value, organic_matter: $('om').value || null, ph_source: phSource,
+    rotation: Object.fromEntries(ROT.map((s) => [s, $(`rot-${s}`).value || null])), exclude: excluded(),
     max_loss_pct: $('maxloss').value ? +$('maxloss').value : null,
   };
 }
@@ -493,12 +510,27 @@ function detail(sel, plan, crops, year0, base, { choose: withChoose = true } = {
   const li = (r) => `<li class="${warn(r) ? 'w' : ''}">${icon(reasonIcon(r))}<span>${r}</span></li>`;
   const more = rs.length > 3 ? `<details class="more"><summary>${L('why.more', { n: rs.length - 3 })}</summary><ul class="why">${rs.slice(3).map(li).join('')}</ul></details>` : '';
   const why = `<div class="why-box"><h4>${icon('leaf')}${L('why.title')}</h4><ul class="why">${rs.slice(0, 3).map(li).join('')}</ul>${more}</div>`;
+  const ins = plan.insights;
+  const list = (h, ic, xs) => (xs.length ? `<h5>${icon(ic)}${h}</h5><ul>${xs.map((x) => `<li>${x}</li>`).join('')}</ul>` : '');
+  const insight = ins ? `${ins.range ? `<p class="ins-line">${icon('coins')}<span>${L('ins.range', ins.range)}</span></p>` : ''}`
+    + `<p class="ins-line">${icon('calendar-clock')}<span>${L('ins.bare', ins.bare)}</span></p>`
+    + (isBase && state.last && state.last.vulnerable ? vulBox(state.last.vulnerable, crops) : '')
+    + `<details class="ins-box"${withChoose ? '' : ' open'}><summary>${icon('satellite')}${L('ins.title')}</summary>${list(L('ins.evidence'), 'satellite', ins.evidence)}${list(L('ins.gaps'), 'info', ins.gaps)}${list(L('ins.checks'), 'triangle-alert', ins.checks)}<p class="ins-support">${L('ins.support')}</p></details>` : '';
   const pick = withChoose ? `<div class="choose"><button type="button" class="btn big" data-choose>${icon('circle-check')}<span>${L(isBase ? 'plan.keep' : 'plan.choose')}</span></button></div>` : '';
   const sub = !isBase && plan.profile ? `<p class="plan-sub">${icon(PROFILE_ICON[plan.profile] || 'sparkles')}${L(`profile.${plan.profile}.long`)}</p>` : '';
   return `<article class="plan card${isBase ? ' base' : ''}"><header><div class="ph-title"><h3>${planTitle(sel)}</h3>${sub}</div><div>${badge}<span class="total"><b>${pct(sc.total)}</b> / 100 · ${L('plan.relative')}</span></div></header>`
     + `<div class="side"><div class="axes">${axes}</div>${money}${years}</div>`
-    + `<div class="cal-wrap">${calendar(plan, crops, year0)}<p class="celltip" aria-live="polite">${icon('info')}<span>${L('cell.hint')}</span></p>${famLegend()}</div>${why}${pick}</article>`;
+    + `<div class="cal-wrap">${calendar(plan, crops, year0)}<p class="celltip" aria-live="polite">${icon('info')}<span>${L('cell.hint')}</span></p>${famLegend()}</div>${why}${insight}${pick}</article>`;
 }
+
+/** Weak seasons of what is planted today: bare field or water short in observed years. */
+function vulBox(vul, crops) {
+  const items = vul.map((v) => (v.kind === 'bare'
+    ? L('vul.bare', { season: seasonText(v.season).name })
+    : L('vul.short', { season: seasonText(v.season).name, crop: lowerName(crops.find((c) => c.id === v.crop)), k: v.k, n: v.n })));
+  return `<div class="vul"><h5 class="ins-line">${icon('triangle-alert')}${L('vul.title')}</h5><ul>${(items.length ? items : [L('vul.none')]).map((x) => `<li>${x}</li>`).join('')}</ul></div>`;
+}
+const lowerName = (c) => { const n = cropName(c); return n.charAt(0).toLowerCase() + n.slice(1); };
 
 function orb(sel, plan) {
   const isBase = sel === 'base', on = state.sel === sel;
