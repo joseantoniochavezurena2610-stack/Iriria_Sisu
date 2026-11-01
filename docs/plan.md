@@ -29,6 +29,9 @@ José Pablo left the team (D17). His pipeline, engine and tests stay and keep ru
 | Soil moisture (`GWETROOT`) in the engine | After the event | — |
 | Engine fixes during the 48 h | **Juan Diego** | event |
 
+## 1 Nov — official challenge text and video
+Integration applied D27 (existing rotation, five blocks per plan, bare seasons, margin range, crops the farmer cannot grow, frost note). What each requirement needs now: [`challenge-checklist.md`](challenge-checklist.md). Team actions are in the Spanish PDF `team-guides-es/Cambios_reto_oficial_Iriria_Sisu.pdf`.
+
 ## Before the event
 ### Week 1 · 19–25 Oct — data and publishing
 - [ ] Check the weekly runs of the `data` workflow (Actions tab) — **Juan Diego**
