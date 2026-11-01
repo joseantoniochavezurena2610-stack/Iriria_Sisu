@@ -473,3 +473,21 @@ details.more .why { margin-top: 8px; }
 .celltip .ic { margin-top: 2px; color: var(--accent); }
 @media (max-width: 520px) { .orb .prof { font-size: 11px; } }
 @media print { .celltip { display: none; } }
+
+/* D27 — existing rotation, crops the farmer cannot grow, evidence / gaps / checks box */
+.rotbox { margin-top: 4px; }
+.rotgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 8px; }
+.excl { border: 0; padding: 0; margin: 4px 0 0; }
+.exclgrid { display: flex; flex-wrap: wrap; gap: 8px; }
+.exclgrid label { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer; }
+.exclgrid input { accent-color: var(--accent); }
+.ins-box { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 10px; }
+.ins-box > summary { cursor: pointer; font: 700 15px var(--display); display: flex; align-items: center; gap: 8px; color: var(--accent); }
+.ins-box h5 { margin: 12px 0 4px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+.ins-box ul { margin: 0; padding-left: 20px; font-size: 14px; display: grid; gap: 4px; }
+.ins-line { grid-column: 1 / -1; margin: 0; font-size: 14px; display: flex; gap: 8px; align-items: flex-start; }
+.ins-line .ic { flex: none; margin-top: 2px; }
+.ins-support { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+.vul { grid-column: 1 / -1; }
+.vul ul { margin: 4px 0 0; padding-left: 20px; font-size: 14px; }
+@media print { .ins-box { display: block; } .ins-box > *:not(summary) { display: block !important; } }

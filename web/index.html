@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin>
-<link rel="stylesheet" href="css/styles.css?v=8">
+<link rel="stylesheet" href="css/styles.css?v=9">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
@@ -85,6 +85,15 @@
             <select id="current"></select>
             <p class="note" id="cropnote" aria-live="polite"></p>
           </div>
+          <details class="more rotbox" id="rotbox">
+            <summary>Different crop in each season?</summary>
+            <p class="note">Leave “Main crop” if you plant the same one.</p>
+            <div class="rotgrid">
+              <label class="field"><span class="flabel">Dry (Jan–Apr)</span><select id="rot-dry" class="plain"></select></label>
+              <label class="field"><span class="flabel">Primera (May–Aug)</span><select id="rot-primera" class="plain"></select></label>
+              <label class="field"><span class="flabel">Postrera (Sep–Dec)</span><select id="rot-postrera" class="plain"></select></label>
+            </div>
+          </details>
           <div class="field"><span class="flabel">Irrigation</span>
             <select id="irrigation">
               <option value="none" data-art="drops-0" data-sub="rain only">No</option>
@@ -149,6 +158,9 @@
               <option value="50">50 %</option>
             </select>
           </div>
+          <fieldset class="field excl"><legend class="flabel">Any crop you cannot grow? (no buyer, no equipment, no seed)</legend>
+            <div class="exclgrid" id="exclude"></div>
+          </fieldset>
         </fieldset>
 
         <div class="stepnav">
@@ -260,6 +272,6 @@
   </footer>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin defer></script>
-<script type="module" src="js/app.js?v=8"></script>
+<script type="module" src="js/app.js?v=9"></script>
 </body>
 </html>

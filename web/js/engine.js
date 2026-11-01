@@ -7,8 +7,8 @@
 //   5. weights them with the farmer's priorities and returns 3 plans + "what you plant today"
 // Formulas are documented in docs/engine-rules.md. Pure functions: no DOM, no network.
 
-import { SEASONS, seasonClimate, effectiveRainfall } from './climate.js?v=8';
-import { t, cropName, seasonText } from './strings.js?v=8';
+import { SEASONS, seasonClimate, effectiveRainfall } from './climate.js?v=9';
+import { t, cropName, seasonText } from './strings.js?v=9';
 
 export const PARAMETERS = {
   // Total available water (mm per metre of soil) by texture — typical FAO-56 ranges (table 19)
@@ -258,6 +258,8 @@ export function cropsForCanton(crops, cantonId) {
 }
 
 const lower = (name) => name.charAt(0).toLowerCase() + name.slice(1);
+/** Crop name for a list inside a sentence: lower case, without the bracketed note ("Mucuna (green manure)" → "mucuna"). */
+const plain = (c) => lower(cropName(c).replace(/\s*\(.*\)$/, ''));
 
 /** Plain-language reasons, always with the number behind them. Risk is given as a count ("1 of 2 years"). */
 function reasons(plan, base, crops, ctx) {
@@ -296,13 +298,93 @@ function reasons(plan, base, crops, ctx) {
   return r;
 }
 
+const slotName = (i) => t('slot', { season: seasonText(SEASONS[i % 3].id).name, year: Math.floor(i / 3) + 1 });
+
+/**
+ * The five blocks the challenge asks for, for one plan (D27):
+ *   evidence — what backs it (method + source), gaps — what we do not know, checks — what a farmer or
+ *   agronomist must review locally, bare — seasons the field is (nearly) bare, range — margin in the
+ *   scenario extremes. "Why it was suggested" and "benefits" are the reasons and the axes.
+ * Every line is built from engine numbers; nothing is invented.
+ */
+export function planInsights(plan, base, crops, ctx, isBase = false) {
+  const { farm, table, planScenarios } = ctx;
+  const seq = plan.sequence, sc = plan.scores;
+  const planted = [...new Set(seq.filter((k) => crops[k].group !== 'none'))].map((k) => crops[k]);
+  const evidence = [], gaps = [], checks = [];
+
+  // ---- evidence
+  const legThenGrass = seq.some((k, i) => i > 0 && crops[seq[i - 1]].legume && !crops[k].legume && crops[k].group === 'gram');
+  if (legThenGrass) evidence.push(t('e.legume'));
+  if (planted.length) evidence.push(t('e.water'));
+  const n = Math.max(0, ...sc.detail.map((d) => d.n || 0));
+  if (n) evidence.push(t('e.risk', { n }));
+  if (!sc.rep && sc.families > 1) evidence.push(t('e.families'));
+  if (sc.margin != null && planted.length) {
+    const solid = planted.filter((c) => c.economic_confidence === 'sourced' || c.economic_confidence === 'derived').length;
+    evidence.push(t('e.money', { k: solid, m: planted.length }));
+  }
+
+  // ---- information gaps
+  if (farm.ph_source === 'soilgrids') gaps.push(t('g.phModel', { ph: farm.ph }));
+  else if (farm.ph == null) gaps.push(t('g.phNone'));
+  if (!farm.organic_matter) gaps.push(t('g.om'));
+  const est = planted.filter((c) => c.economic_confidence === 'estimate');
+  if (sc.margin != null && est.length) gaps.push(t('g.estimate', { crops: est.map((c) => plain(c)).join(', ') }));
+  const unverified = planted.filter((c) => !c.verified_by || c.verified_by === 'pending');
+  if (unverified.length) gaps.push(t('g.unverified', { crops: unverified.map((c) => plain(c)).join(', ') }));
+  if (n && n <= 3) gaps.push(t('g.fewYears', { n }));
+  const filled = [...new Set(seq.map((k, i) => (table[planScenarios[i]][i % 3][k].filled && planScenarios[i] === 'el_nino' ? seasonText(SEASONS[i % 3].id).name : null)).filter(Boolean))];
+  if (filled.length) gaps.push(t('g.filled', { seasons: filled.join(', ') }));
+  gaps.push(t('g.regional'));
+
+  // ---- risks that need local review
+  const known = new Set([farm.current_crop, ...Object.values(farm.rotation || {})].filter(Boolean));
+  const fresh = planted.filter((c) => !known.has(c.id) && !c.green_manure);
+  if (!isBase && fresh.length) checks.push(t('c.new', { crops: fresh.map((c) => plain(c)).join(', ') }));
+  const gm = planted.filter((c) => c.green_manure);
+  if (gm.length) checks.push(t('c.green', { crops: gm.map((c) => plain(c)).join(', ') }));
+  if (planted.some((c) => c.group === 'cuc')) checks.push(t('c.buyer'));
+  if (sc.irrigation > 1) checks.push(t('c.irrigation', { mm: Math.round(sc.irrigation) }));
+  const short = sc.detail.map((d, i) => ({ ...d, i })).filter((d) => crops[seq[d.i]].group !== 'none' && d.prob > 0);
+  if (short.length) checks.push(t('c.sowing', { slots: short.slice(0, 3).map((d) => `${plain(crops[seq[d.i]])} (${slotName(d.i)})`).join(', ') }));
+  if (sc.rep) checks.push(t('c.pests', { rep: sc.rep }));
+
+  // ---- bare-field periods
+  const bareSlots = seq.map((k, i) => (crops[k].cover <= 1 ? i : null)).filter((i) => i != null);
+  const bare = { count: bareSlots.length, of: seq.length, slots: bareSlots.map(slotName) };
+
+  // ---- margin range across the scenario extremes (normal / El Niño / worst year, every season)
+  let range = null;
+  const ms = plan.comparison ? [plan.comparison.margin_normal, plan.comparison.margin_el_nino, plan.comparison.margin_worst].filter((x) => x != null) : [];
+  if (ms.length >= 2) range = { low: Math.min(...ms), high: Math.max(...ms) };
+
+  return { evidence, gaps, checks, bare, range };
+}
+
+/**
+ * Seasons where today's rotation is weak: the field is bare because nothing the farmer grows fits,
+ * or the crop runs short of water in some observed years. Used for the "today" card and the summary.
+ */
+export function vulnerableSeasons(base, crops) {
+  const out = [];
+  base.sequence.slice(0, 3).forEach((k, i) => {
+    const c = crops[k], d = base.scores.detail[i];
+    if (c.group === 'none') out.push({ season: SEASONS[i].id, kind: 'bare' });
+    else if (d.prob > 0) out.push({ season: SEASONS[i].id, kind: 'short', crop: c.id, k: Math.round(d.prob * d.n), n: d.n });
+  });
+  return out;
+}
+
 /**
  * Entry point.
  * @param {object} p
  * @param {Array} p.crops          catalog (web/data/crops.json → crops)
  * @param {object} p.scenarios     output of buildScenarios().scenarios
  * @param {string[]} p.planScenarios scenario per slot (9), e.g. IMN forecast: 2 × 'el_nino' + 7 × 'normal'
- * @param {object} p.farm          {ph|null, texture, slope, irrigation, current_crop, organic_matter|null, max_loss_pct|null}
+ * @param {object} p.farm          {ph|null, ph_source?, texture, slope, irrigation, current_crop,
+ *                                  rotation? {dry, primera, postrera}, exclude? [crop ids],
+ *                                  organic_matter|null, max_loss_pct|null}
  * @param {object} p.priorities    {soil, water, risk, income} from 0 to 5
  */
 export function recommend({ crops, scenarios, planScenarios, farm, priorities }) {
@@ -317,21 +399,35 @@ export function recommend({ crops, scenarios, planScenarios, farm, priorities })
   const ctx = { crops, table, planScenarios, farm, weights, ref, money };
   const iFallow = crops.findIndex((c) => c.group === 'none');
 
+  // Crops the farmer cannot grow (no buyer, no equipment, no seed) never enter a plan. Fallow always can.
+  const banned = new Set((farm.exclude || []).filter((id) => crops.some((c) => c.id === id && c.group !== 'none')));
   const excluded = new Map();
   const allowed = planScenarios.map((s, i) => {
     const ok = [];
     crops.forEach((c, k) => {
       const ev = table[s][i % 3][k];
       if (ev.excluded) excluded.set(c.id, ev.phRange);
+      if (banned.has(c.id)) return;
       if (c.group === 'none' || ev.suit >= P.minSuitability) ok.push(k);
     });
     return ok;
   });
   for (const [c, range] of excluded) notices.push(t('n.excluded', { crop: cropName(crops.find((x) => x.id === c)), ph: farm.ph, ...range }));
+  if (banned.size) notices.push(t('n.banned', { crops: [...banned].map((id) => cropName(crops.find((c) => c.id === id))).join(', ') }));
 
-  // What is planted today: the current crop wherever it fits, fallow elsewhere.
+  // What is planted today (the challenge's "existing rotation"): the crop of each season if the farmer gave a
+  // rotation, otherwise the main crop — wherever it fits; fallow elsewhere.
   const iCurrent = crops.findIndex((c) => c.id === farm.current_crop);
-  const baseSeq = planScenarios.map((s, i) => (iCurrent >= 0 && crops[iCurrent].group !== 'none' && table[s][i % 3][iCurrent].suit >= P.minSuitability ? iCurrent : iFallow));
+  const rot = farm.rotation || {};
+  const todayIn = (i) => {
+    const id = rot[SEASONS[i % 3].id];
+    const k = id ? crops.findIndex((c) => c.id === id) : iCurrent;
+    return k;
+  };
+  const baseSeq = planScenarios.map((s, i) => {
+    const k = todayIn(i);
+    return k >= 0 && crops[k].group !== 'none' && table[s][i % 3][k].suit >= P.minSuitability ? k : iFallow;
+  });
   const base = { sequence: baseSeq, scores: scoreSequence(baseSeq, ctx) };
 
   // Max-loss filter (in colones): a plan may earn at most max_loss_pct % less than today
@@ -376,11 +472,14 @@ export function recommend({ crops, scenarios, planScenarios, farm, priorities })
   const scoreIn = (seq, id) => scoreSequence(seq, { ...ctx, planScenarios: all(id), ref: incomeReference(crops, table, all(id)) });
   for (const p of [...plans, base]) {
     const n = scoreIn(p.sequence, 'normal'), ni = scoreIn(p.sequence, 'el_nino');
-    p.comparison = { normal: n.total, el_nino: ni.total, risk_el_nino: ni.risk };
+    const wo = scenarios.worst ? scoreIn(p.sequence, 'worst') : null;
+    p.comparison = { normal: n.total, el_nino: ni.total, risk_el_nino: ni.risk, margin_normal: n.margin, margin_el_nino: ni.margin, margin_worst: wo ? wo.margin : null };
     p.robust = ni.total >= 0.85 * n.total && ni.risk >= 0.5;
   }
-  for (const p of plans) p.reasons = reasons(p, base, crops, ctx);
+  for (const p of plans) { p.reasons = reasons(p, base, crops, ctx); p.insights = planInsights(p, base, crops, ctx); }
   base.reasons = reasons(base, null, crops, ctx);
+  base.insights = planInsights(base, null, crops, ctx, true);
+  const vulnerable = vulnerableSeasons(base, crops);
 
-  return { plans, base, notices, money };
+  return { plans, base, notices, money, vulnerable };
 }

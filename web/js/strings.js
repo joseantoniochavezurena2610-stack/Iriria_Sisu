@@ -112,6 +112,7 @@ const S = {
       <li><b>We test every crop in every season.</b> Dry (Jan–Apr), Primera (May–Aug, includes the mid-summer drought or <i>canícula</i>) and Postrera (Sep–Dec). We check whether there is enough water (FAO-56-style balance), whether the temperature suits the crop and whether your pH allows it.</li>
       <li><b>We search the possible 3-year rotations</b>, keeping the 250 best at each step, and discard those that make no sense (pH out of range, crop out of season, same family repeated).</li>
       <li><b>We score from 0 to 100</b> on four things: <b>Soil</b> (nitrogen, ground cover, changing families), <b>Water</b> (how much irrigation or deficit remains), <b>Safety</b> (in how many observed years water fell short) and <b>Income</b> (expected net margin in colones: yield × price − production cost, plus the fertiliser a legume saves the next crop).</li>
+      <li><b>We start from what you plant today.</b> Give one crop, or a different crop for each season (your current rotation). That is the baseline every plan is compared with; we also show where it leaves the field bare or runs short of water. Tick any crop you cannot grow (no buyer, equipment or seed) and it is left out.</li>
       <li><b>You decide the weight</b> of each one. We show 3 plans (one built on your priorities, the others leaning towards more money, safety or soil) and how each would do in a normal year and in an El Niño year. If it keeps at least 85 % of its score in an El Niño year and its Safety stays at 50 or more, we label it a <b>robust plan</b>.</li>
     </ol>
     <h3>What we do not promise</h3>
@@ -120,6 +121,8 @@ const S = {
       <li>Satellite and model data are <b>regional</b> (grid cells tens of km wide; the 11 cantons fall in 5 cells). What you know about your farm (pH, texture, irrigation) is what tailors the result to your plot.</li>
       <li>Risk is counted over few years (2021 → today; only 2 El Niño events), so we show counts like “1 of 2 years”, not percentages.</li>
       <li>Crop ranges come from FAO and the literature; the team is checking them against Costa Rican sources.</li>
+      <li><b>Frost is not a risk here</b>, so the tool does not model it: the coldest monthly-average night temperature in Guanacaste in 2021 → today was 19.7 °C (NASA POWER, all 11 cantons).</li>
+      <li>For each plan we list <b>what backs it, what we do not know yet and what to check locally</b> (seed, buyer, equipment, pests, sowing dates). The tool helps you explore options; it does not replace your judgement or local agricultural advice.</li>
       <li>Prices and costs are recent Costa Rican averages, not your farm’s. Rice and beans lose money at today’s prices in Chorotega (published figures); melon and watermelon need irrigation and a buyer. Some values are estimates and are labelled so.</li>
     </ul>`,
     'foot.html': 'Iriria Sìsù · Costa Rican team at the NASA International Space Apps Challenge 2026. Data: NASA POWER (NASA Langley), NOAA CPC ENSO index, FAO. Open source (MIT) on <a href="https://github.com/joseantoniochavezurena2610-stack/iriria_sisu">GitHub</a>. This tool does not replace advice from an agronomist.',
@@ -138,6 +141,39 @@ const S = {
     'n.noPh': 'No pH given: no crop was ruled out for acidity.',
     'n.excluded': (v) => `${v.crop}: ruled out because of pH ${v.ph} outside the tolerable range (${v.min}–${v.max}).`,
     'n.maxloss': (v) => `No plan stays within the maximum loss of ${v.p} %; showing the best ones.`,
+    'n.banned': (v) => `Left out because you said you cannot grow them: ${v.crops}.`,
+    slot: (v) => `${v.season}, year ${v.year}`,
+    // the five blocks of each plan (D27): why / benefits = reasons + axes; then evidence, gaps, local checks
+    'ins.title': 'Evidence, gaps and what to check',
+    'ins.evidence': 'What backs this plan', 'ins.gaps': 'What we do not know yet', 'ins.checks': 'Check with your extension agent before planting',
+    'ins.bare': (v) => (v.count ? `Field bare or nearly bare in ${v.count} of ${v.of} seasons: ${v.slots.join('; ')}.` : 'The field is never left bare.'),
+    'ins.range': (v) => `Range: <b>${crc(v.low)}</b> to <b>${crc(v.high)}</b> per hectare, depending on the climate (normal, El Niño or the driest year seen, every season).`,
+    'ins.support': 'This tool helps you explore options. It does not replace your judgement or local agricultural advice.',
+    'e.legume': 'Legume before a grass: +10 % yield in the engine — half the +20 % average of a meta-analysis of 462 experiments (Zhao et al. 2022).',
+    'e.water': 'Water need from the FAO-56 method, with NASA POWER rainfall, temperature and root-zone soil wetness for your canton (2021 → today).',
+    'e.risk': (v) => `Safety counted over ${v.n} observed year${v.n > 1 ? 's' : ''} of this climate, labelled with NOAA’s El Niño index.`,
+    'e.families': 'No crop family back to back: changing families interrupts pest and disease cycles.',
+    'e.money': (v) => `Prices and costs: ${v.k} of ${v.m} crops use published Costa Rican figures.`,
+    'g.phModel': (v) => `pH ${v.ph} is a satellite soil-map estimate (SoilGrids, 250 m), not a test of your soil.`,
+    'g.phNone': 'No pH: no crop was ruled out for acidity. A soil test would sharpen the plan.',
+    'g.om': 'Organic matter unknown: the Soil score assumes a medium level.',
+    'g.estimate': (v) => `Price or cost of ${v.crops} is the team’s estimate (no Costa Rican series found).`,
+    'g.unverified': (v) => `Crop ranges for ${v.crops} are FAO global values, still being checked against Costa Rican sources.`,
+    'g.fewYears': (v) => `Only ${v.n} observed year${v.n > 1 ? 's' : ''} behind the risk count: treat it as a warning sign, not a probability.`,
+    'g.filled': (v) => `No El Niño month observed yet in ${v.seasons}: the overall average is used there.`,
+    'g.regional': 'Satellite climate is regional (grid cells tens of km wide): your farm can be wetter or drier.',
+    'c.new': (v) => `New to your farm: ${v.crops}. Check seed, buyer, equipment and local pests.`,
+    'c.green': (v) => `Green manure (${v.crops}): check local seed supply and when to cut it.`,
+    'c.buyer': 'Melon or watermelon: agree on a buyer before planting.',
+    'c.irrigation': (v) => `Uses ${v.mm} mm of irrigation in 3 years: check your source holds up in an El Niño year.`,
+    'c.sowing': (v) => `Water fell short some years for ${v.slots}: confirm sowing dates with local rain.`,
+    'c.pests': (v) => `Same family ${v.rep}× in a row: ask about pest build-up.`,
+    'vul.title': 'Weak spots of what you plant today',
+    'vul.bare': (v) => `${v.season}: the field stays bare — nothing you plant today fits.`,
+    'vul.short': (v) => `${v.season}: ${v.crop} ran short of water in ${v.k} of ${v.n} observed years.`,
+    'vul.none': 'No weak season found for what you plant today in this climate.',
+    'f2.rotation': 'Different crop in each season?', 'f2.rotNote': 'Leave “Main crop” if you plant the same one.', 'rot.same': 'Main crop',
+    'f4.exclude': 'Any crop you cannot grow? (no buyer, no equipment, no seed)',
     'lim.lack of water': 'lack of water', 'lim.cold': 'cold', 'lim.heat': 'heat', 'lim.pH': 'pH', 'lim.excess rain': 'excess rain'
 };
 
