@@ -1,14 +1,14 @@
 {
  "region": "Guanacaste",
  "window_start": "2021-01-01",
- "generated": "2026-10-27T04:22:37+00:00",
+ "generated": "2026-11-02T21:43:53+00:00",
  "source": "NASA POWER, daily API, AG community (https://power.larc.nasa.gov)",
  "points": [
   {
    "id": "la-cruz",
    "name": "La Cruz",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -85.63,
     "lat": 11.072
@@ -18,8 +18,8 @@
   {
    "id": "liberia",
    "name": "Liberia",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -85.437,
     "lat": 10.635
@@ -29,8 +29,8 @@
   {
    "id": "bagaces",
    "name": "Bagaces",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -85.254,
     "lat": 10.531
@@ -40,8 +40,8 @@
   {
    "id": "tilaran",
    "name": "Tilarán",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -84.968,
     "lat": 10.469
@@ -51,8 +51,8 @@
   {
    "id": "carrillo",
    "name": "Carrillo (Filadelfia)",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -85.555,
     "lat": 10.448
@@ -62,8 +62,8 @@
   {
    "id": "canas",
    "name": "Cañas",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -85.093,
     "lat": 10.429
@@ -73,8 +73,8 @@
   {
    "id": "abangares",
    "name": "Abangares (Las Juntas)",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -84.957,
     "lat": 10.276
@@ -84,8 +84,8 @@
   {
    "id": "santa-cruz",
    "name": "Santa Cruz",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -85.585,
     "lat": 10.261
@@ -95,8 +95,8 @@
   {
    "id": "nicoya",
    "name": "Nicoya",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -85.452,
     "lat": 10.148
@@ -106,8 +106,8 @@
   {
    "id": "hojancha",
    "name": "Hojancha",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -85.418,
     "lat": 10.059
@@ -117,8 +117,8 @@
   {
    "id": "nandayure",
    "name": "Nandayure (Carmona)",
-   "months": 69,
-   "last_day": "2026-10-21",
+   "months": 70,
+   "last_day": "2026-10-30",
    "power_cell": {
     "lon": -85.258,
     "lat": 10.009
