@@ -479,7 +479,7 @@ details.more .why { margin-top: 8px; }
 .rotgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 8px; }
 .excl { border: 0; padding: 0; margin: 4px 0 0; }
 .exclgrid { display: flex; flex-wrap: wrap; gap: 8px; }
-.exclgrid label { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer; }
+.exclgrid label { display: inline-flex; flex-direction: row; align-items: center; gap: 6px; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer; }
 .exclgrid input { accent-color: var(--accent); }
 .ins-box { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 10px; }
 .ins-box > summary { cursor: pointer; font: 700 15px var(--display); display: flex; align-items: center; gap: 8px; color: var(--accent); }
@@ -491,3 +491,73 @@ details.more .why { margin-top: 8px; }
 .vul { grid-column: 1 / -1; }
 .vul ul { margin: 4px 0 0; padding-left: 20px; font-size: 14px; }
 @media print { .ins-box { display: block; } .ins-box > *:not(summary) { display: block !important; } }
+
+/* ---------------------------------------------------------------- UI states: loading, empty, hover */
+/* Loading — skeletons keep the shape of what is coming so nothing jumps when the data arrives. */
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes slide { from { background-position: -100% 0; } to { background-position: 200% 0; } }
+:root { --skel: linear-gradient(90deg, var(--sunk) 25%, color-mix(in srgb, var(--sunk) 45%, var(--surface)) 50%, var(--sunk) 75%) 0 0 / 200% 100%; }
+.skel { display: block; border-radius: 10px; background: var(--skel); animation: shimmer 1.3s ease-in-out infinite; }
+.skel-line { height: 12px; width: 60%; }
+.skel-line.short { width: 48px; }
+.skel-line.wide { height: 22px; width: 40%; }
+.skel-choices { pointer-events: none; }
+.skel-choice { height: 46px; border-radius: 14px; }
+.skel-orb { pointer-events: none; }
+.orb .ring.skel { background: var(--skel); animation: shimmer 1.3s ease-in-out infinite; box-shadow: none; }
+.orb.base .ring.skel { border: 0; }
+.skel-card { padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+.skel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.skel-block { height: 64px; border-radius: 12px; }
+.skel-cal { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+.skel-cell { height: 58px; }
+.skel-chart { display: flex; align-items: flex-end; gap: clamp(4px, 1.4vw, 12px); height: 230px; padding: 30px 8px 26px 40px; }
+.skel-chart .skel { flex: 1; border-radius: 4px 4px 0 0; }
+.results { position: relative; }
+.results.busy::before { content: ""; position: absolute; top: -12px; left: 0; right: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, transparent, var(--lime), var(--teal), transparent) 0 0 / 50% 100% no-repeat; animation: slide 1.1s ease-in-out infinite; }
+.results.busy:not(.skeleton) :is(.picker, .plan-slot, .earn, .chartbox, .tiles) { opacity: .5; pointer-events: none; transition: opacity .2s; }
+.btn.loading[disabled] { opacity: .8; cursor: progress; }
+.btn.loading .ic { animation: spin .9s linear infinite; }
+
+/* Empty — what is missing, why, and the next step. */
+.plan-slot { display: flex; flex-direction: column; gap: 16px; }
+.empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 28px 20px; border: 1.5px dashed var(--line); border-radius: var(--r); background: color-mix(in srgb, var(--surface) 60%, transparent); color: var(--ink); animation: rise .35s ease both; }
+.empty-ic { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--c-soil); color: var(--teal); flex: none; }
+.empty-ic .ic { width: 28px; height: 28px; }
+.empty-txt { display: flex; flex-direction: column; align-items: inherit; gap: 4px; }
+.empty b { font: 700 18px var(--display); text-wrap: balance; }
+.empty p { font-size: 14px; color: var(--muted); max-width: 46ch; }
+.empty-act { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 4px; }
+.empty.compact { flex-direction: row; text-align: left; padding: 14px 16px; gap: 12px; }
+.empty.compact .empty-ic { width: 40px; height: 40px; }
+.empty.compact .empty-ic .ic { width: 20px; height: 20px; }
+.empty.compact b { font: 600 14px/1.4 var(--body); color: var(--muted); }
+.map.off { height: auto; border: 0; background: none; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .empty-ic { color: var(--lime); } }
+:root[data-theme="dark"] .empty-ic { color: var(--lime); }
+
+/* Hover — only on devices with a real pointer, so taps on phones do not leave things "stuck". Press feedback everywhere. */
+.btn:active, .seg button:active, .tabs button:active, .save:active, .ebar:active { transform: scale(.97); box-shadow: none; }
+.brand img, .sum-ic, .cell, .save, .slider, .exclgrid label, .tabs button, .seg button, .stepper button i { transition: transform .15s ease, border-color .15s, background .15s, color .15s, box-shadow .15s; }
+@media (hover: hover) {
+  a:hover { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .brand:hover img { transform: rotate(-6deg) scale(1.06); }
+  .tabs button:not([aria-selected="true"]):hover { color: var(--ink); background: var(--bg); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .stepper li:not(.on) button:hover { color: var(--ink); }
+  .stepper li:not(.on):not(.done) button:hover i { border-color: var(--accent); }
+  .stepper li.done:not(.on) button:hover i { transform: scale(1.06); }
+  .seg button:not([aria-pressed="true"]):hover { background: var(--bg); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .btn.sec:hover { background: var(--accent-soft); }
+  .climate summary:hover .sum-ic { transform: scale(1.07); }
+  .climate summary:hover .sum-txt b { color: var(--accent); }
+  :is(details.help, details.more, .tableview, .rotbox, .ins-box) > summary:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .slider:hover { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+  .toggle:hover input:not(:checked) { background: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+  .exclgrid label:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: var(--bg); color: var(--ink); }
+  .orb.base:hover .ring { border-color: var(--accent); }
+  .cell:hover { transform: translateY(-1px); box-shadow: 0 0 0 2px color-mix(in srgb, var(--teal) 45%, transparent); }
+  .save:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: 0 1px 2px rgb(60 29 10 / .08), 0 14px 30px -14px rgb(60 29 10 / .3); }
+  .farewell a:hover, .foot a:hover { color: var(--ink); }
+}
+@media print { .empty, .skel, .skel-card { display: none !important; } }

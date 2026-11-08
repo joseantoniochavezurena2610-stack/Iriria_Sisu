@@ -1,10 +1,10 @@
 // app.js — Iriria Sìsù interface. Loads the data, calls the engine and draws the plans.
 // The visit is a short journey: welcome cover → 4 steps → three plans to tap → the chosen plan and how to keep it.
-import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js?v=9';
-import { recommend, cropsForCanton } from './engine.js?v=9';
-import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js?v=9';
-import { icon, paintIcons } from './icons.js?v=9';
-import { choices, syncChoices } from './choices.js?v=9';
+import { SEASONS, buildScenarios, powerUrl, processPowerDaily } from './climate.js?v=10';
+import { recommend, cropsForCanton } from './engine.js?v=10';
+import { t, cropName, seasonText, monthNames, monthFull, crc } from './strings.js?v=10';
+import { icon, paintIcons } from './icons.js?v=10';
+import { choices, syncChoices } from './choices.js?v=10';
 
 const $ = (id) => document.getElementById(id);
 const pct = (x) => Math.round(x * 100);
@@ -39,6 +39,49 @@ async function json(path, optional = false) {
 }
 
 function setStatus(text, kind = '') { const f = $('status'); f.className = `flag ${kind}`; f.textContent = text; }
+
+// ------------------------------------------------------------------ empty and loading states
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/**
+ * An empty state: an icon, what is missing, one line of help and the next step.
+ * actions: [label, icon, action] — the first is the main button; clicks are handled in wire() through data-action.
+ */
+function emptyState(ic, title, body = '', actions = [], compact = false) {
+  const buttons = actions.map(([lab, aic, act], i) => `<button type="button" class="btn${i ? ' ghost' : ''}" data-action="${act}">${icon(aic)}<span>${lab}</span></button>`).join('');
+  return `<div class="empty${compact ? ' compact' : ''}" role="status"><span class="empty-ic">${icon(ic)}</span><div class="empty-txt"><b>${title}</b>${body ? `<p>${body}</p>` : ''}</div>${buttons ? `<div class="empty-act">${buttons}</div>` : ''}</div>`;
+}
+
+/** Grey placeholders with the shape of what is coming, so the page does not jump when it arrives. */
+const SKEL = {
+  cantons: () => `<div class="choices grid skel-choices" aria-hidden="true">${'<span class="skel skel-choice"></span>'.repeat(11)}</div>`,
+  picker: () => `${'<span class="orb skel-orb" aria-hidden="true"><span class="ring skel"></span><span class="skel skel-line short"></span></span>'.repeat(3)}<span class="orb base skel-orb" aria-hidden="true"><span class="ring skel"></span></span>`,
+  plan: () => `<div class="card skel-card" aria-hidden="true"><span class="skel skel-line wide"></span><div class="skel-grid">${'<span class="skel skel-block"></span>'.repeat(4)}</div><div class="skel-cal">${'<span class="skel skel-cell"></span>'.repeat(9)}</div></div>`,
+  chart: () => `<div class="skel-chart" aria-hidden="true">${[30, 22, 18, 26, 60, 78, 52, 64, 88, 96, 70, 40].map((h) => `<span class="skel" style="height:${h}%"></span>`).join('')}</div>`,
+};
+
+/**
+ * Marks the results as loading while a canton's climate arrives. Waits 150 ms before showing anything,
+ * so saved data (which arrives at once) does not flash. skeleton: there is nothing on screen for this canton yet.
+ */
+let busyTimer = null;
+function setLoading(on, skeleton = false) {
+  const box = $('results');
+  clearTimeout(busyTimer);
+  if (!on) { box.classList.remove('busy', 'skeleton'); box.removeAttribute('aria-busy'); return; }
+  busyTimer = setTimeout(() => {
+    box.classList.add('busy');
+    box.classList.toggle('skeleton', skeleton);
+    box.setAttribute('aria-busy', 'true');
+    if (!skeleton) return;
+    $('picker').innerHTML = SKEL.picker();
+    $('plan').innerHTML = SKEL.plan();
+    $('chart').innerHTML = SKEL.chart();
+    $('climtiles').innerHTML = '';
+    $('notices').innerHTML = '';
+    $('earn').hidden = true;
+  }, 150);
+}
 
 // ------------------------------------------------------------------ text
 // Static labels live in strings.js; the HTML carries the same English text so the page reads fine before scripts run.
@@ -75,8 +118,10 @@ function refreshCrops(prefer = null) {
     el.value = list.some((c) => c.id === was) ? was : '';
   });
   const wasOut = new Set(excluded());
-  $('exclude').innerHTML = list.filter((c) => c.group !== 'none').concat(cropsForCanton(state.data.crops, canton).filter((c) => c.group === 'cover'))
-    .map((c) => `<label><input type="checkbox" value="${c.id}"${wasOut.has(c.id) ? ' checked' : ''}>${shortName(cropName(c))}</label>`).join('');
+  const excl = list.filter((c) => c.group !== 'none').concat(cropsForCanton(state.data.crops, canton).filter((c) => c.group === 'cover'));
+  $('exclude').innerHTML = excl.length
+    ? excl.map((c) => `<label><input type="checkbox" value="${c.id}"${wasOut.has(c.id) ? ' checked' : ''}>${shortName(cropName(c))}</label>`).join('')
+    : `<p class="note">${L('empty.exclude')}</p>`;
   const name = shortName(cantonName());
   $('croplabel').textContent = L('crop.inCanton', { canton: name });
   $('cropnote').textContent = !fits && !first && keepCrop && keepCrop.group !== 'none' ? L('crop.moved', { crop: shortName(cropName(keepCrop)), canton: name }) : '';
@@ -86,13 +131,28 @@ function refreshCrops(prefer = null) {
 async function start() {
   paintIcons();
   wireJourney();
+  // Loading: placeholder canton cards and no "Next" until the cantons and crops arrive.
+  $('canton').hidden = true; // choices() shows the cards instead once the cantons arrive
+  $('canton').insertAdjacentHTML('afterend', SKEL.cantons());
+  $('form').setAttribute('aria-busy', 'true');
+  $('next').disabled = true;
   try {
     const [points, crops, enso, summary, soil] = await Promise.all([
       json('data/guanacaste/points.json'), json('data/crops.json'), json('data/enso.json'),
       json('data/guanacaste/summary.json', true), json('data/guanacaste/soil_reference.json', true),
     ]);
     state.data = { points: points.points, crops: crops.crops, enso, summary, soil };
-  } catch (e) { setStatus(e.message, 'bad'); $('next').disabled = true; return; }
+  } catch (e) {
+    setStatus(e.message, 'bad');
+    $('form').removeAttribute('aria-busy');
+    $('locate').hidden = true;
+    document.querySelector('.skel-choices').outerHTML = emptyState('triangle-alert', L('empty.load.title'), L('empty.load.body', { err: esc(e.message) }), [[L('empty.reload'), 'refresh-cw', 'reload']]);
+    document.addEventListener('click', (ev) => { if (ev.target.closest('[data-action="reload"]')) location.reload(); });
+    return;
+  }
+  document.querySelector('.skel-choices')?.remove();
+  $('form').removeAttribute('aria-busy');
+  $('next').disabled = false;
 
   $('canton').innerHTML = state.data.points.map((p) => {
     const sub = (p.name.match(/\((.*)\)/) || [])[1];
@@ -212,12 +272,20 @@ function tabs() {
 }
 
 function drawMap() {
-  if (!window.L || !$('map')) return; // no internet or no Leaflet: the list still works
+  if (!$('map')) return;
+  if (!window.L) { // no internet or no Leaflet: the list still works, and the farmer is told why there is no map
+    $('map').classList.add('off');
+    $('map').innerHTML = emptyState('map-pin', L('empty.map'), '', [], true);
+    return;
+  }
   const m = window.L.map('map', { scrollWheelZoom: false, attributionControl: true }).setView([10.5, -85.35], 8);
   window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12, attribution: '© OpenStreetMap' }).addTo(m);
   for (const p of state.data.points) {
     state.markers[p.id] = window.L.circleMarker([p.lat, p.lon], { radius: 7, weight: 2, color: '#0a4a46', fillColor: '#d0d959', fillOpacity: 0.5 })
-      .addTo(m).bindTooltip(p.name).on('click', () => { $('canton').value = p.id; update(); });
+      .addTo(m).bindTooltip(p.name).on('click', () => { $('canton').value = p.id; update(); })
+      // hover: the marker grows and fills so it is clear it can be tapped
+      .on('mouseover', (e) => { if (p.id !== $('canton').value) e.target.setStyle({ radius: 10, fillOpacity: 0.85 }); })
+      .on('mouseout', () => highlightMap());
   }
   state.map = m;
 }
@@ -263,15 +331,28 @@ function wire() {
   $('plan').addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.cell')) { e.preventDefault(); showCellTip(e.target.closest('.cell')); } });
   $('locate').addEventListener('click', () => {
     if (!navigator.geolocation) { $('locmsg').textContent = L('loc.unsupported'); return; }
+    const btn = $('locate');
+    const busy = (on) => { btn.disabled = on; btn.classList.toggle('loading', on); if (on) btn.setAttribute('aria-busy', 'true'); else btn.removeAttribute('aria-busy'); };
+    busy(true);
     $('locmsg').textContent = L('loc.locating');
     navigator.geolocation.getCurrentPosition((pos) => {
+      busy(false);
       const { latitude: la, longitude: lo } = pos.coords;
       const d = (p) => (p.lat - la) ** 2 + ((p.lon - lo) * Math.cos(la * Math.PI / 180)) ** 2;
       const near = [...state.data.points].sort((a, b) => d(a) - d(b))[0];
       $('canton').value = near.id;
       $('locmsg').textContent = L('loc.found', { name: near.name });
       update();
-    }, () => { $('locmsg').textContent = L('loc.failed'); }, { timeout: 10000 });
+    }, () => { busy(false); $('locmsg').textContent = L('loc.failed'); }, { timeout: 10000 });
+  });
+  // Buttons inside empty states.
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-action]');
+    if (!b) return;
+    const act = b.dataset.action;
+    if (act === 'retry') update();
+    else if (act === 'reload') location.reload();
+    else if (act === 'canton' || act === 'answers') { goStep(act === 'canton' ? 0 : STEPS - 1); $('wizard').scrollIntoView({ block: 'start' }); }
   });
   $('print').addEventListener('click', () => window.print());
   $('share').addEventListener('click', async () => {
@@ -550,7 +631,10 @@ function renderPlans() {
   $('picker').innerHTML = plans.map((p, i) => orb(i, p)).join('') + orb('base', base);
   earnChart();
   const p = planOf(state.sel);
-  $('plan').innerHTML = p ? detail(state.sel, p, crops, year0Now(), base) : (plans.length ? '' : `<p class="flag bad">${L('plan.none')}</p>`);
+  // No plan survived the rules: say so and offer to change the answers (today's plan stays tappable).
+  const none = plans.length ? '' : emptyState('sprout', L('empty.plans.title'), L('empty.plans.body'), [[L('empty.plans.action'), 'sliders-horizontal', 'answers']]);
+  const body = p ? detail(state.sel, p, crops, year0Now(), base) : plans.length ? emptyState('sparkles', L('empty.pick'), '', [], true) : '';
+  $('plan').innerHTML = none + body;
 }
 
 function renderFarmbar() {
@@ -585,14 +669,21 @@ async function update() {
   highlightMap();
   renderFarmbar();
   const id = $('canton').value;
+  // Loading: placeholders if this canton has nothing on screen yet, otherwise the current plans just dim.
+  setLoading(true, !state.climate[id]);
   let climate;
   try { climate = await climateOf(id); } catch (e) {
     if (mine !== turn) return;
+    setLoading(false);
     setStatus(L('status.noData', { err: e.message }), 'bad');
-    $('climate').open = true;
-    $('plan').innerHTML = ''; $('picker').innerHTML = ''; $('chart').innerHTML = ''; return;
+    state.last = null;
+    $('picker').innerHTML = ''; $('climtiles').innerHTML = ''; $('notices').innerHTML = ''; $('earn').hidden = true;
+    $('chart').innerHTML = emptyState('cloud-rain', L('empty.chart'), '', [], true);
+    $('plan').innerHTML = emptyState('satellite', L('empty.climate.title'), L('empty.climate.body'), [[L('empty.retry'), 'refresh-cw', 'retry'], [L('empty.otherCanton'), 'map-pin', 'canton']]);
+    return;
   }
   if (mine !== turn) return;
+  setLoading(false);
   let sc;
   try { sc = buildScenarios(climate, state.data.enso); } catch (e) { setStatus(e.message, 'bad'); return; }
   const m = sc.meta;
