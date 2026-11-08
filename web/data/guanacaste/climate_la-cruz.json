@@ -32,7 +32,7 @@
   "GWETTOP": "fraction 0-1 (0-5 cm)",
   "GWETROOT": "fraction 0-1 (root zone)"
  },
- "last_day": "2026-10-30",
+ "last_day": "2026-11-05",
  "months": [
   {
    "year": 2021,
@@ -1072,17 +1072,17 @@
   {
    "year": 2026,
    "month": 10,
-   "P": 340.4,
-   "ET0": 95.8,
-   "T": 27.38,
-   "Tmax": 29.87,
-   "Tmin": 25.36,
+   "P": 332.7,
+   "ET0": 95.9,
+   "T": 27.37,
+   "Tmax": 29.88,
+   "Tmin": 25.34,
    "RH": 83.0,
-   "Rad": 19.44,
-   "Wind": 1.91,
-   "GWETTOP": 0.738,
-   "GWETROOT": 0.701,
-   "days": 30
+   "Rad": 19.59,
+   "Wind": 1.96,
+   "GWETTOP": 0.735,
+   "GWETROOT": 0.7,
+   "days": 31
   }
  ]
 }
